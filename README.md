@@ -1,5 +1,8 @@
 # software-architecture-TDT4240
 
+# Game concept
+Age of War for android mobile phone.
+
 # Git conventions
 ## Branches
 
