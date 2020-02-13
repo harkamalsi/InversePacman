@@ -1,5 +1,7 @@
 # software-architecture-TDT4240
 
+# Authors:
+
 # Game concept
 Age of War for android mobile phone.
 
