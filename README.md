@@ -14,5 +14,5 @@ Age of War for android mobile phone.
 * **fix/feature-name:** A branch which is only used to fix a feature
 
 # Tutorials and other resources
-* http://www2.cs.uidaho.edu/~jeffery/courses/328/lecture.html#lecture15
+* http://www2.cs.uidaho.edu/~jeffery/courses/328/lecture.html
 * https://www.programcreek.com/java-api-examples/?code=kLeZ%2FLibGDX-MVC-Tutorial%2FLibGDX-MVC-Tutorial-master%2Fcore%2Fsrc%2Fcom%2Fmygdx%2Fgame%2Fmvctutorial%2Fmodel%2Fsystems%2FViewportResizeSystem.java
