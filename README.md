@@ -18,8 +18,10 @@ In multiplayer Inverse Pac-Man, players can play as either Pac-Man or as one of 
 
 * **master:** Updated only when milestones are completed
 * **dev:** Updated each time a feature is finished (ideally working)
-* **feat/feature-name:** A branch which is used to develope a feature
+* **feat/feature-name:** A branch which is used to developed a feature
 * **fix/feature-name:** A branch which is only used to fix a feature
+* **hotfix:** A branch to fix major bugs discovered from a release to master
+
 
 # Tutorials and other resources
 * http://www2.cs.uidaho.edu/~jeffery/courses/328/lecture.html
