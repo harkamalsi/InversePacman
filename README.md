@@ -1,7 +1,7 @@
 # software-architecture-TDT4240
 
 # Authors:
-* Nikolas Emil
+* Nikolas Emil Martinsen 
 
 # Game concept
 
