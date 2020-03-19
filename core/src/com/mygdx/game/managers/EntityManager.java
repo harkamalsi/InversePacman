@@ -3,6 +3,7 @@ package com.mygdx.game.managers;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.components.SpriteComponent;
@@ -22,15 +23,19 @@ public class EntityManager {
     public EntityManager(Engine e, SpriteBatch batch){
         engine = e;
 
-        RenderingSystem rs = new RenderingSystem(family, comparator, batch);
+        RenderingSystem rs = new RenderingSystem(family, comparator);
         engine.addSystem(rs);
+    }
+
+    public void update() {
+        engine.update(Gdx.graphics.getDeltaTime());
     }
     private void createPlayerPacman(){
         // Create the player Entity and all the components that will go in the entity
         Entity entity = new Entity();
         entity.add(new VelocityComponent())
                 .add(new SpriteComponent())
-                .add(new RenderableComponent());
+                .add(new TextureComponent());
 
         // add the entity to the engine
         engine.addEntity(entity);
