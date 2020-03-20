@@ -34,7 +34,7 @@ public class ButtonSystem extends IteratingSystem {
         //update click bounds
         click.bounds.x = transform.position.x;
         click.bounds.y = transform.position.y;
-
+        // not done yet example I found and modified needs testing with the menubuttons
         if(Gdx.input.isButtonPressed(Input.Keys.A)){
             // touching
             Vector3 clickPosition = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
