@@ -22,6 +22,7 @@ public class EntityManager {
     public EntityManager(Engine e, SpriteBatch batch){
         engine = e;
 
+
         RenderingSystem rs = new RenderingSystem(batch);
         engine.addSystem(rs);
     }
