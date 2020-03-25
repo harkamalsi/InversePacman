@@ -98,5 +98,4 @@ public class AssetsManager {
     public void dispose() {
         assets.dispose();
     }
-
 }
