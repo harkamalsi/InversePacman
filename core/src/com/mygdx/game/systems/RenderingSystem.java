@@ -3,7 +3,7 @@ package com.mygdx.game.systems;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.SortedIteratingSystem;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,8 +14,8 @@ import com.mygdx.game.components.TransformComponent;
 
 import java.util.Comparator;
 
-public class RenderingSystem extends SortedIteratingSystem {
-    //pixels for each meter
+public class RenderingSystem extends IteratingSystem {
+    //pixels per meter
     static final float PPM = 32.0f;
     //we are going to have some sort of viewport
     static final float CAMERA_WIDTH = Gdx.graphics.getWidth()/PPM;
@@ -37,8 +37,8 @@ public class RenderingSystem extends SortedIteratingSystem {
     private ComponentMapper<TextureComponent> textureM;
     private ComponentMapper<TransformComponent> transformM;
 
-    public RenderingSystem(Family family, Comparator<Entity> comparator,SpriteBatch batch) {
-        super(family, comparator);
+    public RenderingSystem(SpriteBatch batch) {
+        super(Family.all(TransformComponent.class, TextureComponent.class).get());
 
         this.batch = batch;
 
@@ -51,9 +51,9 @@ public class RenderingSystem extends SortedIteratingSystem {
 
 
     //maybe will deal with the priorityqueue of incoming renderables
-    public RenderingSystem(Family family, Comparator<Entity> comparator, int priority) {
-        super(family, comparator, priority);
-    }
+//    public RenderingSystem(Family family, Comparator<Entity> comparator, int priority) {
+//        super(family, comparator, priority);
+//    }
 
     @Override
     public void update(float deltaTime) {
@@ -95,5 +95,9 @@ public class RenderingSystem extends SortedIteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         renderQueue.add(entity);
+    }
+
+    public OrthographicCamera getCamera() {
+        return cam;
     }
 }

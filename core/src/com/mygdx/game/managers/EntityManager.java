@@ -22,7 +22,8 @@ public class EntityManager {
     public EntityManager(Engine e, SpriteBatch batch){
         engine = e;
 
-        RenderingSystem rs = new RenderingSystem(family, comparator, batch);
+
+        RenderingSystem rs = new RenderingSystem(batch);
         engine.addSystem(rs);
     }
     private void createPlayerPacman(){
@@ -31,6 +32,8 @@ public class EntityManager {
        // entity.add(new VelocityComponent())
        //         .add(new SpriteComponent())
        //         .add(new RenderableComponent());
+        entity.add(new VelocityComponent())
+                .add(new SpriteComponent());
 
         // add the entity to the engine
         engine.addEntity(entity);
