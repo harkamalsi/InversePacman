@@ -29,6 +29,9 @@ public class EntityManager {
     private void createPlayerPacman(){
         // Create the player Entity and all the components that will go in the entity
         Entity entity = new Entity();
+       // entity.add(new VelocityComponent())
+       //         .add(new SpriteComponent())
+       //         .add(new RenderableComponent());
         entity.add(new VelocityComponent())
                 .add(new SpriteComponent());
 
