@@ -41,9 +41,10 @@ public class RenderingSystem extends IteratingSystem {
         super(Family.all(TransformComponent.class, TextureComponent.class).get());
 
         this.batch = batch;
-
         textureM = ComponentMapper.getFor(TextureComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
+
+        renderQueue = new Array<Entity>();
 
         cam = new OrthographicCamera(CAMERA_WIDTH, CAMERA_HEIGHT);
         cam.position.set(CAMERA_WIDTH / 2f, CAMERA_HEIGHT / 2f, 0);

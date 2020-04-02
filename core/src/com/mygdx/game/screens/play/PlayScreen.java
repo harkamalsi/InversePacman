@@ -1,16 +1,47 @@
 package com.mygdx.game.screens.play;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.components.CollisionComponent;
+import com.mygdx.game.components.PlayerComponent;
+import com.mygdx.game.components.TextureComponent;
+import com.mygdx.game.components.TransformComponent;
+import com.mygdx.game.components.VelocityComponent;
+import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.screens.AbstractScreen;
+import com.mygdx.game.systems.AnimationSystem;
+import com.mygdx.game.systems.CollisionSystem;
+import com.mygdx.game.systems.MovementSystem;
+import com.mygdx.game.systems.PlayerInputSystem;
+import com.mygdx.game.systems.RenderingSystem;
 
 
 public final class PlayScreen extends AbstractScreen {
 
     private OrthographicCamera camera;
+
+    private SpriteBatch batch;
+    private EntityManager entityManager;
+
+    private Texture pacmansprite;
+
+    private Entity pacman;
+
+    private Engine engine;
+
+    private CollisionSystem collisionSystem;
+    private MovementSystem movementSystem;
+    private PlayerInputSystem playerInputSystem;
+    private RenderingSystem renderingSystem;
+
 
     public BitmapFont font = new BitmapFont(); //or use alex answer to use custom font
 
@@ -18,8 +49,9 @@ public final class PlayScreen extends AbstractScreen {
         super(app);
 
         // Sets the camera; width and height.
-        this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
+//        this.camera = new OrthographicCamera();
+//        this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
+
 
     }
 
@@ -30,6 +62,30 @@ public final class PlayScreen extends AbstractScreen {
 
     @Override
     public void show() {
+
+        batch = new SpriteBatch();
+        playerInputSystem = new PlayerInputSystem();
+        movementSystem = new MovementSystem();
+        collisionSystem = new CollisionSystem();
+        renderingSystem = new RenderingSystem(batch);
+
+        engine = new Engine();
+        engine.addSystem(playerInputSystem);
+        engine.addSystem(movementSystem);
+        engine.addSystem(collisionSystem);
+        engine.addSystem(renderingSystem);
+
+        pacmansprite = new Texture("ghosts.png");
+        pacman = new Entity();
+        pacman.add(new VelocityComponent())
+                .add(new TextureComponent(new TextureRegion(pacmansprite)))
+                .add(new TransformComponent(20,20))
+                .add(new VelocityComponent())
+                .add(new CollisionComponent())
+                .add(new PlayerComponent());
+        engine.addEntity(pacman);
+
+
 
     }
 
@@ -44,6 +100,8 @@ public final class PlayScreen extends AbstractScreen {
         app.batch.begin();
         app.batch.draw(app.img, 0, 0);
         app.batch.end();
+        engine.update(delta);
+
     }
 
     @Override
