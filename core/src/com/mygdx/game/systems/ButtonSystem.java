@@ -18,6 +18,7 @@ public class ButtonSystem extends IteratingSystem {
     private OrthographicCamera camera;
 
 
+
     @SuppressWarnings("unchecked")
     public ButtonSystem(OrthographicCamera cam) {
         super(Family.all(ButtonComponent.class,TransformComponent.class).get());
@@ -35,7 +36,7 @@ public class ButtonSystem extends IteratingSystem {
         click.bounds.x = transform.position.x;
         click.bounds.y = transform.position.y;
         // not done yet example I found and modified needs testing with the menubuttons
-        if(Gdx.input.isButtonPressed(Input.Keys.A)){
+        if(Gdx.input.justTouched()){
             // touching
             Vector3 clickPosition = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             System.out.println(clickPosition+":"+click.bounds.toString());
@@ -43,8 +44,12 @@ public class ButtonSystem extends IteratingSystem {
                 //object clicked
                 //do your thing
                 System.out.println("Touched"+entity.toString());
+
+                entity.flags = 1;
+
             }
         }
     }
+
 
 }
