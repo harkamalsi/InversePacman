@@ -33,7 +33,7 @@ public class GameScreenManager {
         this.app = app;
 
         initGameScreens();
-        setScreen(STATE.PLAY);
+        setScreen(STATE.MAIN_MENU_SCREEN);
     }
 
     private void initGameScreens() {
@@ -53,7 +53,6 @@ public class GameScreenManager {
         currentState = nextScreen;
         System.out.println(nextScreen);
     }
-
     public void dispose() {
         for (AbstractScreen screen : gameScreens.values()) {
             if (screen != null) {

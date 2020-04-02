@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,7 +10,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.managers.GameScreenManager;
 
 public class InversePacman extends Game {
-
 
 
 	// App Variables
@@ -54,18 +51,24 @@ public class InversePacman extends Game {
 	@Override
 	public void render() {
 		super.render();
+
 		// Changing the different screens based on the button pressed, should be changed to touch inputs from menu.
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 			Gdx.app.exit();
 		}
+
 		else if (Gdx.input.isKeyPressed(Input.Keys.P)) {
 			gsm.setScreen(GameScreenManager.STATE.PAUSE);
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.R) && gsm.currentState == GameScreenManager.STATE.PAUSE) {
 			gsm.setScreen(GameScreenManager.STATE.PLAY);
+			//gsm.popScreen();
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.S) && gsm.currentState == GameScreenManager.STATE.PLAY) {
 			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_BOARD_SCREEN);
+		}
+		else if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
+			gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
 		}
 	}
 
