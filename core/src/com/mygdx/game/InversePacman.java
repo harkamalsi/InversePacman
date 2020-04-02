@@ -49,7 +49,7 @@ public class InversePacman extends Game {
 	}
 
 	@Override
-	public void render () {
+	public void render() {
 		super.render();
 
 		// Changing the different screens based on the button pressed, should be changed to touch inputs from menu.
@@ -73,7 +73,7 @@ public class InversePacman extends Game {
 	}
 
 	@Override
-	public void dispose () {
+	public void dispose() {
 		batch.dispose();
 		shapeBatch.dispose();
 		assets.dispose();

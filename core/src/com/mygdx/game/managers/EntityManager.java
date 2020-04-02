@@ -3,8 +3,12 @@ package com.mygdx.game.managers;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.components.CollisionComponent;
+import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.SpriteComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -19,24 +23,25 @@ public class EntityManager {
     private Family family;
     private Comparator comparator;
 
-    public EntityManager(Engine e, SpriteBatch batch){
-        engine = e;
 
+    public EntityManager(){
 
-        RenderingSystem rs = new RenderingSystem(batch);
-        engine.addSystem(rs);
     }
-    private void createPlayerPacman(){
+    public Entity createPlayerPacman(String internalpath){
         // Create the player Entity and all the components that will go in the entity
-        Entity entity = new Entity();
-       // entity.add(new VelocityComponent())
-       //         .add(new SpriteComponent())
-       //         .add(new RenderableComponent());
-        entity.add(new VelocityComponent())
-                .add(new SpriteComponent());
 
-        // add the entity to the engine
-        engine.addEntity(entity);
+        Texture pacmansprite = new Texture(internalpath);
+
+        Entity pacman = new Entity();
+        pacman.add(new VelocityComponent())
+                .add(new TextureComponent(new TextureRegion(pacmansprite)))
+                .add(new TransformComponent(20,20))
+                .add(new VelocityComponent())
+                .add(new CollisionComponent())
+                .add(new PlayerComponent());
+
+        return pacman;
+
     }
     private void createPlayerGhost(){
 
