@@ -47,6 +47,7 @@ public class MainMenuScreen extends AbstractScreen {
 
     private TextureRegion play;
     private Texture multiplay;
+    private TextureRegion bg;
 
     private Entity singleplayerButton;
     private Entity multiplayerButton;
@@ -56,10 +57,13 @@ public class MainMenuScreen extends AbstractScreen {
     private Sprite multisprite;
 
 
-
+/*
+I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacman.V_WIDTH/HEIGHT
+ */
 
     public MainMenuScreen(final InversePacman app) {
         super(app);
+        bg = new TextureRegion(new Texture("menuscreen.png"));
         play = new TextureRegion(new Texture("new_play.png"));
         multiplay = new Texture("multiplayer.png");
 
@@ -89,6 +93,8 @@ public class MainMenuScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+
+        batch.draw(bg, 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playsprite.setSize(250,150);
         playsprite.draw(batch);
         multisprite.draw(batch);
@@ -104,8 +110,8 @@ public class MainMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         this.camera = new OrthographicCamera();
-        viewport = new FitViewport(InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
-        this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 
 
@@ -113,22 +119,22 @@ public class MainMenuScreen extends AbstractScreen {
 
         buttonSystem = new ButtonSystem(camera);
         playsprite = new Sprite(new TextureRegion(new Texture("new_play.png")));
-        playsprite.setBounds(InversePacman.V_WIDTH / 2 - playsprite.getRegionWidth() / 2, InversePacman.V_HEIGHT - 200, playsprite.getRegionWidth(), playsprite.getRegionHeight());
+        playsprite.setBounds(Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 200, playsprite.getRegionWidth(), playsprite.getRegionHeight());
 
 
 
 
         multisprite = new Sprite(new TextureRegion(new Texture("multiplayer.png")));
-        multisprite.setBounds(InversePacman.V_WIDTH / 2 - multisprite.getWidth() / 2, InversePacman.V_HEIGHT - 400, multisprite.getRegionWidth(), multisprite.getRegionHeight());
+        multisprite.setBounds(Gdx.graphics.getWidth() / 2 - multisprite.getWidth() / 2, Gdx.graphics.getHeight() - 400, multisprite.getRegionWidth(), multisprite.getRegionHeight());
 
 
         textureComponent1 = new TextureComponent(playsprite);
-        buttonComponent1 = new ButtonComponent(InversePacman.V_WIDTH / 2 - playsprite.getRegionWidth() / 2, InversePacman.V_HEIGHT - 200, playsprite.getRegionWidth(),  playsprite.getRegionHeight());
-        transformComponent1 = new TransformComponent(InversePacman.V_WIDTH / 2 - playsprite.getRegionWidth() / 2, InversePacman.V_HEIGHT - 200);
+        buttonComponent1 = new ButtonComponent(Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 200, playsprite.getRegionWidth(),  playsprite.getRegionHeight());
+        transformComponent1 = new TransformComponent(Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 200);
 
         textureComponent2 = new TextureComponent(multisprite);
-        buttonComponent2 = new ButtonComponent(InversePacman.V_WIDTH  / 2 - multisprite.getRegionWidth() / 2, InversePacman.V_HEIGHT - 400, multisprite.getRegionWidth(), multisprite.getRegionHeight());
-        transformComponent2 = new TransformComponent(InversePacman.V_WIDTH / 2 - multisprite.getRegionWidth() / 2, InversePacman.V_HEIGHT - 400);
+        buttonComponent2 = new ButtonComponent(Gdx.graphics.getWidth()  / 2 - multisprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 400, multisprite.getRegionWidth(), multisprite.getRegionHeight());
+        transformComponent2 = new TransformComponent(Gdx.graphics.getWidth() / 2 - multisprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 400);
 
 
 
