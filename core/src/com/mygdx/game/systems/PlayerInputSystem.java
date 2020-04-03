@@ -75,7 +75,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
             x = X_VELOCITY;
             y = 0f;
-            System.out.println("Right");
+            //System.out.println("Right");
         }
 
         vc.setVelocity(x,y);
