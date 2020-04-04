@@ -63,7 +63,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
             x = 0f;
             y = -Y_VELOCITY;
-            System.out.println("Down");
+            //System.out.println("Down");
         }
 
         if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){

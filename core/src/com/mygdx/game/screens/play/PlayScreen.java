@@ -60,16 +60,18 @@ public final class PlayScreen extends AbstractScreen {
     private RenderingSystem renderingSystem;
 
     private Music song;
-    private FileHandle track1;
-    private FileHandle track2;
+    private FileHandle trackdir;
+    private FileHandle store;
 
     private ArrayList<FileHandle> tracks;
+    private int tracknr;
 
 
     public BitmapFont font = new BitmapFont(); //or use alex answer to use custom font
 
     public PlayScreen(final InversePacman app) {
         super(app);
+
 
         // Sets the camera; width and height.
 //        this.camera = new OrthographicCamera();
@@ -88,9 +90,13 @@ public final class PlayScreen extends AbstractScreen {
     @Override
     public void update(float delta) {
         handleInput();
+        // Chooses the next song to play if the song has finished
+        // Had to add the second condition since it chose to play a new song as I switched screens
         if(!song.isPlaying() && app.gsm.currentState == GameScreenManager.STATE.PLAY){
             System.out.println("song changed");
-            playMusic(tracks);
+            // Song needs to be disposed before it is changed
+            song.dispose();
+            playMusic(tracks, tracknr);
         }
 
 
@@ -117,17 +123,16 @@ public final class PlayScreen extends AbstractScreen {
     @Override
     public void show() {
 
-        track1 = Gdx.files.internal("music/play/track1.mp3");
-        track2 = Gdx.files.internal("music/play/track2.mp3");
+        // Collects all the songs in the music/play directory to a list
+        // To add a new song, place the file under the folder assets/music/play
+        trackdir = Gdx.files.internal("music/play");
+        tracks = new ArrayList<FileHandle>();
 
+        for(FileHandle track : trackdir.list()) {
+            tracks.add(track);
+        }
 
-
-        ArrayList<FileHandle> tracks = new ArrayList<FileHandle>();
-        tracks.add(track1);
-        tracks.add(track2);
-        System.out.println(tracks);
-
-        playMusic(tracks);
+        playMusic(tracks, -1);
 
         batch = new SpriteBatch();
         playerInputSystem = new PlayerInputSystem();
@@ -152,7 +157,6 @@ public final class PlayScreen extends AbstractScreen {
         engine.addEntity(pacman);
 
     }
-
 
     // Render the PlayScreen, for now only a picture with green background. This method i
     // needed in every screen but can be changed to show different data.
@@ -183,8 +187,19 @@ public final class PlayScreen extends AbstractScreen {
 
     }
 
+    public int getRandomWithExclusion(Random rnd, int start, int end, int... exclude) {
+        int random = start + rnd.nextInt(end - start + 1 - exclude.length);
+        for (int ex : exclude) {
+            if (random < ex) {
+                break;
+            }
+            random++;
+        }
+        return random - 1;
+    }
 
-    private void playMusic(ArrayList<FileHandle> tracks) {
+
+    private void playMusic(ArrayList<FileHandle> tracks, int lasttrack) {
         //This only works for the desktop application, I couldn't make it work for android
         /*System.out.println("path " + Gdx.files.getLocalStoragePath() + "music/play");
         List<File> files = getListFiles(new File( "music/play"));
@@ -193,21 +208,40 @@ public final class PlayScreen extends AbstractScreen {
         int tracknr = track.nextInt(files.size());
         File songfile = files.get(tracknr);
         song = Gdx.audio.newMusic(Gdx.files.internal(songfile.getPath()));*/
-        System.out.println(tracks);
-
 
         Random track = new Random();
-        int tracknr = track.nextInt(tracks.size());
-        //File songfile = tracks.get(tracknr);
+        System.out.println("Start " + tracknr);
+        System.out.println("Last track " + lasttrack);
+        if(lasttrack > -1) {
+            store = tracks.remove(lasttrack);
 
+        }
+
+        /*if(tracknr > -1) {
+            System.out.println("excluding");
+            tracknr = getRandomWithExclusion(track,0, tracks.size() - 1, lasttrack);
+        }
+        else {
+            System.out.println("Not excluding");
+            tracknr = track.nextInt(tracks.size());
+        }*/
+        tracknr = track.nextInt(tracks.size());
+        System.out.println("tracknr: " + tracknr);
+        if(lasttrack > -1) {
+            tracks.add(store);
+        }
+        //tracknr = track.nextInt(tracks.size());
+        System.out.println("tracknr: " + tracknr);
+        System.out.println("now playing: " + tracks.get(tracknr).name());
+
+        // Plays a random song from the available songs in the music/play directory
         song = Gdx.audio.newMusic(Gdx.files.internal(tracks.get(tracknr).toString()));
-
         song.setLooping(false);
         song.setVolume(0.5f);
+        song.setPosition(60);
         song.play();
         //Gdx.files.getExternalStoragePath();
     }
-
 
     @Override
     public void dispose() {
