@@ -2,7 +2,6 @@ package com.mygdx.game.screens.menu;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
@@ -11,10 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
@@ -105,7 +102,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         }
         if(optionButton.flags == 1) {
             music.dispose();
-            // We need a settings screen, this is really going to be the option screen
+            // We need a settings screen, this is really going to be the option screen and not menu
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
     }
@@ -160,27 +157,21 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         engine = new Engine();
         engine.addSystem(buttonSystem);
 
-
+        // ***** Play button START *****
 
         playsprite = new Sprite(play);
         playsprite.setBounds(Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2, Gdx.graphics.getHeight() / (float)1.80, playsprite.getRegionWidth(), playsprite.getRegionHeight());
 
         singleplayerButton = new Entity();
 
-
-        //textureComponent1 = new TextureComponent(playsprite);
-        //buttonComponent1 = new ButtonComponent(Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 200, playsprite.getRegionWidth(),  playsprite.getRegionHeight());
-        //transformComponent1 = new TransformComponent(Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 200);
-
         singleplayerButton.add(new TextureComponent(playsprite))
                 .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2, Gdx.graphics.getHeight() / (float)1.80, playsprite.getRegionWidth(),  playsprite.getRegionHeight()))
                 .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2, Gdx.graphics.getHeight() / (float)1.80));
         engine.addEntity(singleplayerButton);
 
-        //singleplayerButton.add(textureComponent1);
-        //singleplayerButton.add(buttonComponent1);
-        //singleplayerButton.add(transformComponent1);
+        // ***** Play button END *****
 
+        // ***** Multiplayer button START *****
 
         multisprite = new Sprite(multiplay);
         multisprite.setBounds(Gdx.graphics.getWidth() / 2 - multisprite.getWidth() / 2, Gdx.graphics.getHeight() / (float)2.9, multisprite.getRegionWidth(), multisprite.getRegionHeight());
@@ -192,11 +183,9 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
                 .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - multisprite.getRegionWidth() / 2, Gdx.graphics.getHeight() / (float)2.9));
         engine.addEntity(multiplayerButton);
 
+        // ***** Multiplayer button END *****
 
-
-        //textureComponent2 = new TextureComponent(multisprite);
-        //buttonComponent2 = new ButtonComponent(Gdx.graphics.getWidth()  / 2 - multisprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 600, multisprite.getRegionWidth(), multisprite.getRegionHeight());
-        //transformComponent2 = new TransformComponent(Gdx.graphics.getWidth() / 2 - multisprite.getRegionWidth() / 2, Gdx.graphics.getHeight() - 600);
+        // ***** Highscore button START *****
 
         highscoresprite = new Sprite(highscore);
         highscoresprite.setBounds(Gdx.graphics.getWidth() / 2 - highscoresprite.getWidth() / 2, Gdx.graphics.getHeight() / (float)3.8, highscoresprite.getRegionWidth(), highscoresprite.getRegionHeight());
@@ -208,6 +197,9 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
                 .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - highscoresprite.getWidth() / 2, Gdx.graphics.getHeight() / (float)3.8));
         engine.addEntity(highscoreButton);
 
+        // ***** Highscore button END *****
+
+        // ***** Option button START *****
 
         optionsprite = new Sprite(option);
         optionsprite.setBounds(Gdx.graphics.getWidth() / 2 - optionsprite.getWidth() / 2, Gdx.graphics.getHeight() / (float)5.6, optionsprite.getRegionWidth(), optionsprite.getRegionHeight());
@@ -219,10 +211,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
                 .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - optionsprite.getWidth() / 2, Gdx.graphics.getHeight() / (float)5.6));
         engine.addEntity(optionButton);
 
-
-        //multiplayerButton.add(textureComponent2);
-        //multiplayerButton.add(buttonComponent2);
-        //multiplayerButton.add(transformComponent2);
+        // ***** Option button END *****
 
         //entityManager = new EntityManager(engine, app.batch);
     }
