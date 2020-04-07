@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -33,10 +34,21 @@ public class InversePacman extends Game {
 	// Texture for testing (Use AssetsManager later an remove this)
 	public Texture img;
 
+	// Music volume for our game. When setting music volume use this variable
+	public float music_volume;
+	// Sound volume for our game. When setting sound volume use this variable
+	public float sound_volume;
+
 
 	// Creates The managers,
 	@Override
 	public void create () {
+        FileHandle settings = Gdx.files.local("settings.txt");
+		String text = settings.readString();
+		String wordsArray[] = text.split("\\r?\\n");
+		music_volume = Float.parseFloat(wordsArray[0]);
+		sound_volume = Float.parseFloat(wordsArray[1]);
+
 		batch = new SpriteBatch();
 		shapeBatch = new ShapeRenderer();
 

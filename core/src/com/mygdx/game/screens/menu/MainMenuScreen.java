@@ -24,7 +24,6 @@ import com.mygdx.game.systems.RenderingSystem;
 import com.mygdx.game.managers.EntityManager;
 
 
-
 public class MainMenuScreen extends AbstractScreen {
     private OrthographicCamera camera;
     private FitViewport viewport;
@@ -38,14 +37,6 @@ public class MainMenuScreen extends AbstractScreen {
 
     private ButtonSystem buttonSystem;
     private RenderingSystem renderingSystem;
-
-    private TextureComponent textureComponent1;
-    private ButtonComponent buttonComponent1;
-    private TransformComponent transformComponent1;
-
-    private TextureComponent textureComponent2;
-    private ButtonComponent buttonComponent2;
-    private TransformComponent transformComponent2;
 
     private TextureRegion play;
     private TextureRegion multiplay;
@@ -65,9 +56,6 @@ public class MainMenuScreen extends AbstractScreen {
     private Sprite optionsprite;
     private Music music;
 
-
-
-
 /*
 I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacman.V_WIDTH/HEIGHT
  */
@@ -79,7 +67,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         multiplay = new TextureRegion(new Texture("menuscreen/multiplayer_button.png"));
         highscore = new TextureRegion(new Texture("menuscreen/highscore_button.png"));
         option = new TextureRegion(new Texture("menuscreen/options_button.png"));
-
     }
 
 
@@ -102,8 +89,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         }
         if(optionButton.flags == 1) {
             music.dispose();
-            // We need a settings screen, this is really going to be the option screen and not menu
-            app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
+            app.gsm.setScreen(GameScreenManager.STATE.OPTION_SCREEN);
         }
     }
 
@@ -133,6 +119,8 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
     @Override
     public void update(float delta) {
         handleInput();
+        //System.out.println("music level: " + music.getVolume());
+        //System.out.println("Sound level" + app.sound_volume);
     }
 
     @Override
@@ -140,7 +128,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
         music = Gdx.audio.newMusic(Gdx.files.internal("music/menu/menumusic.mp3"));
         music.setLooping(true);
-        music.setVolume(0.5f);
+        music.setVolume(app.music_volume);
         music.play();
 
         this.camera = new OrthographicCamera();

@@ -183,7 +183,7 @@ public final class PlayScreen extends AbstractScreen {
         // Plays a random song from the available songs in the music/play directory
         song = Gdx.audio.newMusic(Gdx.files.internal(tracks.get(tracknr).toString()));
         song.setLooping(false);
-        song.setVolume(0.5f);
+        song.setVolume(app.music_volume);
         song.play();
     }
 
