@@ -6,6 +6,7 @@ import com.mygdx.game.screens.leaderboard.MultiplayerBoardScreen;
 import com.mygdx.game.screens.leaderboard.SinglePlayerBoardScreen;
 import com.mygdx.game.screens.menu.InGameMenuScreen;
 import com.mygdx.game.screens.menu.MainMenuScreen;
+import com.mygdx.game.screens.menu.OptionScreen;
 import com.mygdx.game.screens.play.GameOverScreen;
 import com.mygdx.game.screens.play.LobbyScreen;
 import com.mygdx.game.screens.play.PauseScreen;
@@ -25,7 +26,8 @@ public class GameScreenManager {
         MAIN_MENU_SCREEN,
         IN_GAME_MENU_SCREEN,
         SINGLE_PLAYER_BOARD_SCREEN,
-        MULTI_PLAYER_BOARD_SCREEN
+        MULTI_PLAYER_BOARD_SCREEN,
+        OPTION_SCREEN
     }
     public STATE currentState;
 
@@ -46,6 +48,7 @@ public class GameScreenManager {
         this.gameScreens.put(STATE.IN_GAME_MENU_SCREEN, new InGameMenuScreen(app));
         this.gameScreens.put(STATE.SINGLE_PLAYER_BOARD_SCREEN, new SinglePlayerBoardScreen(app));
         this.gameScreens.put(STATE.MULTI_PLAYER_BOARD_SCREEN, new MultiplayerBoardScreen(app));
+        this.gameScreens.put(STATE.OPTION_SCREEN, new OptionScreen(app));
     }
 
     public void setScreen(STATE nextScreen) {
