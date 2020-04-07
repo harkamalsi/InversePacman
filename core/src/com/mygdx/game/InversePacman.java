@@ -67,9 +67,6 @@ public class InversePacman extends Game {
 		else if (Gdx.input.isKeyPressed(Input.Keys.S) && gsm.currentState == GameScreenManager.STATE.PLAY) {
 			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_BOARD_SCREEN);
 		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
-			gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
-		}
 	}
 
 	@Override
