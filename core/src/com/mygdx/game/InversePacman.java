@@ -49,13 +49,13 @@ public class InversePacman extends Game {
 	// Creates The managers,
 	@Override
 	public void create () {
+		if(!Gdx.files.local("settings.txt").exists()){
+			FileHandle put = Gdx.files.internal("settings.txt");
+			put.copyTo(Gdx.files.local("."));
+		}
         FileHandle settings = Gdx.files.local("settings.txt");
 		String text = settings.readString();
 		String wordsArray[] = text.split("\\r?\\n|,");
-		System.out.println(wordsArray);
-		for(int i = 0; i < wordsArray.length; i++) {
-			System.out.println(wordsArray[i]);
-		}
 		try {
 			music = Boolean.parseBoolean(wordsArray[1]);
 			sound = Boolean.parseBoolean(wordsArray[3]);

@@ -219,7 +219,7 @@ public class OptionScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/menu/menumusic.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/pause/chillstep.mp3"));
         music.setLooping(true);
         music.setVolume(app.music_volume);
         music.play();
