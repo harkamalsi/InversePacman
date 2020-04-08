@@ -34,10 +34,16 @@ public class InversePacman extends Game {
 	// Texture for testing (Use AssetsManager later an remove this)
 	public Texture img;
 
+
+	public float stored_music_volume;
+	public float stored_sound_volume;
 	// Music volume for our game. When setting music volume use this variable
 	public float music_volume;
 	// Sound volume for our game. When setting sound volume use this variable
 	public float sound_volume;
+
+	public boolean music;
+	public boolean sound;
 
 
 	// Creates The managers,
@@ -45,9 +51,31 @@ public class InversePacman extends Game {
 	public void create () {
         FileHandle settings = Gdx.files.local("settings.txt");
 		String text = settings.readString();
-		String wordsArray[] = text.split("\\r?\\n");
-		music_volume = Float.parseFloat(wordsArray[0]);
-		sound_volume = Float.parseFloat(wordsArray[1]);
+		String wordsArray[] = text.split("\\r?\\n|,");
+		System.out.println(wordsArray);
+		for(int i = 0; i < wordsArray.length; i++) {
+			System.out.println(wordsArray[i]);
+		}
+		try {
+			music = Boolean.parseBoolean(wordsArray[1]);
+			sound = Boolean.parseBoolean(wordsArray[3]);
+			stored_music_volume = Float.parseFloat(wordsArray[0]);
+			stored_sound_volume = Float.parseFloat(wordsArray[2]);
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			settings.writeString(0.5 + "," + true + "\n", false);
+			settings.writeString(0.5 + "," + true, true);
+			music = true;
+			sound = true;
+			stored_music_volume = (float)0.5;
+			stored_sound_volume = (float)0.5;
+		}
+		if(music) {
+			music_volume = stored_music_volume;
+		}
+		if(sound) {
+			sound_volume = stored_sound_volume;
+		}
 
 		batch = new SpriteBatch();
 		shapeBatch = new ShapeRenderer();

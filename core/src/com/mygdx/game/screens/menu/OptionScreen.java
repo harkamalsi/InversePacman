@@ -42,16 +42,16 @@ public class OptionScreen extends AbstractScreen {
     private RenderingSystem renderingSystem;
 
     private TextureRegion back;
-    private TextureRegion volume;
-    private TextureRegion sounds;
+    private TextureRegion volume_mute;
+    private TextureRegion sound_mute;
     private TextureRegion increase;
     private TextureRegion decrease;
     private TextureRegion bg;
     private TextureRegion settings;
 
     private Entity backButton;
-    private Entity volumeButton;
-    private Entity soundButton;
+    private Entity volume_muteButton;
+    private Entity sound_muteButton;
 
     private Entity increaseVolumButton;
     private Entity decreaseVolumButton;
@@ -61,8 +61,8 @@ public class OptionScreen extends AbstractScreen {
 
 
     private Sprite backSprite;
-    private Sprite volumeSprite;
-    private Sprite soundSprite;
+    private Sprite volume_muteSprite;
+    private Sprite sound_muteSprite;
 
     private Sprite increaseVolumSprite;
     private Sprite decreaseVolumSprite;
@@ -85,6 +85,8 @@ public class OptionScreen extends AbstractScreen {
         settings = new TextureRegion(new Texture("optionscreen/options_button.png"));
         increase = new TextureRegion(new Texture("optionscreen/plus.png"));
         decrease = new TextureRegion(new Texture("optionscreen/minus.png"));
+        volume_mute = new TextureRegion(new Texture("optionscreen/music.png"));
+        sound_mute = new TextureRegion(new Texture("optionscreen/sound.png"));
         font = new BitmapFont();
         df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
@@ -98,8 +100,8 @@ public class OptionScreen extends AbstractScreen {
 
             // saves the volume and sound levels to the settings file
             FileHandle settings = Gdx.files.local("settings.txt");
-            settings.writeString(app.music_volume + "\n", false);
-            settings.writeString(String.valueOf(app.sound_volume), true);
+            settings.writeString(app.stored_music_volume + "\n", false);
+            settings.writeString(String.valueOf(app.stored_sound_volume), true);
             music.dispose();
         }
         if(backButton.flags == 1) {
@@ -107,59 +109,105 @@ public class OptionScreen extends AbstractScreen {
 
             // saves the volume and sound levels to the settings file
             FileHandle settings = Gdx.files.local("settings.txt");
-            settings.writeString(app.music_volume + "\n", false);
-            settings.writeString(String.valueOf(app.sound_volume), true);
+            settings.writeString(app.stored_music_volume + "," + app.music + "\n", false);
+            settings.writeString(app.stored_sound_volume + "," + app.sound, true);
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
         // increases the volume by 10% each time the volume button increase is pressed
-        if(increaseVolumButton.flags == 1 && app.music_volume < 1) {
-            app.music_volume += (float)0.1;
-            music.setVolume(app.music_volume);
+        if(increaseVolumButton.flags == 1 && app.stored_music_volume < 1) {
+            app.stored_music_volume += (float)0.1;
+            music.setVolume(app.stored_music_volume);
             increaseVolumButton.flags = 0;
-            if(app.music_volume > 1) {
-                app.music_volume = 1;
+            if(app.stored_music_volume > 1) {
+                app.stored_music_volume = 1;
             }
+            app.music_volume = app.stored_music_volume;
             System.out.println(music.getVolume());
+            app.music = true;
         }
         else {
             increaseVolumButton.flags = 0;
         }
         // decreases the volume by 10% each time the volume button decrease is pressed
-        if(decreaseVolumButton.flags == 1 && app.music_volume > 0) {
-            app.music_volume -= (float)0.1;
-            music.setVolume(app.music_volume);
+        if(decreaseVolumButton.flags == 1 && app.stored_music_volume > 0) {
+            app.stored_music_volume -= (float)0.1;
+            music.setVolume(app.stored_music_volume);
             decreaseVolumButton.flags = 0;
-            if(app.music_volume < 0) {
-                app.music_volume = 0;
+            if(app.stored_music_volume < 0) {
+                app.stored_music_volume = 0;
             }
+            app.music_volume = app.stored_music_volume;
             System.out.println(music.getVolume());
+            app.music = true;
 
         }
         else {
             decreaseVolumButton.flags = 0;
         }
         // increases the sound by 10% each time the sound button increase is pressed
-        if(increaseSoundButton.flags == 1 && app.sound_volume < 1) {
-            app.sound_volume += (float)0.1;
+        if(increaseSoundButton.flags == 1 && app.stored_sound_volume < 1) {
+            app.stored_sound_volume += (float)0.1;
             increaseSoundButton.flags = 0;
-            if(app.sound_volume > 1) {
-                app.sound_volume = 1;
+            if(app.stored_sound_volume > 1) {
+                app.stored_sound_volume = 1;
             }
+            app.sound_volume = app.stored_sound_volume;
+            app.sound = true;
         }
         else {
             increaseSoundButton.flags = 0;
         }
         // decreases the sound by 10% each time the sound button decrease is pressed
-        if(decreaseSoundButton.flags == 1 && app.sound_volume > 0) {
-            app.sound_volume -= (float)0.1;
+        if(decreaseSoundButton.flags == 1 && app.stored_sound_volume > 0) {
+            app.stored_sound_volume -= (float)0.1;
             decreaseSoundButton.flags = 0;
-            if(app.sound_volume < 0) {
-                app.sound_volume = 0;
+            if(app.stored_sound_volume < 0) {
+                app.stored_sound_volume = 0;
             }
+            app.sound_volume = app.stored_sound_volume;
+            app.sound = true;
         }
         else {
             decreaseSoundButton.flags = 0;
         }
+
+        if(volume_muteButton.flags == 1) {
+            if(app.music) {
+                app.music = false;
+                FileHandle settings = Gdx.files.local("settings.txt");
+                settings.writeString(app.stored_music_volume + "," + app.music + "\n", false);
+                settings.writeString(app.stored_sound_volume + "," + app.sound, true);
+                app.music_volume = 0;
+            }
+            else if(!app.music) {
+                app.music = true;
+                app.music_volume = app.stored_music_volume;
+                FileHandle settings = Gdx.files.local("settings.txt");
+                settings.writeString(app.stored_music_volume + "," + app.music + "\n", false);
+                settings.writeString(app.stored_sound_volume + "," + app.sound, true);
+            }
+            volume_muteButton.flags = 0;
+            music.setVolume(app.music_volume);
+        }
+
+        if(sound_muteButton.flags == 1) {
+            if(app.sound) {
+                app.sound = false;
+                FileHandle settings = Gdx.files.local("settings.txt");
+                settings.writeString(app.stored_music_volume + "," + app.music + "\n", false);
+                settings.writeString(app.stored_sound_volume + "," + app.sound, true);
+                app.sound_volume = 0;
+            }
+            else if(!app.sound) {
+                app.sound = true;
+                app.sound_volume = app.stored_sound_volume;
+                FileHandle settings = Gdx.files.local("settings.txt");
+                settings.writeString(app.stored_music_volume + "," + app.music + "\n", false);
+                settings.writeString(app.stored_sound_volume + "," + app.sound, true);
+            }
+            sound_muteButton.flags = 0;
+        }
+
     }
 
     @Override
@@ -249,6 +297,38 @@ public class OptionScreen extends AbstractScreen {
 
 
 
+        // ***** Mute music button START *****
+
+        volume_muteSprite = new Sprite(volume_mute);
+        volume_muteSprite.setBounds(Gdx.graphics.getWidth() / 2 + (volume_muteSprite.getRegionWidth() / 2) * 6, Gdx.graphics.getHeight() / (float)1.8, volume_muteSprite.getRegionWidth(), volume_muteSprite.getRegionHeight());
+
+        volume_muteButton = new Entity();
+
+        volume_muteButton.add(new TextureComponent(volume_muteSprite))
+                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 + (volume_muteSprite.getRegionWidth() / 2) * 6, Gdx.graphics.getHeight() / (float)1.8, volume_muteSprite.getRegionWidth(), volume_muteSprite.getRegionHeight()))
+                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 + (volume_muteSprite.getRegionWidth() / 2) * 6, Gdx.graphics.getHeight() / (float)1.8));
+        engine.addEntity(volume_muteButton);
+
+        // ***** Mute music button END *****
+
+
+
+        // ***** Mute sound button START *****
+
+        sound_muteSprite = new Sprite(sound_mute);
+        sound_muteSprite.setBounds(Gdx.graphics.getWidth() / 2 + (sound_muteSprite.getRegionWidth() / 2) * 6, Gdx.graphics.getHeight() / (float)3, sound_muteSprite.getRegionWidth(), sound_muteSprite.getRegionHeight());
+
+        sound_muteButton = new Entity();
+
+        sound_muteButton.add(new TextureComponent(sound_muteSprite))
+                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 + (sound_muteSprite.getRegionWidth() / 2) * 6, Gdx.graphics.getHeight() / (float)3, sound_muteSprite.getRegionWidth(), sound_muteSprite.getRegionHeight()))
+                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 + (sound_muteSprite.getRegionWidth() / 2) * 6, Gdx.graphics.getHeight() / (float)3));
+        engine.addEntity(sound_muteButton);
+
+        // ***** Mute sound button END *****
+
+
+
 
 
 
@@ -289,6 +369,8 @@ public class OptionScreen extends AbstractScreen {
         font.draw(batch, "sound: " + df.format(app.sound_volume * 100) + "%", 0,Gdx.graphics.getHeight() / (float)3 + decreaseVolumSprite.getRegionHeight() / 2);
         increaseSoundSprite.draw(batch);
         decreaseSoundSprite.draw(batch);
+        volume_muteSprite.draw(batch);
+        sound_muteSprite.draw(batch);
         backSprite.draw(batch);
         batch.end();
     }
