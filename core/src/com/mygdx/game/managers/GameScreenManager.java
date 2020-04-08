@@ -1,5 +1,6 @@
 package com.mygdx.game.managers;
 
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.screens.leaderboard.MultiplayerBoardScreen;
@@ -12,12 +13,14 @@ import com.mygdx.game.screens.play.LobbyScreen;
 import com.mygdx.game.screens.play.PauseScreen;
 import com.mygdx.game.screens.play.PlayScreen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameScreenManager {
 
     public final InversePacman app;
     private HashMap<STATE, AbstractScreen> gameScreens;
+    private Array<STATE> prevScreens;
     public enum STATE {
         PLAY,
         PAUSE,
@@ -33,9 +36,13 @@ public class GameScreenManager {
 
     public GameScreenManager(final InversePacman app) {
         this.app = app;
+        prevScreens = new Array<>();
 
         initGameScreens();
         setScreen(STATE.MAIN_MENU_SCREEN);
+
+
+        //System.out.println(prevScreens);
     }
 
     private void initGameScreens() {
@@ -52,10 +59,33 @@ public class GameScreenManager {
     }
 
     public void setScreen(STATE nextScreen) {
+        //System.out.println("prevscreens" + prevScreens);
+        this.prevScreens.add(nextScreen);
         app.setScreen(gameScreens.get(nextScreen));
+        //System.out.println("prevscreens" + prevScreens);
         currentState = nextScreen;
         System.out.println(nextScreen);
     }
+
+   /* public void pushScreen(STATE pushedScreen) {
+        this.prevScreens.add(pushedScreen);
+        gameScreens.get(currentState).pause();
+        app.setScreen(gameScreens.get(pushedScreen));
+        currentState = pushedScreen;
+    }
+
+
+    public void popScreen() {
+        STATE prevScreen = getprevScreen();
+        gameScreens.get(prevScreen).resume();
+        app.setScreen(gameScreens.get(prevScreen));
+        currentState = prevScreen;
+    }
+
+    private STATE getprevScreen() {
+        prevScreens.pop();
+        return prevScreens.peek();
+    }*/
     public void dispose() {
         for (AbstractScreen screen : gameScreens.values()) {
             if (screen != null) {

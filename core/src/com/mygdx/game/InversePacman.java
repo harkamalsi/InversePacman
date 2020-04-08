@@ -15,6 +15,8 @@ public class InversePacman extends Game {
 
 	// App Variables
 	public static final String APP_TITLE = "InversePacman v0.1";
+	public static final int APP_WIDTH_MOBILE = 1080;
+	public static final int APP_HEIGHT_MOBILE = 1800;
 	public static final int APP_WIDTH = 1200;
 	public static final int APP_HEIGHT = 2220;
 	public static final int APP_FPS = 60;
@@ -46,16 +48,24 @@ public class InversePacman extends Game {
 	public boolean sound;
 
 
+
+	public float a;
+
+	public float scale;
+	private boolean change = false;
+	public float b = (float)(Math.PI / 2);
+	private boolean bright = false;
+
 	// Creates The managers,
 	@Override
 	public void create () {
+		if(!Gdx.files.local("settings.txt").exists()){
+			FileHandle put = Gdx.files.internal("settings.txt");
+			put.copyTo(Gdx.files.local("."));
+		}
         FileHandle settings = Gdx.files.local("settings.txt");
 		String text = settings.readString();
 		String wordsArray[] = text.split("\\r?\\n|,");
-		System.out.println(wordsArray);
-		for(int i = 0; i < wordsArray.length; i++) {
-			System.out.println(wordsArray[i]);
-		}
 		try {
 			music = Boolean.parseBoolean(wordsArray[1]);
 			sound = Boolean.parseBoolean(wordsArray[3]);
@@ -86,6 +96,7 @@ public class InversePacman extends Game {
 
 		//Picture
 		img = new Texture("Test1.png");
+		//System.out.println(scaleX + " " + scaleY);
 	}
 
 	@Override
@@ -97,13 +108,16 @@ public class InversePacman extends Game {
 			Gdx.app.exit();
 		}
 
-		else if (Gdx.input.isKeyPressed(Input.Keys.P)) {
+		/*else if (Gdx.input.isKeyPressed(Input.Keys.P) && gsm.currentState == GameScreenManager.STATE.MAIN_MENU_SCREEN) {
+			System.out.println("PAUSING!");
 			gsm.setScreen(GameScreenManager.STATE.PAUSE);
 		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.R) && gsm.currentState == GameScreenManager.STATE.PAUSE) {
+		else if (Gdx.input.isKeyJustPressed(Input.Keys.R) && gsm.currentState == GameScreenManager.STATE.PAUSE) {
+			System.out.println("UNPAUSING!");
+			//gsm.popScreen();
 			gsm.setScreen(GameScreenManager.STATE.PLAY);
 			//gsm.popScreen();
-		}
+		}*/
 		else if (Gdx.input.isKeyPressed(Input.Keys.S) && gsm.currentState == GameScreenManager.STATE.PLAY) {
 			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_BOARD_SCREEN);
 		}
@@ -115,4 +129,35 @@ public class InversePacman extends Game {
 		shapeBatch.dispose();
 		assets.dispose();
 	}
+
+	// used to change the opacity of textures
+	public void step() {
+		if (!bright) {
+			a += 0.01f; // 0.01f is your time step - "how fast change"
+			if (a >= 1.0f) {
+				bright = true;
+			}
+		} else if (bright) {
+			a -= 0.01f;
+			if (a <= 0.0f) {
+				bright = false;
+			}
+		}
+	}
+
+	public void step_scale() {
+	    if(change) {
+            b -= 0.01f;
+            if(b <= 0.25f){
+                change = false;
+            }
+        }
+	    else if(b <= Math.PI) {
+	        b += 0.01f;
+	        if(b >= (float)(Math.PI / 2 - 0.25)){
+	            change = true;
+            }
+        }
+	}
+
 }
