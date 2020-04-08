@@ -81,11 +81,13 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         }
         if(multiplayerButton.flags == 1) {
             music.dispose();
-            app.gsm.setScreen(GameScreenManager.STATE.MULTI_PLAYER_BOARD_SCREEN);
+            app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
+        // Not sure if we are going to have a intermediary screen where you chose singleplayerleaderboard
+        // or multiplayerboard, or have them grouped in one screen
         if(highscoreButton.flags == 1) {
             music.dispose();
-            app.gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_BOARD_SCREEN);
+            app.gsm.setScreen(GameScreenManager.STATE.MULTI_PLAYER_BOARD_SCREEN);
         }
         if(optionButton.flags == 1) {
             music.dispose();
