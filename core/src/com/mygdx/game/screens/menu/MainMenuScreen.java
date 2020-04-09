@@ -64,6 +64,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         super(app);
         bg = new TextureRegion(new Texture("menuscreen/menuscreen_bg.png"));
         play = new TextureRegion(new Texture("menuscreen/play_button.png"));
+        //play = new TextureRegion(new Texture("menuscreen/play_button_but_bigger.png"));
         multiplay = new TextureRegion(new Texture("menuscreen/multiplayer_button.png"));
         highscore = new TextureRegion(new Texture("menuscreen/highscore_button.png"));
         option = new TextureRegion(new Texture("menuscreen/options_button.png"));
