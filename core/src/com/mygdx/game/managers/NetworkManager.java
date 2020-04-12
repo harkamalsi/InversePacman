@@ -29,7 +29,7 @@ public class NetworkManager {
 
     public NetworkManager() {
         try {
-            socket = IO.socket(Constants.BASE_URL);
+            socket = IO.socket(Constants.HOST);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -55,12 +55,12 @@ public class NetworkManager {
          float direction = Math.random() * 2 * Math.PI;
         */
 
-        getSocket().emit(Constants.INPUT, args);
+        getSocket().emit(Constants.INPUT, getSocket().id(), args);
     }
 
     public void receiveUpdate() {
 
-        socket.on(Constants.GAME_UPDATE, new Emitter.Listener() {
+        getSocket().on(Constants.GAME_UPDATE, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject response = (JSONObject)args[0];
@@ -68,73 +68,43 @@ public class NetworkManager {
         });
     }
 
-    public void getPlayerFromNickname(String nickname) {
-        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
-        request.setUrl(Constants.BASE_URL + Constants.API_PLAYERS + Constants.NICKNAME + nickname);
-        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+    public void getPlayerWithNickname(String nickname) {
+        getSocket().emit(Constants.GET_PLAYER_WITH_NICKNAME, getSocket().id(), nickname);
+    }
+
+    public void changeNickname(String playerID, String nickname) {
+        getSocket().emit(Constants.UPDATE_PLAYER, playerID, nickname);
+    }
+
+    public void  getSkinType(String nickname) {
+        getSocket().emit(Constants.GET_PLAYER_WITH_NICKNAME, getSocket().id(), nickname);
+
+        getSocket().on(Constants.GET_PLAYER_WITH_NICKNAME, new Emitter.Listener() {
             @Override
-            public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                if (httpResponse.getStatus().getStatusCode() == HttpStatus.SC_OK) {
-                    String data = httpResponse.getResultAsString();
-
-                    // TODO: Somehow return data
-                }
-            }
-
-            @Override
-            public void failed(Throwable t) {
-
-            }
-
-            @Override
-            public void cancelled() {
-
+            public void call(Object... args) {
+                JSONObject response = (JSONObject)args[0];
+                int skinType = response.getInt("skinType");
+                // return skinType;
             }
         });
     }
 
-    public void changeNickname(String id, String nickname) {
-        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.POST);
-        request.setUrl(Constants.BASE_URL + Constants.API_PLAYERS + Constants.UPDATE_PLAYER);
-
-        // TODO: Somehow add id and nickname to body
-
-        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
-            @Override
-            public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                if (httpResponse.getStatus().getStatusCode() == HttpStatus.SC_OK) {
-                    String data = httpResponse.getResultAsString();
-
-                    // TODO: Somehow return data
-                }
-            }
-
-            @Override
-            public void failed(Throwable t) {
-
-            }
-
-            @Override
-            public void cancelled() {
-
-            }
-        });
-    }
-
-    public void getSkinType(String nickname) {
-        // TODO: call getPlayerWithNickname() or getPlayerDatabaseInformation() and then return skin type
-    }
-
-    public void changeSkinType(String nickname) {
+    public void changeSkinType(String playerID, String nickname, JSONObject playerUpdate) {
         // TODO: update player
+        getSocket().emit(Constants.UPDATE_PLAYER, playerID, nickname, playerUpdate);
     }
 
-    public void getPlayerType() {
-        // TODO: use socket to get player type or database if it is saved in database
-    }
+    public void getPlayerType(String nickname) {
+        getSocket().emit(Constants.GET_PLAYER_WITH_NICKNAME, getSocket().id(), nickname);
 
-    public void getPlayerDatabaseInformation(@Nullable String id, String nickname) {
-        // TODO: call api
+        getSocket().on(Constants.GET_PLAYER_WITH_NICKNAME, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject response = (JSONObject)args[0];
+                int skinType = response.getInt("skinType");
+                // return skinType;
+            }
+        });
     }
 
 }
