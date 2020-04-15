@@ -248,7 +248,6 @@ public class OptionScreen extends AbstractScreen {
 
     @Override
     public void show() {
-
         this.camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

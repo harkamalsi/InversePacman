@@ -85,6 +85,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
     public MainMenuScreen(final InversePacman app) {
         super(app);
+
         bg = new TextureRegion(new Texture("menuscreen/menu_bg.png"));
         play = new TextureRegion(new Texture("menuscreen/play.png"));
         //play = new TextureRegion(new Texture("menuscreen/play_button_but_bigger.png"));
