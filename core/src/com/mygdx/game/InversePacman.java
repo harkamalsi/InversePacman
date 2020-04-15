@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.managers.SaveManager;
 
 public class InversePacman extends Game {
 
@@ -26,6 +27,7 @@ public class InversePacman extends Game {
 	// Managers
 	public GameScreenManager gsm;
 	public AssetManager assets;
+	public SaveManager saveManager;
 
 	// Batches
 	public SpriteBatch batch;
@@ -83,6 +85,7 @@ public class InversePacman extends Game {
 		//Setup managers
 		assets = new AssetManager();
 		gsm = new GameScreenManager(this);
+		saveManager = new SaveManager(false);
 
 		//Picture
 		img = new Texture("Test1.png");
@@ -105,7 +108,7 @@ public class InversePacman extends Game {
 			//gsm.popScreen();
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.S) && gsm.currentState == GameScreenManager.STATE.PLAY) {
-			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_BOARD_SCREEN);
+			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
 		}
 	}
 

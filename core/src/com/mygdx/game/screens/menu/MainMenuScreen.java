@@ -84,11 +84,11 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
             music.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
-        // Not sure if we are going to have a intermediary screen where you chose singleplayerleaderboard
-        // or multiplayerboard, or have them grouped in one screen
+
         if(highscoreButton.flags == 1) {
-            music.dispose();
-            app.gsm.setScreen(GameScreenManager.STATE.MULTI_PLAYER_BOARD_SCREEN);
+            // I think it's okay if we keep ths music going here?
+            //music.dispose();
+            app.gsm.setScreen(GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN);
         }
         if(optionButton.flags == 1) {
             music.dispose();
