@@ -12,11 +12,14 @@ public class Constants {
     public static final String GAME_OVER_PACMAN = "pacman_lost";
     public static final String GAME_OVER_GHOSTS = "ghosts_lost";
 
+    public static final String DATABASE_UPDATE = "database_update";
     public static final String GET_ALL_PLAYERS = "get_all_players";
     public static final String ADD_PLAYER = "add_player";
     public static final String UPDATE_PLAYER = "update_player";
     public static final String GET_PLAYER_WITH_NICKNAME = "get_player_with_nickname";
     public static final String GET_PLAYER_WITH_ID = "get_player_with_id";
+    public static final String CHANGE_NICKNAME = "change_nickname";
+    public static final String CHANGE_SKINTYPE = "change_skin_type";
 
     public static final String PLAYERS_API = "/api/players";
     public static final String ADD_PLAYER_API = "/add";

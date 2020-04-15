@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.managers.NetworkManager;
+import com.mygdx.game.shared.Constants;
+
+import java.util.Arrays;
 
 public class InversePacman extends Game {
 
@@ -49,6 +53,18 @@ public class InversePacman extends Game {
 	// Creates The managers,
 	@Override
 	public void create () {
+		NetworkManager nm = new NetworkManager();
+		//nm.joinLobby("lobby0","foker", "pacman");
+		//nm.addPlayer("foker");
+		//nm.getPlayerWithNickname("foker");
+		//nm.getPlayerWithID("5e974d393e2369898849a59");
+		//nm.changeNickname("5e974d393e2369898849a590", "pepsi");
+		nm.changeSkinType("5e976bcdae78bbff0ac11b6d", 1);
+
+		// System.out.println(nm.getSocket());
+		// System.out.println(nm.getSocketID());
+
+
 		if(!Gdx.files.local("settings.txt").exists()){
 			FileHandle put = Gdx.files.internal("settings.txt");
 			put.copyTo(Gdx.files.local("."));
