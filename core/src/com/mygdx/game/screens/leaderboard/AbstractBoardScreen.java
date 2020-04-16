@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.screens.AbstractScreen;
@@ -91,7 +92,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         font.draw(batch, players.get(2).score, viewport.getWorldWidth() - 260f, 214f);
     }
 
-    public class PlayerScore {
+    public class PlayerScore implements Json.Serializable {
         private String name;
         private String score;
 
@@ -114,6 +115,17 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
         public void setScore(String score) {
             this.score = score;
+        }
+
+        @Override
+        public void write(Json json) {
+            json.writeValue(this.name, this.score);
+        }
+
+        @Override
+        public void read(Json json, JsonValue jsonData) {
+                name = jsonData.child().name();
+                score = jsonData.child().asString();
         }
     }
 
