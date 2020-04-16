@@ -66,6 +66,10 @@ public class OptionScreen extends AbstractScreen {
     private Entity increaseSoundButton;
     private Entity decreaseSoundButton;
 
+    private Entity bgEntity;
+    private Entity ellipseEntity;
+    private Entity front_ellipseEntity;
+
 
     private Sprite backSprite;
     private Sprite volume_muteSprite;
@@ -78,6 +82,8 @@ public class OptionScreen extends AbstractScreen {
     private Sprite decreaseSoundSprite;
 
     private Sprite ellipseSprite;
+    private Sprite bgSprite;
+    private Sprite front_ellipseSprite;
 
     private Music music;
 
@@ -265,18 +271,42 @@ public class OptionScreen extends AbstractScreen {
         engine = new Engine();
         engine.addSystem(buttonSystem);
         engine.addSystem(musicSystem);
+        engine.addSystem(renderingSystem);
+
+
+        bgSprite = new Sprite(bg);
+
+        bgEntity = new Entity();
+
+        //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
+        bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() +2, Gdx.graphics.getHeight() +2,false,false))
+                .add(new TransformComponent(0,0));
+        engine.addEntity(bgEntity);
+
 
         ellipseSprite = new Sprite(ellipse);
-        ellipseSprite.setBounds(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY)), ellipse.getRegionWidth() * (scaleX), ellipse.getRegionHeight() * (scaleY));
+        //ellipseSprite.setBounds(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY)), ellipse.getRegionWidth() * (scaleX), ellipse.getRegionHeight() * (scaleY));
+
+        ellipseEntity = new Entity();
+        ellipseEntity.add(new TextureComponent(ellipseSprite, Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY)), ellipse.getRegionWidth() * (scaleX), ellipse.getRegionHeight() * (scaleY), true, true))
+                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))));
+        engine.addEntity(ellipseEntity);
+
+        front_ellipseSprite = new Sprite(front_ellipse);
+
+        front_ellipseEntity = new Entity();
+        front_ellipseEntity.add(new TextureComponent(front_ellipseSprite, Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false))
+                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17));
+        engine.addEntity(front_ellipseEntity);
 
         // ***** Increase music button START *****
 
         increaseVolumSprite = new Sprite(increase_music);
-        increaseVolumSprite.setBounds(Gdx.graphics.getWidth() / (float)1.175 - (increaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (increaseVolumSprite.getRegionHeight() / 2 * scaleY), increaseVolumSprite.getRegionWidth() * scaleX, increaseVolumSprite.getRegionHeight() * scaleY);
+        //increaseVolumSprite.setBounds(Gdx.graphics.getWidth() / (float)1.175 - (increaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (increaseVolumSprite.getRegionHeight() / 2 * scaleY), increaseVolumSprite.getRegionWidth() * scaleX, increaseVolumSprite.getRegionHeight() * scaleY);
 
         increaseVolumButton = new Entity();
 
-        increaseVolumButton.add(new TextureComponent(increaseVolumSprite))
+        increaseVolumButton.add(new TextureComponent(increaseVolumSprite, Gdx.graphics.getWidth() / (float)1.175 - (increaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (increaseVolumSprite.getRegionHeight() / 2 * scaleY), increaseVolumSprite.getRegionWidth() * scaleX, increaseVolumSprite.getRegionHeight() * scaleY, false, false))
                 .add(new ButtonComponent(Gdx.graphics.getWidth() / (float)1.175 - (increaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (increaseVolumSprite.getRegionHeight() / 2 * scaleY), increaseVolumSprite.getRegionWidth() * scaleX,  increaseVolumSprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent(Gdx.graphics.getWidth() / (float)1.175 - (increaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (increaseVolumSprite.getRegionHeight() / 2* scaleY)));
         engine.addEntity(increaseVolumButton);
@@ -286,11 +316,11 @@ public class OptionScreen extends AbstractScreen {
         // ***** Decrease music button START *****
 
         decreaseVolumSprite = new Sprite(decrease_music);
-        decreaseVolumSprite.setBounds(Gdx.graphics.getWidth() / (float)1.5 - (decreaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (decreaseVolumSprite.getRegionHeight() / 2 * scaleY), decreaseVolumSprite.getRegionWidth() * scaleX, decreaseVolumSprite.getRegionHeight() * scaleY);
+        //decreaseVolumSprite.setBounds(Gdx.graphics.getWidth() / (float)1.5 - (decreaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (decreaseVolumSprite.getRegionHeight() / 2 * scaleY), decreaseVolumSprite.getRegionWidth() * scaleX, decreaseVolumSprite.getRegionHeight() * scaleY);
 
         decreaseVolumButton = new Entity();
 
-        decreaseVolumButton.add(new TextureComponent(decreaseVolumSprite))
+        decreaseVolumButton.add(new TextureComponent(decreaseVolumSprite, Gdx.graphics.getWidth() / (float)1.5 - (decreaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (decreaseVolumSprite.getRegionHeight() / 2 * scaleY), decreaseVolumSprite.getRegionWidth() * scaleX, decreaseVolumSprite.getRegionHeight() * scaleY, false, false))
                 .add(new ButtonComponent(Gdx.graphics.getWidth() / (float)1.5 - (decreaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (decreaseVolumSprite.getRegionHeight() / 2 * scaleY), decreaseVolumSprite.getRegionWidth() * scaleX,  decreaseVolumSprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent(Gdx.graphics.getWidth() / (float)1.5 - (decreaseVolumSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - decreaseVolumSprite.getRegionHeight() / 2 * scaleY));
         engine.addEntity(decreaseVolumButton);
@@ -301,11 +331,11 @@ public class OptionScreen extends AbstractScreen {
         // ***** Increase sound button START *****
 
         increaseSoundSprite = new Sprite(increase_sound);
-        increaseSoundSprite.setBounds(Gdx.graphics.getWidth() / (float)1.175 - (increaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (increaseSoundSprite.getRegionHeight() / 2 * scaleY), increaseSoundSprite.getRegionWidth() * scaleX, increaseSoundSprite.getRegionHeight() * scaleY);
+        //increaseSoundSprite.setBounds(Gdx.graphics.getWidth() / (float)1.175 - (increaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (increaseSoundSprite.getRegionHeight() / 2 * scaleY), increaseSoundSprite.getRegionWidth() * scaleX, increaseSoundSprite.getRegionHeight() * scaleY);
 
         increaseSoundButton = new Entity();
 
-        increaseSoundButton.add(new TextureComponent(increaseSoundSprite))
+        increaseSoundButton.add(new TextureComponent(increaseSoundSprite, Gdx.graphics.getWidth() / (float)1.175 - (increaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (increaseSoundSprite.getRegionHeight() / 2 * scaleY), increaseSoundSprite.getRegionWidth() * scaleX, increaseSoundSprite.getRegionHeight() * scaleY, false, false))
                 .add(new ButtonComponent(Gdx.graphics.getWidth() / (float)1.175 - (increaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (increaseSoundSprite.getRegionHeight() / 2 * scaleY), increaseSoundSprite.getRegionWidth() * scaleX,  increaseSoundSprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent(Gdx.graphics.getWidth() / (float)1.175 - (increaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (increaseSoundSprite.getRegionHeight() / 2 * scaleY)));
         engine.addEntity(increaseSoundButton);
@@ -315,11 +345,11 @@ public class OptionScreen extends AbstractScreen {
         // ***** Decrease sound button START *****
 
         decreaseSoundSprite = new Sprite(decrease_sound);
-        decreaseSoundSprite.setBounds(Gdx.graphics.getWidth() / (float)1.5 - (decreaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (decreaseSoundSprite.getRegionHeight() / 2 * scaleY), decreaseSoundSprite.getRegionWidth() * scaleX, decreaseSoundSprite.getRegionHeight() * scaleY);
+        //decreaseSoundSprite.setBounds(Gdx.graphics.getWidth() / (float)1.5 - (decreaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (decreaseSoundSprite.getRegionHeight() / 2 * scaleY), decreaseSoundSprite.getRegionWidth() * scaleX, decreaseSoundSprite.getRegionHeight() * scaleY);
 
         decreaseSoundButton = new Entity();
 
-        decreaseSoundButton.add(new TextureComponent(decreaseSoundSprite))
+        decreaseSoundButton.add(new TextureComponent(decreaseSoundSprite, Gdx.graphics.getWidth() / (float)1.5 - (decreaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (decreaseSoundSprite.getRegionHeight() / 2 * scaleY), decreaseSoundSprite.getRegionWidth() * scaleX, decreaseSoundSprite.getRegionHeight() * scaleY, false, false))
                 .add(new ButtonComponent(Gdx.graphics.getWidth() / (float)1.5 - (decreaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (decreaseSoundSprite.getRegionHeight() / 2 * scaleY), decreaseSoundSprite.getRegionWidth() * scaleX, decreaseSoundSprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent(Gdx.graphics.getWidth() / (float)1.5 - (decreaseSoundSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (decreaseSoundSprite.getRegionHeight() / 2 * scaleY)));
         engine.addEntity(decreaseSoundButton);
@@ -331,11 +361,11 @@ public class OptionScreen extends AbstractScreen {
         // ***** Mute music button START *****
 
         volume_muteSprite = new Sprite(volume_mute);
-        volume_muteSprite.setBounds(Gdx.graphics.getWidth() / (float)3 - (volume_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (volume_muteSprite.getRegionHeight() / 2 * scaleY), volume_muteSprite.getRegionWidth() * scaleX, volume_muteSprite.getRegionHeight() * scaleY);
+        //volume_muteSprite.setBounds(Gdx.graphics.getWidth() / (float)3 - (volume_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (volume_muteSprite.getRegionHeight() / 2 * scaleY), volume_muteSprite.getRegionWidth() * scaleX, volume_muteSprite.getRegionHeight() * scaleY);
 
         volume_muteButton = new Entity();
 
-        volume_muteButton.add(new TextureComponent(volume_muteSprite))
+        volume_muteButton.add(new TextureComponent(volume_muteSprite, Gdx.graphics.getWidth() / (float)3 - (volume_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (volume_muteSprite.getRegionHeight() / 2 * scaleY), volume_muteSprite.getRegionWidth() * scaleX, volume_muteSprite.getRegionHeight() * scaleY, false, false))
                 .add(new ButtonComponent(Gdx.graphics.getWidth() / (float)3 - (volume_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (volume_muteSprite.getRegionHeight() / 2 * scaleY), volume_muteSprite.getRegionWidth() * scaleX, volume_muteSprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent(Gdx.graphics.getWidth() / (float)3 - (volume_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.95 - (volume_muteSprite.getRegionHeight() / 2 * scaleY)));
         engine.addEntity(volume_muteButton);
@@ -347,11 +377,11 @@ public class OptionScreen extends AbstractScreen {
         // ***** Mute sound button START *****
 
         sound_muteSprite = new Sprite(sound_mute);
-        sound_muteSprite.setBounds(Gdx.graphics.getWidth() / (float)3 - (sound_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (sound_muteSprite.getRegionHeight() / 2 * scaleY), sound_muteSprite.getRegionWidth() * scaleX, sound_muteSprite.getRegionHeight() * scaleY);
+        //sound_muteSprite.setBounds(Gdx.graphics.getWidth() / (float)3 - (sound_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (sound_muteSprite.getRegionHeight() / 2 * scaleY), sound_muteSprite.getRegionWidth() * scaleX, sound_muteSprite.getRegionHeight() * scaleY);
 
         sound_muteButton = new Entity();
 
-        sound_muteButton.add(new TextureComponent(sound_muteSprite))
+        sound_muteButton.add(new TextureComponent(sound_muteSprite, Gdx.graphics.getWidth() / (float)3 - (sound_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (sound_muteSprite.getRegionHeight() / 2 * scaleY), sound_muteSprite.getRegionWidth() * scaleX, sound_muteSprite.getRegionHeight() * scaleY, false, false))
                 .add(new ButtonComponent(Gdx.graphics.getWidth() / (float)3 - (sound_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (sound_muteSprite.getRegionHeight() / 2 * scaleY), sound_muteSprite.getRegionWidth() * scaleX, sound_muteSprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent(Gdx.graphics.getWidth() / (float)3 - (sound_muteSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)4.55 - (sound_muteSprite.getRegionHeight() / 2 * scaleY)));
         engine.addEntity(sound_muteButton);
@@ -366,11 +396,11 @@ public class OptionScreen extends AbstractScreen {
         // ***** Back button START *****
 
         backSprite = new Sprite(back);
-        backSprite.setBounds(0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight());
+        //backSprite.setBounds(0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight());
 
         backButton = new Entity();
 
-        backButton.add(new TextureComponent(backSprite))
+        backButton.add(new TextureComponent(backSprite, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), false, false))
                 .add(new ButtonComponent(0, 0, backSprite.getRegionWidth(),  backSprite.getRegionHeight()))
                 .add(new TransformComponent(0, 0));
         engine.addEntity(backButton);
@@ -384,7 +414,7 @@ public class OptionScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
         engine.update(delta);
-        batch.setProjectionMatrix(camera.combined);
+        /*batch.setProjectionMatrix(camera.combined);
 
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.1f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -424,11 +454,23 @@ public class OptionScreen extends AbstractScreen {
         sound_muteSprite.draw(batch);
         backSprite.draw(batch);
 
+        batch.end();*/
+        batch.begin();
+        font.setUseIntegerPositions(false);
+        font.getData().setScale(scaleX / 32f, scaleY / 32f);
+        layout.setText(font,"Options");
+        //font.setColor(0,78, 59,a);
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+
+        layout.setText(font, "music");
+        font.draw(batch,layout, Gdx.graphics.getWidth() / (2 *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.625f * 32f) + layout.height / 2);
+        layout.setText(font, df.format(app.music_volume * 100) + "%");
+        font.draw(batch,layout, Gdx.graphics.getWidth() / (6 * 32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.90f * 32f));
+        layout.setText(font, "sound");
+        font.draw(batch, layout, Gdx.graphics.getWidth() / (2 * 32f) - layout.width / 2,Gdx.graphics.getHeight() / (2.95f * 32f));
+        layout.setText(font, df.format(app.sound_volume * 100) + "%");
+        font.draw(batch, layout,Gdx.graphics.getWidth() / (6 * 32f) - layout.width / 2,Gdx.graphics.getHeight() / (4.2f * 32f));
         batch.end();
-
-
-
-
     }
 
         @Override

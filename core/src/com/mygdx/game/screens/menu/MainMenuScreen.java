@@ -203,7 +203,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
 
 
-        font.draw(batch,"menu", (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
         batch.end();
 
 
