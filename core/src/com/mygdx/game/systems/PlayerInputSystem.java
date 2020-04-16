@@ -67,7 +67,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
             x = 0f;
             y = -Y_VELOCITY;
-
+          
             sc.setState(2);
         }
 

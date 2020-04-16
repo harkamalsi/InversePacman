@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -13,6 +14,7 @@ import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
 
 public class RenderingSystem extends IteratingSystem {
     //pixels per meter
@@ -32,6 +34,12 @@ public class RenderingSystem extends IteratingSystem {
     private Array<Entity> renderQueue;
     private Comparator<Entity> comparator;
     private OrthographicCamera cam;
+    private boolean set = false;
+    private TextureComponent tex;
+    private TransformComponent t;
+
+    private boolean bright = false;
+    public float a;
 
     //component mappers
     private ComponentMapper<TextureComponent> textureM;
@@ -59,34 +67,82 @@ public class RenderingSystem extends IteratingSystem {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-
-//        renderQueue.sort(comparator);
+        step();
+        //System.out.println(a);
+        //System.out.println(renderQueue);
+        //renderQueue.sort(comparator);
+      
         cam.update();
         batch.setProjectionMatrix(cam.combined);
         batch.enableBlending();
         batch.begin();
 
-        for (Entity entity : renderQueue) {
-            TextureComponent tex = textureM.get(entity);
-            TransformComponent t = transformM.get(entity);
 
-            if (tex.region == null) {
+        for (Entity entity : renderQueue) {
+            tex = textureM.get(entity);
+            t = transformM.get(entity);
+
+            if (tex.region == null && tex.sprite == null) {
+                System.out.println("nothing");
                 continue;
             }
 
 
-            float width = tex.region.getRegionWidth();
-            float height = tex.region.getRegionHeight();
-            float originX = width/2f;
-            float originY = height/2f;
+            if(!(tex.region == null)) {
+                float width = tex.region.getRegionWidth();
+                float height = tex.region.getRegionHeight();
 
+                float originX = width/2f;
+                float originY = height/2f;
+                batch.draw(tex.region,
+                        t.position.x - originX, t.position.y - originY,
+                        originX, originY,
+                        width, height,
+                        PixelsToMeters(t.scale.x), PixelsToMeters(t.scale.y),
+                        t.rotation);
+            }
+            if(!(tex.sprite == null)) {
+                float width = tex.sprite.getRegionWidth();
+                float height = tex.sprite.getRegionHeight();
+                //System.out.println("widht " + tex.sprite.getRegionWidth());
+                float originX = width/2f;
+                float originY = height/2f;
+                if(tex.bounds) {
+                    tex.sprite.setBounds(tex.sprite.getX() / PPM, tex.sprite.getY() / PPM, tex.sprite.getWidth() / PPM, tex.sprite.getHeight() / PPM);
+                    tex.bounds = false;
+                }
+                if(tex.change) {
+                    tex.sprite.setColor(tex.sprite.getColor().r,tex.sprite.getColor().g, tex.sprite.getColor().b,a);
+                    tex.sprite.draw(batch);
+                }
+                if(!tex.change) {
+                    batch.draw(tex.sprite, tex.sprite.getX() / PPM, tex.sprite.getY() / PPM, tex.sprite.getWidth() / PPM, tex.sprite.getHeight() / PPM);
+                }
+                //tex.sprite.setBounds(0,0, tex.sprite.getRegionWidth() / 5, tex.sprite.getRegionHeight() / 5);
+                //tex.sprite.setScale(PixelsToMeters(t.scale.x), PixelsToMeters(t.scale.y));
+                //tex.sprite.setScale(tex.sprite.getScaleX()/PPM, tex.sprite.getScaleY()/PPM);
 
-            batch.draw(tex.region,
-                    t.position.x - originX, t.position.y - originY,
-                    originX, originY,
-                    width, height,
-                    PixelsToMeters(t.scale.x), PixelsToMeters(t.scale.y),
-                    t.rotation);
+                //tex.sprite.setBounds(tex.sprite.getX() / PPM, tex.sprite.getY() / PPM, tex.sprite.getWidth() / PPM, tex.sprite.getHeight() / PPM);
+                //tex.sprite.draw(batch);
+
+                /*int timeToWait = 10; //second
+                System.out.print("Scanning");
+                try {
+                    for (int i=0; i<timeToWait ; i++) {
+                        Thread.sleep(1000);
+                        System.out.print(".");
+                    }
+                } catch (InterruptedException ie)
+                {
+                    Thread.currentThread().interrupt();
+                }*/
+                //System.out.println("screen width: " + Gdx.graphics.getWidth() + " position x: " + tex.sprite.getX() + " widht " + tex.sprite.getRegionWidth());
+                //System.out.println("screen height: " + Gdx.graphics.getHeight() + " position y : " + tex.sprite.getY() + " Height  " + tex.sprite.getRegionHeight());
+
+                //System.out.println(tex.sprite.toString() + "X: " + tex.sprite.getX() + "Y: " + tex.sprite.getY() + " width " + tex.sprite.getWidth() + " height " + tex.sprite.getHeight());
+
+            }
+
         }
 
         batch.end();
@@ -100,5 +156,19 @@ public class RenderingSystem extends IteratingSystem {
 
     public OrthographicCamera getCamera() {
         return cam;
+    }
+
+    public void step() {
+        if (!bright) {
+            a += 0.01f; // 0.01f is your time step - "how fast change"
+            if (a >= 1.0f) {
+                bright = true;
+            }
+        } else if (bright) {
+            a -= 0.01f;
+            if (a <= 0.0f) {
+                bright = false;
+            }
+        }
     }
 }

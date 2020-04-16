@@ -3,6 +3,9 @@ package com.mygdx.game.screens.play;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,14 +22,18 @@ import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
+import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.AnimationSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
+import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PlayerInputSystem;
 import com.mygdx.game.systems.RenderingSystem;
 import com.mygdx.game.systems.StateSystem;
-
+import com.badlogic.gdx.files.FileHandle;
+import java.util.ArrayList;
+import java.util.Random;
 
 public final class PlayScreen extends AbstractScreen {
 
@@ -43,33 +50,55 @@ public final class PlayScreen extends AbstractScreen {
 
     private Engine engine;
 
+    private boolean pause = false;
+    private boolean resume = false;
+
     private CollisionSystem collisionSystem;
     private MovementSystem movementSystem;
     private PlayerInputSystem playerInputSystem;
     private RenderingSystem renderingSystem;
     private StateSystem stateSystem;
     private AnimationSystem animationSystem;
-
+    private MusicSystem musicSystem;
 
     public BitmapFont font = new BitmapFont(); //or use alex answer to use custom font
 
     public PlayScreen(final InversePacman app) {
         super(app);
-
         // Sets the camera; width and height.
-//        this.camera = new OrthographicCamera();
-//        this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
+        // this.camera = new OrthographicCamera();
+        // this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
+    }
 
+    public void handleInput(){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
+            //Important to call both if you want to remove the music from the previous screen
+            musicSystem.dispose();
+            engine.removeSystem(musicSystem);
 
+            app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            pause = true;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            pause = false;
+        }
     }
 
     @Override
     public void update(float delta) {
-
+        handleInput();
+        // Chooses the next song to play if the song has finished
+        // Had to add the second condition since it chose to play a new song as I switched screens
     }
+
 
     @Override
     public void show() {
+
+
+        // To add a new songs, place the file under the folder assets/music/play
 
         batch = new SpriteBatch();
         playerInputSystem = new PlayerInputSystem();
@@ -78,6 +107,7 @@ public final class PlayScreen extends AbstractScreen {
         renderingSystem = new RenderingSystem(batch);
         stateSystem = new StateSystem();
         animationSystem = new AnimationSystem();
+        musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
 
         engine = new Engine();
         engine.addSystem(playerInputSystem);
@@ -86,6 +116,7 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(renderingSystem);
         engine.addSystem(stateSystem);
         engine.addSystem(animationSystem);
+        engine.addSystem(musicSystem);
 
 
         //splitting up the different frames in the ghost sheet and adding them to an animation
@@ -124,10 +155,7 @@ public final class PlayScreen extends AbstractScreen {
                 .add(new CollisionComponent());
         engine.addEntity(ghost);
 
-
-
     }
-
 
     // Render the PlayScreen, for now only a picture with green background. This method i
     // needed in every screen but can be changed to show different data.
@@ -139,8 +167,20 @@ public final class PlayScreen extends AbstractScreen {
         app.batch.begin();
         app.batch.draw(app.img, 0, 0);
         app.batch.end();
-        engine.update(delta);
 
+        // when paused engine stops updating, and textures "disappear"
+        if(!pause) {
+            if(resume) {
+                musicSystem.resume();
+                resume = false;
+            }
+            engine.update(delta);
+
+        }
+        if(pause && !resume){
+            musicSystem.pause();
+            resume = true;
+        }
     }
 
     @Override
@@ -156,5 +196,10 @@ public final class PlayScreen extends AbstractScreen {
     @Override
     public void hide() {
 
+    }
+
+
+    @Override
+    public void dispose(){
     }
 }

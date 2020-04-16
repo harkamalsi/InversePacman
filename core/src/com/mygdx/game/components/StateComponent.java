@@ -28,12 +28,6 @@ public class StateComponent implements Component {
         invincibleTimer = 0;
     }
 
-    public void setState(int newState){
-        currentState = newState;
-//        stateTime = 0.0f;
-
-    }
-
     public int getState(){
         return currentState;
     }
@@ -41,4 +35,25 @@ public class StateComponent implements Component {
     public float getStateTime() {
         return stateTime;
     }
+
+    public StateComponent() {
+        this(0);
+    }
+
+    public void increaseStateTime(float delta) {
+        stateTime += delta;
+    }
+
+    public void resetStateTime() {
+        stateTime = 0;
+    }
+
+    public void setState(int newState) {
+        if (currentState == newState) {
+            return;
+        }
+        currentState = newState;
+        //stateTime = 0;
+    }
+
 }
