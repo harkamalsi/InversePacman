@@ -19,6 +19,7 @@ public class StateSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
+        //used to switch between each texture frame in animations
         stateM.get(entity).stateTime += deltaTime;
 
     }

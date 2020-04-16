@@ -87,10 +87,10 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(stateSystem);
         engine.addSystem(animationSystem);
 
+
+        //splitting up the different frames in the ghost sheet and adding them to an animation
         ghostsheet = new Texture("ghosts.png");
-
         TextureRegion[][] temp = TextureRegion.split(ghostsheet,ghostsheet.getWidth()/10, ghostsheet.getHeight());
-
         TextureRegion[] walkFrames = new TextureRegion[10];
 
         for (int i = 0; i < 10; i++) {
@@ -98,34 +98,31 @@ public final class PlayScreen extends AbstractScreen {
         }
 
         Animation walkAnimation = new Animation<>(0.5f,walkFrames);
-
+        //adding animation to each direction state and idle
         AnimationComponent animcomponent = new AnimationComponent(0,walkAnimation);
         animcomponent.animations.put(0,walkAnimation);
         animcomponent.animations.put(1,walkAnimation);
         animcomponent.animations.put(2,walkAnimation);
         animcomponent.animations.put(3,walkAnimation);
         animcomponent.animations.put(4,walkAnimation);
-        pacman = new Entity();
-        pacman.add(new VelocityComponent())
-//                .add(new TextureComponent(new TextureRegion(pacmansprite)))
+//        pacman = new Entity();
+//        pacman.add(new VelocityComponent())
+////                .add(new TextureComponent(new TextureRegion(pacmansprite)))
+//                .add(new TextureComponent())
+//                .add(animcomponent)
+//                .add(new StateComponent(0))
+//                .add(new TransformComponent(20,20))
+//                .add(new CollisionComponent());
+//        engine.addEntity(pacman);
+
+        ghost = new Entity();
+        ghost.add(new VelocityComponent())
                 .add(new TextureComponent())
                 .add(animcomponent)
                 .add(new StateComponent(0))
                 .add(new TransformComponent(20,20))
                 .add(new CollisionComponent());
-
-
-        engine.addEntity(pacman);
-
-//        ghost = new Entity();
-//        ghost.add(new VelocityComponent())
-////                .add(new TextureComponent(new TextureRegion(pacmansprite)))
-//                .add(new TextureComponent())
-//                .add(animcomponent)
-//                .add(new StateComponent(0))
-//                .add(new TransformComponent(0,0))
-//                .add(new CollisionComponent());
-//        engine.addEntity(ghost);
+        engine.addEntity(ghost);
 
 
 

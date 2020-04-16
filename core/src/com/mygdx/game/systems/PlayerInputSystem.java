@@ -61,14 +61,13 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             x = 0f;
             y = Y_VELOCITY;
 
-//            System.out.println("Up");
             sc.setState(1);
         }
 
         if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
             x = 0f;
             y = -Y_VELOCITY;
-//            System.out.println("Down");
+
             sc.setState(2);
         }
 
@@ -76,9 +75,10 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){
             x = -X_VELOCITY;
             y = 0f;
-//            System.out.println("Left");
 
             sc.setState(3);
+
+            //flips texture
             if (texc.region.isFlipX()){
                 texc.region.flip(true,false);
             }
@@ -87,9 +87,10 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
             x = X_VELOCITY;
             y = 0f;
-//            System.out.println("Right");
 
             sc.setState(4);
+
+            //flips texture
             if (!texc.region.isFlipX()){
                 texc.region.flip(true,false);
             }

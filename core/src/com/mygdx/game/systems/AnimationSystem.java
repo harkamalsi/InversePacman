@@ -31,6 +31,7 @@ public class AnimationSystem extends IteratingSystem {
         StateComponent state = stateM.get(entity);
         animation = anim.animations.get(state.getState());
 
+        //switches texture frame in the animation dictated by the state time.
         if (animation != null){
             tex.region = animation.getKeyFrame((state.stateTime));
         }
