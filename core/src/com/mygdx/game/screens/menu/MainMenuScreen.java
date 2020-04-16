@@ -17,7 +17,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.CollisionComponent;
@@ -38,10 +45,13 @@ public class MainMenuScreen extends AbstractScreen {
     private OrthographicCamera camera;
     private FitViewport viewport;
 
+
     private EntityManager entityManager;
 
     private SpriteBatch batch;
     private SpriteBatch bgBatch;
+
+    private Stage stage;
 
     private Engine engine;
     private Vector3 clickPosition;
@@ -78,7 +88,11 @@ public class MainMenuScreen extends AbstractScreen {
     private Sprite bgSprite;
 
 
-
+    private Skin skin;
+    private Label nameLabel;
+    private TextField nameText;
+    private Label addressLabel;
+    private TextField addressText;
     private float scaleX;
     private float scaleY;
 
@@ -92,6 +106,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
     public MainMenuScreen(final InversePacman app) {
         super(app);
+        stage = new Stage(new ScreenViewport());
 
         bg = new TextureRegion(new Texture("menuscreen/menu_bg.png"));
         play = new TextureRegion(new Texture("menuscreen/play.png"));
@@ -194,7 +209,10 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
         batch.end();*/
         engine.update(delta);
+        stage.act();
+        stage.draw();
         batch.begin();
+
         font.setUseIntegerPositions(false);
         font.getData().setScale(scaleX / 32f, scaleY / 32f);
         layout.setText(font,"MENU");
@@ -323,6 +341,35 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         // ***** Option button END *****
 
         //entityManager = new EntityManager(engine, app.batch);
+        Container<Table> tableContainer = new Container<Table>();
+        float sw = Gdx.graphics.getWidth();
+        float sh = Gdx.graphics.getHeight();
+        float cw = sw * 0.7f;
+        float ch = sh * 0.5f;
+
+        tableContainer.setSize(cw, ch);
+        tableContainer.setPosition((sw - cw) / 2.0f, (sh - ch) / 2.0f);
+        tableContainer.fillX();
+
+
+
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        nameLabel = new Label("Name:", skin);
+        nameText = new TextField("", skin);
+        addressLabel = new Label("Address:", skin);
+        addressText = new TextField("", skin);
+        Table table = new Table();
+        tableContainer.setActor(table);
+        stage.addActor(tableContainer);
+        Gdx.input.setInputProcessor(stage);
+
+        table.add(nameLabel);
+        table.add(nameText).width(100);
+        table.row();
+        table.add(addressLabel);
+        table.add(addressText).width(100);
+        table.setDebug(true);
+
     }
 
     @Override

@@ -99,7 +99,7 @@ public class LobbyScreen extends AbstractScreen {
     public void render(float delta){
         super.render(delta);
         engine.update(delta);
-        batch.begin();
+        /*batch.begin();
         font.setUseIntegerPositions(false);
         font.getData().setScale(scaleX / 32f, scaleY / 32f);
         layout.setText(font,"MENU");
@@ -107,7 +107,7 @@ public class LobbyScreen extends AbstractScreen {
         font.draw(batch,"menu", (Gdx.graphics.getWidth() / 64f - layout.width / 2f),
                 (Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
 
-        batch.end();
+        batch.end();*/
     }
 
     @Override
@@ -148,7 +148,7 @@ public class LobbyScreen extends AbstractScreen {
 
         tbEntity.add(new TableComponent());
 
-        engine.addEntity(bgEntity);
+        //engine.addEntity(bgEntity);
         engine.addEntity(tbEntity);
     }
 
