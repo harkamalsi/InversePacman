@@ -15,6 +15,7 @@ public class TableComponent implements Component {
     private Skin skin;
     private Table table;
     private Stage stage;
+    public boolean draw;
 
     public TableComponent() {
         stage = new Stage(new ScreenViewport());
@@ -23,6 +24,7 @@ public class TableComponent implements Component {
         float sh = Gdx.graphics.getHeight();
         float cw = sw * 0.7f;
         float ch = sh * 0.5f;
+        this.draw = true;
 
 
         tableContainer.setSize(cw, ch);

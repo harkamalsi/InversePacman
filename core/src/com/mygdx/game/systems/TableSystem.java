@@ -19,6 +19,7 @@ public class TableSystem extends IteratingSystem {
     private TableComponent cc;
     private ComponentMapper<TableComponent> tableM;
     private ComponentMapper<TransformComponent> tc;
+    private int i = 0;
 
 
     @SuppressWarnings("unchecked")
@@ -31,7 +32,7 @@ public class TableSystem extends IteratingSystem {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        cc.draw();
+
         System.out.println(cc.getRow().toString());
         System.out.println(cc.toString());
 
@@ -42,8 +43,11 @@ public class TableSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         //ButtonComponent click = cc.get(entity);
          cc = tableM.get(entity);
-
-        cc.addRow("Name: ", "Foker");
+        if(cc.draw) {
+            cc.addRow("Name: ", "Foker");
+            cc.draw = false;
+        }
+        cc.draw();
         // TransformComponent transform = tc.get(entity);
 
         /*//update click bounds
