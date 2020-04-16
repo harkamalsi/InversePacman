@@ -79,7 +79,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             sc.setState(3);
 
             //flips texture
-            if (texc.region.isFlipX()){
+            if (texc.region != null && texc.region.isFlipX()){
                 texc.region.flip(true,false);
             }
         }
@@ -91,7 +91,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             sc.setState(4);
 
             //flips texture
-            if (!texc.region.isFlipX()){
+            if (texc.region != null && !texc.region.isFlipX()){
                 texc.region.flip(true,false);
             }
         }
