@@ -3,18 +3,40 @@ package com.mygdx.game.components;
 import com.badlogic.ashley.core.Component;
 
 public class StateComponent implements Component {
-    public static final int STATE_STOPPED = 0;
-    public static final int STATE_MOVING = 1;
-    public static final int STATE_HIT = 2;
+    private float stateTime;
+    private int state;
 
-    private int state = 0;
-
-    public void set(int newState){
-        state = newState;
+    public StateComponent() {
+        this(0);
     }
 
-    public int get(){
+    public StateComponent(int state) {
+        this.state = state;
+        stateTime = 0;
+    }
+
+    public void increaseStateTime(float delta) {
+        stateTime += delta;
+    }
+
+    public float getStateTime() {
+        return stateTime;
+    }
+
+    public void resetStateTime() {
+        stateTime = 0;
+    }
+
+    public int getState() {
         return state;
+    }
+
+    public void setState(int newState) {
+        if (state == newState) {
+            return;
+        }
+        state = newState;
+        stateTime = 0;
     }
 
 }
