@@ -60,7 +60,7 @@ public class RenderingSystem extends IteratingSystem {
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        renderQueue.sort(comparator);
+//        renderQueue.sort(comparator);
         cam.update();
         batch.setProjectionMatrix(cam.combined);
         batch.enableBlending();
@@ -77,9 +77,9 @@ public class RenderingSystem extends IteratingSystem {
 
             float width = tex.region.getRegionWidth();
             float height = tex.region.getRegionHeight();
-
             float originX = width/2f;
             float originY = height/2f;
+
 
             batch.draw(tex.region,
                     t.position.x - originX, t.position.y - originY,
