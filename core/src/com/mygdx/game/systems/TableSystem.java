@@ -21,9 +21,15 @@ public class TableSystem extends IteratingSystem {
 
     @SuppressWarnings("unchecked")
     public TableSystem() {
-        super(Family.all(TableComponent.class,TransformComponent.class).get());
+        super(Family.all(TableComponent.class).get());
         cc = ComponentMapper.getFor(TableComponent.class);
-        tc = ComponentMapper.getFor(TransformComponent.class);
+        //tc = ComponentMapper.getFor(TransformComponent.class);
+    }
+
+    @Override
+    public void update(float deltaTime) {
+        super.update(deltaTime);
+
     }
 
     @Override
