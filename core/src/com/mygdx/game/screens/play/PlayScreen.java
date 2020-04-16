@@ -9,12 +9,15 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
 import com.mygdx.game.components.PlayerComponent;
+import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
@@ -27,8 +30,8 @@ import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PlayerInputSystem;
 import com.mygdx.game.systems.RenderingSystem;
+import com.mygdx.game.systems.StateSystem;
 import com.badlogic.gdx.files.FileHandle;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -40,8 +43,10 @@ public final class PlayScreen extends AbstractScreen {
     private EntityManager entityManager;
 
     private Texture pacmansprite;
+    private Texture ghostsheet;
 
     private Entity pacman;
+    private Entity ghost;
 
     private Engine engine;
 
@@ -52,6 +57,8 @@ public final class PlayScreen extends AbstractScreen {
     private MovementSystem movementSystem;
     private PlayerInputSystem playerInputSystem;
     private RenderingSystem renderingSystem;
+    private StateSystem stateSystem;
+    private AnimationSystem animationSystem;
     private MusicSystem musicSystem;
 
     public BitmapFont font = new BitmapFont(); //or use alex answer to use custom font
@@ -98,6 +105,8 @@ public final class PlayScreen extends AbstractScreen {
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();
         renderingSystem = new RenderingSystem(batch);
+        stateSystem = new StateSystem();
+        animationSystem = new AnimationSystem();
         musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
 
         engine = new Engine();
@@ -105,16 +114,46 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(movementSystem);
         engine.addSystem(collisionSystem);
         engine.addSystem(renderingSystem);
+        engine.addSystem(stateSystem);
+        engine.addSystem(animationSystem);
         engine.addSystem(musicSystem);
-        pacmansprite = new Texture("ghosts.png");
-        pacman = new Entity();
-        pacman.add(new VelocityComponent())
-                .add(new TextureComponent(new TextureRegion(pacmansprite)))
+
+
+        //splitting up the different frames in the ghost sheet and adding them to an animation
+        ghostsheet = new Texture("ghosts.png");
+        TextureRegion[][] temp = TextureRegion.split(ghostsheet,ghostsheet.getWidth()/10, ghostsheet.getHeight());
+        TextureRegion[] walkFrames = new TextureRegion[10];
+
+        for (int i = 0; i < 10; i++) {
+                walkFrames[i] = temp[0][i];
+        }
+
+        Animation walkAnimation = new Animation<>(0.5f,walkFrames);
+        //adding animation to each direction state and idle
+        AnimationComponent animcomponent = new AnimationComponent(0,walkAnimation);
+        animcomponent.animations.put(0,walkAnimation);
+        animcomponent.animations.put(1,walkAnimation);
+        animcomponent.animations.put(2,walkAnimation);
+        animcomponent.animations.put(3,walkAnimation);
+        animcomponent.animations.put(4,walkAnimation);
+//        pacman = new Entity();
+//        pacman.add(new VelocityComponent())
+////                .add(new TextureComponent(new TextureRegion(pacmansprite)))
+//                .add(new TextureComponent())
+//                .add(animcomponent)
+//                .add(new StateComponent(0))
+//                .add(new TransformComponent(20,20))
+//                .add(new CollisionComponent());
+//        engine.addEntity(pacman);
+
+        ghost = new Entity();
+        ghost.add(new VelocityComponent())
+                .add(new TextureComponent())
+                .add(animcomponent)
+                .add(new StateComponent(0))
                 .add(new TransformComponent(20,20))
-                .add(new VelocityComponent())
-                .add(new CollisionComponent())
-                .add(new PlayerComponent());
-        engine.addEntity(pacman);
+                .add(new CollisionComponent());
+        engine.addEntity(ghost);
 
     }
 
@@ -123,7 +162,7 @@ public final class PlayScreen extends AbstractScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        Gdx.gl.glClearColor(0, 1, 0, 0);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         app.batch.begin();
         app.batch.draw(app.img, 0, 0);

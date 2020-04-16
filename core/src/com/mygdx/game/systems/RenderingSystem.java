@@ -71,6 +71,7 @@ public class RenderingSystem extends IteratingSystem {
         //System.out.println(a);
         //System.out.println(renderQueue);
         //renderQueue.sort(comparator);
+      
         cam.update();
         batch.setProjectionMatrix(cam.combined);
         batch.enableBlending();
@@ -85,8 +86,6 @@ public class RenderingSystem extends IteratingSystem {
                 System.out.println("nothing");
                 continue;
             }
-
-
 
 
             if(!(tex.region == null)) {
