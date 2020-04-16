@@ -53,13 +53,14 @@ public class InversePacman extends Game {
 	// Creates The managers,
 	@Override
 	public void create () {
-		NetworkManager nm = new NetworkManager();
+		//NetworkManager nm = new NetworkManager();
 		//nm.joinLobby("lobby0","foker", "pacman");
-		//nm.addPlayer("foker");
+		//nm.createLobby("foker", "pacman");
+		//nm.addPlayer("pepsi");
 		//nm.getPlayerWithNickname("foker");
 		//nm.getPlayerWithID("5e974d393e2369898849a59");
 		//nm.changeNickname("5e974d393e2369898849a590", "pepsi");
-		nm.changeSkinType("5e976bcdae78bbff0ac11b6d", 1);
+		//nm.changeSkinType("5e976bcdae78bbff0ac11b6d", 1);
 
 		// System.out.println(nm.getSocket());
 		// System.out.println(nm.getSocketID());

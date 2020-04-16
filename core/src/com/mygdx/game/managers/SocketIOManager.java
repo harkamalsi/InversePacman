@@ -10,6 +10,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 
+
 public class SocketIOManager {
     private static final String TAG = SocketIOManager.class.getSimpleName();
 
@@ -99,6 +100,6 @@ public class SocketIOManager {
     }
 
     private void printToTerminal(String tag, String msg) {
-        System.out.println("" + tag + "" + msg);
+        System.out.println("SocketIO/" + tag + "" + msg);
     }
 }

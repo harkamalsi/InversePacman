@@ -1,15 +1,9 @@
 package com.mygdx.game.managers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.net.HttpStatus;
 import com.mygdx.game.shared.Constants;
 
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
-
-import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
@@ -35,7 +29,7 @@ public class NetworkManager {
         return socket;
     }
 
-    public void createLobby(Object... args) {
+    public void createLobby(Object ...args) {
         // args: getNickname(), getPlayerType()
         System.out.println("Create Lobby is called!");
 
@@ -44,13 +38,13 @@ public class NetworkManager {
         inputs.put("type", args[1]);
 
         getSocket().on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
             @Override
             public void call(Object... args) {
                 socketID = getSocket().connect().id();
                 getSocket().emit(Constants.CREATE_LOBBY, socketID, inputs);
             }
         });
-
 
     }
 
@@ -73,7 +67,7 @@ public class NetworkManager {
 
     }
 
-    public void sendInput(Object... args) {
+    public void sendInput(Object ...args) {
         /*
          args: lobbyName, direction
          float direction = Math.random() * 2 * Math.PI;
