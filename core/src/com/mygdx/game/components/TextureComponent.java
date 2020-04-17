@@ -12,13 +12,21 @@ public class TextureComponent implements Component {
 
     public Sprite sprite;
 
+
+
     public TextureComponent(TextureRegion region){
         this.region = new TextureRegion(region);
     }
+
+    public TextureComponent(){
+        ;
+    }
+  
     public TextureComponent(Sprite sprite, float x, float y, float width, float height, boolean change, boolean bounds) {
         this.sprite = new Sprite(sprite);
         this.sprite.setBounds(x, y, width, height);
         this.change = change;
         this.bounds = bounds;
+
     }
 }
