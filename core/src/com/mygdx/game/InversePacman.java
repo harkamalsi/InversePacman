@@ -26,13 +26,13 @@ public class InversePacman extends Game {
 
 	// App Variables
 	public static final String APP_TITLE = "InversePacman v0.1";
-	public static final int APP_WIDTH = 1200;
-	public static final int APP_HEIGHT = 2220;
+	public static final int APP_WIDTH = 816;
+	public static final int APP_HEIGHT = 800;
 	public static final int APP_FPS = 60;
 
 	// Game Variables
-	public static final int V_WIDTH = 720;
-	public static final int V_HEIGHT = 420;
+	public static final int V_WIDTH = 816;
+	public static final int V_HEIGHT = 800;
 
 	// Managers
 	public GameScreenManager gsm;
