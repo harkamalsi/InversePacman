@@ -5,26 +5,38 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.worldbuilder.WorldBuilder;
 import com.mygdx.game.managers.SaveManager;
+
 
 public class InversePacman extends Game {
 
 
 	// App Variables
 	public static final String APP_TITLE = "InversePacman v0.1";
+	public static final int APP_WIDTH = 816;
+	public static final int APP_HEIGHT = 800;
 	public static final int APP_WIDTH_MOBILE = 1080;
 	public static final int APP_HEIGHT_MOBILE = 1800;
-	public static final int APP_WIDTH = 1200;
-	public static final int APP_HEIGHT = 2220;
 	public static final int APP_FPS = 60;
 
 	// Game Variables
-	public static final int V_WIDTH = 720;
-	public static final int V_HEIGHT = 420;
+	public static final int V_WIDTH = 816;
+	public static final int V_HEIGHT = 800;
 
 	// Managers
 	public GameScreenManager gsm;
@@ -37,6 +49,18 @@ public class InversePacman extends Game {
 
 	// Texture for testing (Use AssetsManager later an remove this)
 	public Texture img;
+
+	//World building
+	public World world;
+	public Body player;
+	public Box2DDebugRenderer b2dr;
+
+	//Box2d
+	public OrthogonalTiledMapRenderer tmr;
+	public TiledMap map;
+
+	//Camera
+	public OrthographicCamera camera;
 
 
 	public float stored_music_volume;
@@ -99,12 +123,33 @@ public class InversePacman extends Game {
 
 		//Picture
 		img = new Texture("Test1.png");
-		//System.out.println(scaleX + " " + scaleY);
+
+		// Camera
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false,V_WIDTH, V_HEIGHT);
+
+		//world
+		world = new World(new Vector2(0f, 0), false);
+		b2dr = new Box2DDebugRenderer();
+
+
+		//Tiled map creation and WorldBuilder call
+		map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
+		tmr = new OrthogonalTiledMapRenderer(map);
+		WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects(), map.getLayers().get("BackgroundLayer"));
+
+		//Player
+		player = createPlayer();
 	}
 
 	@Override
 	public void render() {
 		super.render();
+
+		//Disse tre er noe som også bør flyttes til playscreen eller inn i renedringklassen. Den siste er kun en debugger og ska skrus av når alt fungerer.
+		update(Gdx.graphics.getDeltaTime());
+		tmr.setView(camera);
+		b2dr.render(world, camera.combined.scl(1.0f));
 
 		// Changing the different screens based on the button pressed, should be changed to touch inputs from menu.
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
@@ -125,6 +170,59 @@ public class InversePacman extends Game {
 			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
 		}
 	}
+
+
+
+
+
+	//Flytt denne til nødvendig klasse
+	public Body createPlayer(){
+		Body pBody;
+		BodyDef def = new BodyDef();
+		def.type = BodyDef.BodyType.DynamicBody;
+		def.position.set(32,32);
+		def.fixedRotation = true;
+		pBody = world.createBody(def);
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(32/2,32/2);
+
+		pBody.createFixture(shape, 1.0f);
+		shape.dispose();
+		return pBody;
+	}
+
+	// Egenlaget update funksjon, kalles på i render. Bør kanskje fjernes og flyttes til playscreen?
+	public void update(float delta) {
+		world.step(1/60f,6,2);
+		inputUpdate(delta);
+	}
+
+	// Bør også fjernes og legges inn i enten playscreen?
+	// Får box2d player til å bevege seg.
+	public void inputUpdate(float delta){
+		int horizontalForce = 0;
+		int verticalForce = 0;
+
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+			horizontalForce -= 5;
+		}
+
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			horizontalForce += 5;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			verticalForce += 5;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			verticalForce -= 5;
+		}
+		player.setLinearVelocity(horizontalForce*50, player.getLinearVelocity().y);
+		player.setLinearVelocity(player.getLinearVelocity().x, verticalForce*50);
+
+
+	}
+
+
 
 	@Override
 	public void dispose() {

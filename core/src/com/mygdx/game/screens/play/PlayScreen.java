@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,7 +25,6 @@ import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
-import com.mygdx.game.systems.AnimationSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -164,9 +164,8 @@ public final class PlayScreen extends AbstractScreen {
         super.render(delta);
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        app.batch.begin();
-        app.batch.draw(app.img, 0, 0);
-        app.batch.end();
+        app.tmr.render();
+        engine.update(delta);
 
         // when paused engine stops updating, and textures "disappear"
         if(!pause) {
