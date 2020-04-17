@@ -7,6 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -27,21 +28,20 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private int locationStartTouchedX;
     private int locationStartTouchedY;
 
-    private int locationEndTouchedX = 0;
-    private int locationEndTouchedY = 0;
-
-
+    private ComponentMapper<PacmanComponent> pacmanM;
     private ComponentMapper<VelocityComponent> velocityM;
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<StateComponent> stateM;
     private ComponentMapper<TextureComponent> texM;
 
     public PlayerInputSystem(){
-        super(Family.all(VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
+        super(Family.all(PacmanComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
+        pacmanM = ComponentMapper.getFor(PacmanComponent.class);
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
+
 
         Gdx.input.setInputProcessor(this);
 
@@ -49,6 +49,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
+        PacmanComponent pc = pacmanM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
@@ -89,20 +90,19 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             y = 0f;
 
             sc.setState(4);
-            System.out.println("right move");
-
             //flips texture
             if (texc.region != null && !texc.region.isFlipX()){
                 texc.region.flip(true,false);
             }
         }
 
+        //sets velocity direction dictated by x and y
         vc.setVelocity(x,y);
         vc.setAcceleration(x,y);
 
 
     }
-
+    //function for deciding drag direction
     private void toggleDirection(int locationStartTouchedX, int locationStartTouchedY, int screenX, int screenY) {
 
         boolean yIsGreater = ((Math.abs(locationStartTouchedY - screenY)) - (Math.abs(locationStartTouchedX - screenX)) > 0);

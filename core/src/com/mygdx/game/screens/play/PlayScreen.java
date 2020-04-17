@@ -13,9 +13,12 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
+import com.mygdx.game.components.GhostComponent;
+import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
@@ -24,6 +27,7 @@ import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
+import com.mygdx.game.systems.AISystem;
 import com.mygdx.game.systems.AnimationSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
@@ -56,6 +60,7 @@ public final class PlayScreen extends AbstractScreen {
     private CollisionSystem collisionSystem;
     private MovementSystem movementSystem;
     private PlayerInputSystem playerInputSystem;
+    private AISystem aiSystem;
     private RenderingSystem renderingSystem;
     private StateSystem stateSystem;
     private AnimationSystem animationSystem;
@@ -102,6 +107,7 @@ public final class PlayScreen extends AbstractScreen {
 
         batch = new SpriteBatch();
         playerInputSystem = new PlayerInputSystem();
+        aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();
         renderingSystem = new RenderingSystem(batch);
@@ -111,6 +117,7 @@ public final class PlayScreen extends AbstractScreen {
 
         engine = new Engine();
         engine.addSystem(playerInputSystem);
+        engine.addSystem(aiSystem);
         engine.addSystem(movementSystem);
         engine.addSystem(collisionSystem);
         engine.addSystem(renderingSystem);
@@ -128,7 +135,7 @@ public final class PlayScreen extends AbstractScreen {
                 walkFrames[i] = temp[0][i];
         }
 
-        Animation walkAnimation = new Animation<>(0.5f,walkFrames);
+        Animation walkAnimation = new Animation<>(0.1f,walkFrames);
         //adding animation to each direction state and idle
         AnimationComponent animcomponent = new AnimationComponent(0,walkAnimation);
         animcomponent.animations.put(0,walkAnimation);
@@ -136,24 +143,29 @@ public final class PlayScreen extends AbstractScreen {
         animcomponent.animations.put(2,walkAnimation);
         animcomponent.animations.put(3,walkAnimation);
         animcomponent.animations.put(4,walkAnimation);
-//        pacman = new Entity();
-//        pacman.add(new VelocityComponent())
-////                .add(new TextureComponent(new TextureRegion(pacmansprite)))
-//                .add(new TextureComponent())
-//                .add(animcomponent)
-//                .add(new StateComponent(0))
-//                .add(new TransformComponent(20,20))
-//                .add(new CollisionComponent());
-//        engine.addEntity(pacman);
 
         ghost = new Entity();
         ghost.add(new VelocityComponent())
+                .add(new GhostComponent())
                 .add(new TextureComponent())
                 .add(animcomponent)
                 .add(new StateComponent(0))
                 .add(new TransformComponent(20,20))
                 .add(new CollisionComponent());
         engine.addEntity(ghost);
+
+
+        pacmansprite = new Texture("pacman.png");
+        Vector2 position = new Vector2(20,20);
+        Vector2 scale = new Vector2(0.15f,0.15f);
+        pacman = new Entity();
+        pacman.add(new VelocityComponent())
+                .add(new PacmanComponent())
+                .add(new TextureComponent(new TextureRegion(pacmansprite)))
+                .add(new StateComponent(0))
+                .add(new TransformComponent(position,scale,0f))
+                .add(new CollisionComponent());
+        engine.addEntity(pacman);
 
     }
 
