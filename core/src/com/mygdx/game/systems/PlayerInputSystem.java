@@ -89,6 +89,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             y = 0f;
 
             sc.setState(4);
+            System.out.println("right move");
 
             //flips texture
             if (texc.region != null && !texc.region.isFlipX()){
@@ -157,8 +158,10 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (isDragging){
+            toggleDirection(locationStartTouchedX,locationStartTouchedY,screenX,screenY);
+        }
         isDragging = false;
-        toggleDirection(locationStartTouchedX,locationStartTouchedY,screenX,screenY);
         return false;
     }
 
