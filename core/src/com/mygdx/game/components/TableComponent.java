@@ -16,22 +16,27 @@ public class TableComponent implements Component {
     private Table table;
     private Stage stage;
     public boolean draw;
+    public boolean getLobbies;
 
     public TableComponent() {
         stage = new Stage(new ScreenViewport());
         Container<Table> tableContainer = new Container<Table>();
         float sw = Gdx.graphics.getWidth();
         float sh = Gdx.graphics.getHeight();
-        float cw = sw * 0.7f;
+        float cw = sw * 1f;
         float ch = sh * 0.5f;
         this.draw = true;
+        this.getLobbies = true;
 
 
         tableContainer.setSize(cw, ch);
         tableContainer.setPosition((sw - cw) / 2.0f, (sh - ch) / 2.0f);
         tableContainer.fillX();
+
         skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin.getFont("default-font").getData().setScale(5f, 5f);
         table = new Table(skin);
+
         table.debugAll();
         tableContainer.setActor(table);
         stage.addActor(tableContainer);
@@ -39,11 +44,12 @@ public class TableComponent implements Component {
     }
 
     public void addRow(String nameLabel, String nameText) {
-        System.out.println("******************* TABLE COMPONENT CALLED");
-        Label nameLabel1 = new Label(nameLabel, skin);
-        TextField nameText1 = new TextField(nameText, skin);
-        table.add(nameLabel1).expandX();
-        table.add(nameText1).width(100);
+        Label lobbyName = new Label("Lobby1", skin);
+        Label lobbyPlayers = new Label("2/5", skin);
+
+        table.add(lobbyName).expand();
+        table.add(lobbyPlayers).expand();
+        table.row();
     }
 
     public Cell getRow(){

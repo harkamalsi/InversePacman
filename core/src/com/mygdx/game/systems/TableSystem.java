@@ -13,13 +13,16 @@ import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TransformComponent;
+import com.mygdx.game.managers.NetworkManager;
+
+import org.json.JSONObject;
 
 public class TableSystem extends IteratingSystem {
     private SpriteBatch batch;
     private TableComponent cc;
     private ComponentMapper<TableComponent> tableM;
     private ComponentMapper<TransformComponent> tc;
-    private int i = 0;
+    private NetworkManager nm;
 
 
     @SuppressWarnings("unchecked")
@@ -27,24 +30,35 @@ public class TableSystem extends IteratingSystem {
         super(Family.all(TableComponent.class).get());
         tableM = ComponentMapper.getFor(TableComponent.class);
         //tc = ComponentMapper.getFor(TransformComponent.class);
+        nm = new NetworkManager();
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+    }
 
-        System.out.println(cc.getRow().toString());
-        System.out.println(cc.toString());
-
-
+    public void getLobbies() {
+        if (cc.getLobbies) {
+            nm.getLobbies();
+            cc.getLobbies = false;
+        }
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         //ButtonComponent click = cc.get(entity);
-         cc = tableM.get(entity);
+        cc = tableM.get(entity);
+        getLobbies();
+
+        //JSONObject lobbies = nm.getLobbies();
+        //nm.createLobby("nickname", "playerType");
+        //nm.joinLobby("lobbyName", "nickname", "playerType");
+
         if(cc.draw) {
-            cc.addRow("Name: ", "Foker");
+            for (int i = 0; i < 5; i++) { //lobbies.length
+                cc.addRow("Lobby1", "2/5");
+            }
             cc.draw = false;
         }
         cc.draw();

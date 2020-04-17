@@ -11,8 +11,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -49,7 +52,8 @@ public class LobbyScreen extends AbstractScreen {
     private TextureRegion ellipse;
     private TextureRegion front_ellipse;
 
-    private Entity singleplayerButton;
+    private Entity joinLobbyButton;
+    private Entity createLobbyButton;
     private Entity multiplayerButton;
     private Entity highscoreButton;
     private Entity optionButton;
@@ -147,6 +151,20 @@ public class LobbyScreen extends AbstractScreen {
                 .add(new TransformComponent(0,0));
 
         tbEntity.add(new TableComponent());
+
+        playsprite = new Sprite(play);
+
+        joinLobbyButton = new Entity();
+        joinLobbyButton.add(new TextureComponent(playsprite, (Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 0.2f, Gdx.graphics.getHeight() / 5f, playsprite.getRegionWidth() * scaleX , playsprite.getRegionHeight() * scaleY, false, false))
+                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.80, playsprite.getRegionWidth() * scaleX , playsprite.getRegionHeight() * scaleY))
+                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.80));
+        engine.addEntity(joinLobbyButton);
+
+        createLobbyButton = new Entity();
+        createLobbyButton.add(new TextureComponent(playsprite, (Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 5f, playsprite.getRegionWidth() * scaleX, playsprite.getRegionHeight() * scaleY, false, false))
+                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)2.9, playsprite.getRegionWidth() * scaleX, playsprite.getRegionHeight() * scaleY))
+                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)2.9));
+        engine.addEntity(createLobbyButton);
 
         //engine.addEntity(bgEntity);
         engine.addEntity(tbEntity);

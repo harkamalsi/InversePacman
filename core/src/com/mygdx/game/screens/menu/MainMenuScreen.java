@@ -89,8 +89,8 @@ public class MainMenuScreen extends AbstractScreen {
 
 
     private Skin skin;
-    private Label nameLabel;
-    private TextField nameText;
+    private Label lobbyName;
+    private Label lobbyPlayers;
     private Label addressLabel;
     private TextField addressText;
     private float scaleX;
@@ -142,9 +142,9 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         if(multiplayerButton.flags == 1) {
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
-            NetworkManager nm = new NetworkManager();
+            //NetworkManager nm = new NetworkManager();
             //nm.joinLobby("lobby0","foker", "pacman");
-            nm.createLobby("foker", "pacman");
+            //nm.createLobby("foker", "pacman");
             app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
 
@@ -344,30 +344,32 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         Container<Table> tableContainer = new Container<Table>();
         float sw = Gdx.graphics.getWidth();
         float sh = Gdx.graphics.getHeight();
-        float cw = sw * 0.7f;
-        float ch = sh * 0.5f;
+        float cw = sw * 1f;
+        float ch = sh * 0.1f;
 
         tableContainer.setSize(cw, ch);
         tableContainer.setPosition((sw - cw) / 2.0f, (sh - ch) / 2.0f);
         tableContainer.fillX();
+        tableContainer.height(ch);
 
 
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        nameLabel = new Label("Name:", skin);
-        nameText = new TextField("", skin);
-        addressLabel = new Label("Address:", skin);
-        addressText = new TextField("", skin);
+        skin.getFont("default-font").getData().setScale(5f, 5f);
+        //BitmapFont skinFont = new BitmapFont(), Color.RED);
+        lobbyName = new Label("Lobby1", skin);
+        lobbyPlayers = new Label("2/5", skin);
+
         Table table = new Table();
+
+
         tableContainer.setActor(table);
         stage.addActor(tableContainer);
         Gdx.input.setInputProcessor(stage);
 
-        table.add(nameLabel);
-        table.add(nameText).width(100);
+        table.add(lobbyName).expand();
+        table.add(lobbyPlayers).expand();
         table.row();
-        table.add(addressLabel);
-        table.add(addressText).width(100);
         table.setDebug(true);
 
     }

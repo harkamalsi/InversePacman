@@ -23,7 +23,7 @@ public class SocketIOManager {
         if (mSocket==null){
             try {
                 mSocket = IO.socket(Constants.HOST);
-                initializeSocket();
+                //initializeSocket();
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -36,7 +36,7 @@ public class SocketIOManager {
             @Override
             public void call(Object... args) {
                 printToTerminal(TAG, "EVENT connect");
-
+                System.out.println("OPSI");
                 socketID = mSocket.connect().id();
                 printToTerminal(TAG, "call: " + socketID);
             }
