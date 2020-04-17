@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,6 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.SaveManager;
+
+import java.io.File;
+import java.io.IOException;
 
 public class InversePacman extends Game {
 
@@ -61,9 +65,35 @@ public class InversePacman extends Game {
 	// Creates The managers,
 	@Override
 	public void create () {
+
+		//FileHandle file = new FileHandle(Gdx.files.internal("settings.txt").path());
+		//file.
+		//System.out.println(file.exists());
+
+		/*File file = new File(Gdx.files.internal("settings.txt").path());
+		if(!file.exists()) {
+			try {
+				System.out.println("Yellow");
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+
+
+			}
+			catch (IOException e){
+				System.out.println(e);
+			}
+		}*/
+
 		if(!Gdx.files.local("settings.txt").exists()){
-			FileHandle put = Gdx.files.internal("settings.txt");
+			FileHandle put = Gdx.files.local("settings.txt");
+			try {
+				put.file().createNewFile();
+			}
+			catch (IOException e) {
+				System.out.println(e);
+			}
 			put.copyTo(Gdx.files.local("."));
+
 		}
         FileHandle settings = Gdx.files.local("settings.txt");
 		String text = settings.readString();
@@ -123,6 +153,10 @@ public class InversePacman extends Game {
 		}*/
 		else if (Gdx.input.isKeyPressed(Input.Keys.S) && gsm.currentState == GameScreenManager.STATE.PLAY) {
 			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
+		}
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
+			gsm.setScreen((GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN));
+
 		}
 	}
 
