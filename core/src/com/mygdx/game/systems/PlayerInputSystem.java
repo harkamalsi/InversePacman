@@ -7,7 +7,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.mygdx.game.components.PlayerComponent;
+import com.mygdx.game.components.StateComponent;
+import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import java.lang.Math;
@@ -20,8 +21,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private boolean isUpDragged = false;
     private boolean isDownDragged = false;
 
-    private static final float X_VELOCITY = 10f;
-    private static final float Y_VELOCITY = 10f;
+    private static final float X_VELOCITY = 5f;
+    private static final float Y_VELOCITY = 5f;
 
     private int locationStartTouchedX;
     private int locationStartTouchedY;
@@ -32,14 +33,15 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     private ComponentMapper<VelocityComponent> velocityM;
     private ComponentMapper<TransformComponent> transformM;
-    private ComponentMapper<PlayerComponent> playerM;
-    //private ComponentMapper<StateComponent> stateM;
+    private ComponentMapper<StateComponent> stateM;
+    private ComponentMapper<TextureComponent> texM;
 
     public PlayerInputSystem(){
-        super(Family.all(VelocityComponent.class,TransformComponent.class,PlayerComponent.class).get());
+        super(Family.all(VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
-        playerM = ComponentMapper.getFor(PlayerComponent.class);
+        stateM = ComponentMapper.getFor(StateComponent.class);
+        texM = ComponentMapper.getFor(TextureComponent.class);
 
         Gdx.input.setInputProcessor(this);
 
@@ -49,7 +51,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     protected void processEntity(Entity entity, float deltaTime) {
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
-        PlayerComponent pc = playerM.get(entity);
+        StateComponent sc = stateM.get(entity);
+        TextureComponent texc = texM.get(entity);
 
         float x = 0f;
         float y = 0f;
@@ -57,34 +60,51 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
             x = 0f;
             y = Y_VELOCITY;
-            System.out.println("Up");
+
+            sc.setState(1);
         }
 
         if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
             x = 0f;
             y = -Y_VELOCITY;
-            //System.out.println("Down");
+          
+            sc.setState(2);
         }
+
 
         if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){
             x = -X_VELOCITY;
             y = 0f;
-            System.out.println("Left");
+
+            sc.setState(3);
+
+            //flips texture
+            if (texc.region != null && texc.region.isFlipX()){
+                texc.region.flip(true,false);
+            }
         }
 
         if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
             x = X_VELOCITY;
             y = 0f;
-            //System.out.println("Right");
+
+            sc.setState(4);
+            System.out.println("right move");
+
+            //flips texture
+            if (texc.region != null && !texc.region.isFlipX()){
+                texc.region.flip(true,false);
+            }
         }
 
         vc.setVelocity(x,y);
+        vc.setAcceleration(x,y);
 
 
     }
 
     private void toggleDirection(int locationStartTouchedX, int locationStartTouchedY, int screenX, int screenY) {
-        System.out.println("locationStartTouchedX: " + locationStartTouchedX + "screenX: " + screenX + "locationStartTouchedY: " + locationStartTouchedY + "screenY: "+ screenY);
+
         boolean yIsGreater = ((Math.abs(locationStartTouchedY - screenY)) - (Math.abs(locationStartTouchedX - screenX)) > 0);
 
         if (yIsGreater){
@@ -111,6 +131,9 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                 isDownDragged = false;
                 isLeftDragged = true;
                 isRightDragged = false;
+
+
+
             }
 
             if ((locationStartTouchedX - screenX) < 0){
@@ -130,15 +153,15 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         isDragging = true;
         locationStartTouchedX = screenX;
         locationStartTouchedY = screenY;
-        System.out.println("touchdown");
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (isDragging){
+            toggleDirection(locationStartTouchedX,locationStartTouchedY,screenX,screenY);
+        }
         isDragging = false;
-        toggleDirection(locationStartTouchedX,locationStartTouchedY,screenX,screenY);
-        System.out.println("touchup");
         return false;
     }
 
