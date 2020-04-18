@@ -3,6 +3,7 @@ package com.mygdx.game.screens.play;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -115,21 +116,24 @@ public class LobbyScreen extends AbstractScreen {
         batch.end();*/
     }
 
-    private void handleInput(){
-        if(createLobbyButton.flags == 1) {
-            System.out.println("create lobby");
-            createLobbyButton.flags = 0;
-        }
-        if(joinLobbyButton.flags == 1) {
-            System.out.println("join lobby");
-            joinLobbyButton.flags = 0;
 
-        }
-    }
 
     @Override
     public void update(float delta) {
         handleInput();
+
+    }
+
+    public void handleInput() {
+        if(joinLobbyButton.flags == 1) {
+            System.out.println("JoinLobby pressed!");
+            joinLobbyButton.flags = 0;
+        }
+        if(createLobbyButton.flags == 1) {
+            System.out.println("CreateLobby pressed!");
+            createLobbyButton.flags = 0;
+        }
+
     }
 
     @Override

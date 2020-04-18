@@ -44,8 +44,8 @@ public class TableComponent implements Component {
     }
 
     public void addRow(String nameLabel, String nameText) {
-        Label lobbyName = new Label("Lobby1", skin);
-        Label lobbyPlayers = new Label("2/5", skin);
+        Label lobbyName = new Label(nameLabel, skin);
+        Label lobbyPlayers = new Label(nameText, skin);
 
         table.add(lobbyName).expand();
         table.add(lobbyPlayers).expand();
@@ -59,6 +59,11 @@ public class TableComponent implements Component {
     public void draw() {
         stage.act();
         stage.draw();
+    }
+
+    public void reset() {
+        draw = true;
+        table.clearChildren();
     }
 
 }

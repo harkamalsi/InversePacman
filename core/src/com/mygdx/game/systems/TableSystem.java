@@ -15,6 +15,7 @@ import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.NetworkManager;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class TableSystem extends IteratingSystem {
@@ -38,30 +39,33 @@ public class TableSystem extends IteratingSystem {
         super.update(deltaTime);
     }
 
-    public void getLobbies() {
-        if (cc.getLobbies) {
-            nm.getLobbies();
-            cc.getLobbies = false;
-        }
-    }
-
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
-        getLobbies();
-
-        //JSONObject lobbies = nm.getLobbies();
-        //nm.createLobby("nickname", "playerType");
-        //nm.joinLobby("lobbyName", "nickname", "playerType");
+        cc.reset();
+        JSONArray lobbies = nm.getLobbies();
 
         if(cc.draw) {
-            for (int i = 0; i < 5; i++) { //lobbies.length
-                cc.addRow("Lobby1", "2/5");
+            for (int i = 0; i < lobbies.length(); i++) { //lobbies.length
+                JSONObject lobbyObject = lobbies.getJSONObject(i);
+                String lobbyName = lobbyObject.getString("lobbyName");
+                String lobbyPlayers = lobbyObject.getString("lobbyPlayers");
+
+                cc.addRow(lobbyName, lobbyPlayers);
             }
             cc.draw = false;
         }
         cc.draw();
+
+        String nickname = "PepsiCoke";
+        String playerType = "pacman";
+        String joinLobbyName = "Lobby1";
+
+        //nm.createLobby(nickname, playerType);
+        //nm.joinLobby(joinLobbyName, nickname, playerType);
+
+
         // TransformComponent transform = tc.get(entity);
 
         /*//update click bounds
