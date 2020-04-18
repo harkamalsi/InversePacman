@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -7,8 +9,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.TextureComponent;
+import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.SaveManager;
 
@@ -196,5 +202,15 @@ public class InversePacman extends Game {
             }
         }
 	}
+
+	public void addSpriteEntity(Sprite sprite, Entity entity, Engine engine, float x, float y, float width, float height, boolean isButton, boolean change, boolean bounds) {
+		entity.add(new TextureComponent(sprite, x, y, width, height, change, bounds))
+				.add(new TransformComponent(x, y));
+		if(isButton){
+			entity.add(new ButtonComponent(x, y, width, height));
+		}
+		engine.addEntity(entity);
+	}
+
 
 }

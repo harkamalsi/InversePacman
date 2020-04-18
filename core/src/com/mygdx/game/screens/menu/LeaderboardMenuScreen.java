@@ -153,7 +153,10 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
         singlePlayerGhostsSprite = new Sprite(ghosts);
         singlePlayerGhostsButton = new Entity();
-        addButton(singlePlayerGhostsSprite, singlePlayerGhostsButton, firstYPosition / 1.75f);
+        app.addSpriteEntity(singlePlayerGhostsSprite, singlePlayerGhostsButton, engine, Gdx.graphics.getWidth()/ 2  - (singlePlayerGhostsSprite.getRegionWidth() / 2 * (scaleX)) ,
+                firstYPosition / 1.75f, singlePlayerGhostsSprite.getRegionWidth() * scaleX, singlePlayerGhostsSprite.getRegionHeight() * scaleY, true,  false, false);
+        //engine.addEntity(singlePlayerGhostsButton);
+        //addButton(singlePlayerGhostsSprite, singlePlayerGhostsButton, firstYPosition / 1.75f);
 
         // Single Player Nam-Pac button
         singlePlayerNampacSprite = new Sprite(nampac);
@@ -185,6 +188,8 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     public void hide() {
 
     }
+
+
 
     private void addButton(Sprite sprite, Entity button, float y) {
         //sprite.setBounds(Gdx.graphics.getWidth()/ 2 - sprite.getRegionWidth() / 2,
