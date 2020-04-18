@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Json;
@@ -22,10 +23,12 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
     private SpriteBatch batch;
     private BitmapFont font;
+    private GlyphLayout layout;
+
 
     public AbstractBoardScreen(InversePacman app) {
         super(app);
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
     }
 
     @Override
@@ -40,7 +43,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         batch.begin();
 
         batch.draw(this.bg, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        font.getData().setScale(1.5f);
+        font.getData().setScale(0.4f);
 
         ArrayList<PlayerScore> players = retrieveTopPlayerScores();
         drawNames(batch, font, players);

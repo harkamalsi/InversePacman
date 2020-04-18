@@ -17,6 +17,7 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
+import com.mygdx.game.systems.RenderingSystem;
 
 
 public class LeaderboardMenuScreen extends AbstractScreen {
@@ -40,6 +41,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     private Sprite multiplayerNampacSprite;
 
     private ButtonSystem buttonSystem;
+    private RenderingSystem renderSystem;
 
     private Engine engine;
 
@@ -48,7 +50,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     public LeaderboardMenuScreen(final InversePacman app) {
         super(app);
 
-        bg = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "leaderboard_menu_bg.png"));
+        bg = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "leaderboardcorrectiswear.png"));
         ghosts = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "ghosts_button.png"));
         nampac = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "nampac_button.png"));
     }
@@ -107,9 +109,11 @@ public class LeaderboardMenuScreen extends AbstractScreen {
         this.batch = new SpriteBatch();
 
         buttonSystem = new ButtonSystem(this.camera);
+        renderSystem = new RenderingSystem(batch);
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
+        engine.addSystem(renderSystem);
 
         // Single Player ghosts button
         float firstYPosition = viewport.getWorldHeight() / 1.75f;

@@ -198,9 +198,9 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         font.setUseIntegerPositions(false);
         font.getData().setScale(scaleX / 32f, scaleY / 32f);
         layout.setText(font,"MENU");
-        System.out.println("font x: " + (Gdx.graphics.getWidth() / 2 - layout.width / 2));
-        System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
-        System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
+        //System.out.println("font x: " + (Gdx.graphics.getWidth() / 2 - layout.width / 2));
+        //System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
+        //System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
 
 
         font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
