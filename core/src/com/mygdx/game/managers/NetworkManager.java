@@ -2,6 +2,7 @@ package com.mygdx.game.managers;
 
 import com.mygdx.game.shared.Constants;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -22,6 +23,10 @@ public class NetworkManager {
 
     private Socket socket = null;
     private String socketID;
+    private boolean fetch = false;
+
+    private JSONArray lobbies = new JSONArray();
+    private JSONObject response;
 
     public NetworkManager() {
         //socket = new SocketIOManager().getSocketInstance();
@@ -50,6 +55,8 @@ public class NetworkManager {
             @Override
             public void call(Object... args) {
                 socketID = socket.connect().id();
+                System.out.println(socketID);
+                fetch = true;
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
             @Override
@@ -68,10 +75,29 @@ public class NetworkManager {
         socket.connect();
     }
 
-    public void getLobbies() {
-        System.out.println("Get lobbies is called!");
+    private void setLobbies(JSONArray lobbies) {
+        //System.out.println(lobbies);
+        this.lobbies = lobbies;
+    }
 
-        getSocket().emit(Constants.GET_GAME_LOBBIES, socketID);
+    public JSONArray getLobbies() {
+        if (fetch) {
+            //System.out.println("Get lobbies is called!");
+
+            getSocket().emit(Constants.GET_GAME_LOBBIES, socketID);
+
+            getSocket().on(Constants.GET_GAME_LOBBIES, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONArray response = (JSONArray) args[0];
+                    setLobbies(response);
+                    //System.out.println(response);
+                }
+            });
+
+            //fetch = false;
+        }
+        return lobbies;
     }
 
     public void createLobby(Object ...args) {
@@ -130,79 +156,99 @@ public class NetworkManager {
     }
 
     public void addPlayer(final String nickname) {
-        System.out.println("Add player is called!");
+        if (fetch) {
+            System.out.println("Add player is called!");
 
-        getSocket().emit(Constants.ADD_PLAYER, socketID, nickname);
+            getSocket().emit(Constants.ADD_PLAYER, socketID, nickname);
 
-        getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject response = (JSONObject)args[0];
-                System.out.println(response);
-            }
-        });
+            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject response = (JSONObject)args[0];
+                    System.out.println(response);
+                }
+            });
+
+            fetch = false;
+        }
     }
 
     public void getPlayerWithNickname(final String nickname) {
-        System.out.println("Get player with nickname is called!");
+        if (fetch) {
+            System.out.println("Get player with nickname is called!");
 
-        getSocket().emit(Constants.GET_PLAYER_WITH_NICKNAME, socketID, nickname);
+            getSocket().emit(Constants.GET_PLAYER_WITH_NICKNAME, socketID, nickname);
 
-        getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject response = (JSONObject)args[0];
-                if (response == null) {
-                    JSONObject errorResponse = new JSONObject();
-                    errorResponse.put("error", "No user found!");
-                    System.out.println(errorResponse);
+            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject response = (JSONObject)args[0];
+                    if (response == null) {
+                        JSONObject errorResponse = new JSONObject();
+                        errorResponse.put("error", "No user found!");
+                        System.out.println(errorResponse);
+                    }
+                    System.out.println(response);
                 }
-                System.out.println(response);
-            }
-        });
+            });
+
+            fetch = false;
+        }
 
     }
 
     public void getPlayerWithID(final String id) {
-        System.out.println("Get player with ID is called!");
+        if (fetch) {
+            System.out.println("Get player with ID is called!");
 
-        getSocket().emit(Constants.GET_PLAYER_WITH_ID, socketID, id);
+            getSocket().emit(Constants.GET_PLAYER_WITH_ID, socketID, id);
 
-        getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject response = (JSONObject)args[0];
-                System.out.println(response);
-            }
-        });
+            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject response = (JSONObject)args[0];
+                    System.out.println(response);
+                }
+            });
+
+            fetch = false;
+        }
     }
 
     public void changeNickname(final String id, final String nickname) {
-        System.out.println("Change nickname is called!");
+        if (fetch) {
+            System.out.println("Change nickname is called!");
 
-        getSocket().emit(Constants.CHANGE_NICKNAME, socketID, id, nickname);
+            getSocket().emit(Constants.CHANGE_NICKNAME, socketID, id, nickname);
 
-        getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject response = (JSONObject)args[0];
-                System.out.println(response);
-            }
-        });
+            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject response = (JSONObject)args[0];
+                    System.out.println(response);
+                }
+            });
+
+            fetch = false;
+        }
     }
 
     public void changeSkinType(final String id, final int skinType) {
-        System.out.println("Change skin type is called!");
+       if (fetch) {
+           System.out.println("Change skin type is called!");
 
-        getSocket().emit(Constants.CHANGE_SKINTYPE, socketID, id, skinType);
+           getSocket().emit(Constants.CHANGE_SKINTYPE, socketID, id, skinType);
 
-        getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject response = (JSONObject)args[0];
-                System.out.println(response);
-            }
-        });
+           getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
+               @Override
+               public void call(Object... args) {
+                   JSONObject response = (JSONObject)args[0];
+                   System.out.println(response);
+               }
+           });
+
+           fetch = false;
+       }
     }
 
 }

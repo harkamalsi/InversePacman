@@ -3,6 +3,7 @@ package com.mygdx.game.screens.play;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,6 +21,7 @@ import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.EntityManager;
+import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -116,7 +118,16 @@ public class LobbyScreen extends AbstractScreen {
 
     @Override
     public void update(float delta) {
+        handleInput();
+    }
 
+    public void handleInput() {
+        if(joinLobbyButton.flags == 1) {
+            System.out.println("JoinLobby pressed!");
+        }
+        if(createLobbyButton.flags == 1) {
+            System.out.println("CreateLobby pressed!");
+        }
     }
 
     @Override
