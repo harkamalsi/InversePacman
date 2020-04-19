@@ -32,4 +32,8 @@ public class MovementSystem extends IteratingSystem {
         temp.set(vel.velocity).scl(deltaTime);
         pos.position.add(temp.x,temp.y);
     }
+
+    public void minimax() {
+
+    }
 }
