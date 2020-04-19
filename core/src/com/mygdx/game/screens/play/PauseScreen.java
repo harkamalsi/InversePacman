@@ -1,8 +1,11 @@
 package com.mygdx.game.screens.play;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 
 
@@ -20,9 +23,17 @@ public final class PauseScreen extends AbstractScreen {
 
     }
 
+    public void handleInput() {
+        	if (Gdx.input.isKeyJustPressed(Input.Keys.R) && app.gsm.currentState == GameScreenManager.STATE.PAUSE) {
+            System.out.println("UNPAUSING!");
+            //app.gsm.popScreen();
+            app.gsm.setScreen(GameScreenManager.STATE.PLAY);
+
+        }
+    }
     @Override
     public void update(float delta) {
-
+        handleInput();
     }
 
     @Override
