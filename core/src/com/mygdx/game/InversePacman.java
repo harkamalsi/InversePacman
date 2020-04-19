@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.systems.PlayerContactListener;
 import com.mygdx.game.worldbuilder.WorldBuilder;
 import com.mygdx.game.managers.SaveManager;
 
@@ -53,6 +54,7 @@ public class InversePacman extends Game {
 	//World building
 	public World world;
 	public Body player;
+	public Body opponent;
 	public Box2DDebugRenderer b2dr;
 
 	//Box2d
@@ -131,15 +133,17 @@ public class InversePacman extends Game {
 		//world
 		world = new World(new Vector2(0f, 0), false);
 		b2dr = new Box2DDebugRenderer();
+		world.setContactListener(new PlayerContactListener());
 
 
 		//Tiled map creation and WorldBuilder call
 		map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
 		tmr = new OrthogonalTiledMapRenderer(map);
 		WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects(), map.getLayers().get("BackgroundLayer"));
-
+		WorldBuilder.createPlayer(world);
 		//Player
 		player = createPlayer();
+
 	}
 
 	@Override
@@ -190,6 +194,7 @@ public class InversePacman extends Game {
 		shape.dispose();
 		return pBody;
 	}
+
 
 	// Egenlaget update funksjon, kalles på i render. Bør kanskje fjernes og flyttes til playscreen?
 	public void update(float delta) {
