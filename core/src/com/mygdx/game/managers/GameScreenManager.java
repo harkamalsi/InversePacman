@@ -2,10 +2,8 @@ package com.mygdx.game.managers;
 
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.screens.AbstractScreen;
-import com.mygdx.game.screens.leaderboard.MultiplayerBoardScreen;
 import com.mygdx.game.screens.leaderboard.MultiplayerGhostsBoardScreen;
 import com.mygdx.game.screens.leaderboard.MultiplayerNamcapBoardScreen;
-import com.mygdx.game.screens.leaderboard.SinglePlayerBoardScreen;
 import com.mygdx.game.screens.leaderboard.SinglePlayerGhostsBoardScreen;
 import com.mygdx.game.screens.leaderboard.SinglePlayerNamcapBoardScreen;
 import com.mygdx.game.screens.menu.InGameMenuScreen;
