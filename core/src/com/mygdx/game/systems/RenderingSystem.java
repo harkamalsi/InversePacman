@@ -117,7 +117,12 @@ public class RenderingSystem extends IteratingSystem {
                 if(tex.changeOpacity) {
                     tex.sprite.setColor(tex.sprite.getColor().r,tex.sprite.getColor().g, tex.sprite.getColor().b,a);
                     if(tex.changeColor) {
-                        tex.sprite.setColor(tex.colors.get(0), tex.colors.get(1), tex.colors.get(2), tex.sprite.getColor().a);
+                        try {
+                            tex.sprite.setColor(tex.colors.get(0), tex.colors.get(1), tex.colors.get(2), tex.sprite.getColor().a);
+                        }
+                        catch (IndexOutOfBoundsException e) {
+                            System.out.println("Wrong color format RGB! Setting standard values for: " + tex.sprite);
+                        }
                     }
                     tex.sprite.draw(batch);
                 }
