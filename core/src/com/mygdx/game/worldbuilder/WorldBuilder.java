@@ -12,21 +12,35 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.components.CoinComponent;
 import com.mygdx.game.components.PlayerComponent;
 
 import java.util.ArrayList;
 
     public class WorldBuilder {
 
-        private static ArrayList<RectangleMapObject> pointsList = new ArrayList<>();
-        private static ArrayList<ArrayList<Node>> nodeCostMatrix;
+        private static ArrayList<RectangleMapObject> playersPostionList = new ArrayList<>();
+        private static ArrayList<RectangleMapObject> coinsPostionList = new ArrayList<>();
+        private static ArrayList<ArrayList<Node>> nodeCostMatrix = new ArrayList<>();;
         private static ArrayList<PlayerComponent> playerList = new ArrayList<>();
+        private static ArrayList<CoinComponent> coinList = new ArrayList<>();
 
-        public static void parseTiledObjectLayer(World world, MapObjects objects, MapLayer layer) {
-            TiledMapTileLayer mapLayer = (TiledMapTileLayer) layer;
-            nodeCostMatrix = new ArrayList<>();
 
-            for (MapObject object : objects) {
+        public static void parseTiledObjectLayer(World world
+                ,MapObjects wallObjects
+                ,MapLayer backgroundLayer
+                ,MapObjects playerObjects
+                ,MapObjects coinObjects ) {
+
+            parseWallObjectLayer(wallObjects, world);
+            parseMapToNode(backgroundLayer);
+            parseCoinObjectLayer(coinObjects);
+            parsePlayerObjectLayer(playerObjects);
+
+        }
+
+        private static void parseWallObjectLayer(MapObjects collisionObjects, World world){
+            for (MapObject object : collisionObjects) {
 
                 Shape shape;
                 if (object instanceof PolygonMapObject) {
@@ -35,7 +49,7 @@ import java.util.ArrayList;
                 }
                 else if (object instanceof RectangleMapObject) {
                     RectangleMapObject point =(RectangleMapObject) object;
-                    pointsList.add(point);
+                    playersPostionList.add(point);
                     continue;
 
                 }
@@ -51,6 +65,38 @@ import java.util.ArrayList;
                 body.createFixture(shape, 1.0f);
                 shape.dispose();
             }
+        }
+
+        private static void parsePlayerObjectLayer(MapObjects playerObjects) {
+            for (MapObject object : playerObjects) {
+                if (object instanceof RectangleMapObject) {
+                    RectangleMapObject point =(RectangleMapObject) object;
+                    playersPostionList.add(point);
+
+                }
+                else {
+                    System.out.println(object.getClass());
+                    continue;
+                }
+            }
+        }
+
+        private static void parseCoinObjectLayer(MapObjects coinObjects) {
+            for (MapObject object : coinObjects) {
+                if (object instanceof RectangleMapObject) {
+                    RectangleMapObject point =(RectangleMapObject) object;
+                    coinsPostionList.add(point);
+
+                }
+                else {
+                    System.out.println(object.getClass());
+                    continue;
+                }
+            }
+        }
+
+        private static void parseMapToNode(MapLayer backgroundLayer) {
+            TiledMapTileLayer mapLayer = (TiledMapTileLayer) backgroundLayer;
             int height = mapLayer.getHeight();
             int width = mapLayer.getWidth();
             System.out.println(height);
@@ -70,7 +116,6 @@ import java.util.ArrayList;
                     }
                 }
             }
-
         }
 
         private static ChainShape createPolyLine(PolygonMapObject polyline) {
@@ -89,6 +134,48 @@ import java.util.ArrayList;
             return cs;
         }
 
+
+        public static void createPlayers(World world) {
+           for (int i=0; i < getPlayerPositionList().size(); i++) {
+               PlayerComponent player = new PlayerComponent();
+               Vector2 vector = new Vector2();
+               getPlayerPositionList().get(i).getRectangle().getCenter(vector);
+
+
+               if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
+                   player.createPlayerBody(world, "GHOST_" + i, vector.x, vector.y);
+                   playerList.add(player);
+               }
+               else if (getPlayerPositionList().get(i).getName().equals("Pacman")) {
+                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y);
+                   playerList.add(player);
+               }
+
+           }
+
+        }
+
+        public static void createCoins(World world) {
+            for (int i=0; i < getCoinsPostionList().size(); i++) {
+                System.out.println(getCoinsPostionList().get(i).getName());
+
+                CoinComponent coin = new CoinComponent();
+                Vector2 vector = new Vector2();
+                getCoinsPostionList().get(i).getRectangle().getCenter(vector);
+
+
+                if (getCoinsPostionList().get(i).getName().equals("Coin")) {
+                    coin.createCoinBody(world, "COIN_" + i, vector.x, vector.y);
+                    coinList.add(coin);
+                }
+                else {
+                    continue;
+                }
+
+            }
+
+        }
+
         public static ArrayList<ArrayList<Node>> getNodeCostMatrix() {
             return nodeCostMatrix;
         }
@@ -97,30 +184,16 @@ import java.util.ArrayList;
             return playerList;
         }
 
-        public static ArrayList<RectangleMapObject> getPointsList() {
-            return pointsList;
+        public static ArrayList<RectangleMapObject> getPlayerPositionList() {
+            return playersPostionList;
         }
 
-        public static void createPlayer(World world) {
-           for (int i=0; i < getPointsList().size(); i++) {
-               System.out.println(getPointsList().get(i).getName());
-
-               PlayerComponent player = new PlayerComponent();
-               Vector2 vector = new Vector2();
-               getPointsList().get(i).getRectangle().getCenter(vector);
-
-
-               if (getPointsList().get(i).getName().equals("Ghost")) {
-                   player.createPlayerBody(world, "GHOST_" + i, vector.x, vector.y);
-                   playerList.add(player);
-               }
-               else if (getPointsList().get(i).getName().equals("Pacman")) {
-                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y);
-                   playerList.add(player);
-               }
-
-           }
-
-
+        public static ArrayList<CoinComponent> getCoinList() {
+            return coinList;
         }
+
+        public static ArrayList<RectangleMapObject> getCoinsPostionList() {
+            return coinsPostionList;
+        }
+
     }

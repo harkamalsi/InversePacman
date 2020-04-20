@@ -28,6 +28,12 @@ public class PlayerComponent implements Component {
     public String id;
     public boolean ai;
 
+    public PlayerComponent() {
+        currentState = IDLE;
+        hp = 1;
+        invincibleTimer = 0;
+    }
+
     public void createPlayerBody(World world, String id, float x, float y){
         this.id = id;
         BodyDef bdef = new BodyDef();
@@ -46,12 +52,6 @@ public class PlayerComponent implements Component {
 
         body.createFixture(shape, 1.0f);
         shape.dispose();
-    }
-
-    public PlayerComponent() {
-        currentState = IDLE;
-        hp = 1;
-        invincibleTimer = 0;
     }
 
     public void setCurrentState(int state) {

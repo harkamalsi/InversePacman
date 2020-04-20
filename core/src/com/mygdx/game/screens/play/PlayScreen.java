@@ -15,9 +15,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
@@ -120,8 +118,12 @@ public final class PlayScreen extends AbstractScreen {
         //Tiled map creation and WorldBuilder call
         map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
-        WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects(), map.getLayers().get("BackgroundLayer"));
-        WorldBuilder.createPlayer(world);
+        WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects()
+                ,map.getLayers().get("BackgroundLayer")
+                ,map.getLayers().get("Players").getObjects()
+                ,map.getLayers().get("Coins").getObjects());
+        WorldBuilder.createPlayers(world);
+        WorldBuilder.createCoins(world);
 
 
         // To add a new songs, place the file under the folder assets/music/play
@@ -209,21 +211,6 @@ public final class PlayScreen extends AbstractScreen {
             musicSystem.pause();
             resume = true;
         }
-    }
-
-    public Body createPlayer(){
-        Body pBody;
-        BodyDef def = new BodyDef();
-        def.type = BodyDef.BodyType.DynamicBody;
-        def.position.set(30,30);
-        def.fixedRotation = true;
-        pBody = world.createBody(def);
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(30/2,30/2);
-
-        pBody.createFixture(shape, 1.0f);
-        shape.dispose();
-        return pBody;
     }
 
     @Override
