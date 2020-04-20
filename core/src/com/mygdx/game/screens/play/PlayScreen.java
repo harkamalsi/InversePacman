@@ -35,6 +35,7 @@ import com.mygdx.game.systems.AnimationSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
+import com.mygdx.game.systems.PlayerContactListener;
 import com.mygdx.game.systems.PlayerInputSystem;
 import com.mygdx.game.systems.RenderingSystem;
 import com.mygdx.game.systems.StateSystem;
@@ -116,13 +117,14 @@ public final class PlayScreen extends AbstractScreen {
 
         //world
         world = new World(new Vector2(0f, 0), false);
+        world.setContactListener(new PlayerContactListener());
         b2dr = new Box2DDebugRenderer();
-
 
         //Tiled map creation and WorldBuilder call
         map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
         WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects(), map.getLayers().get("BackgroundLayer"));
+        WorldBuilder.createPlayer(world);
 
 
         // To add a new songs, place the file under the folder assets/music/play

@@ -11,11 +11,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.components.PlayerTestComponent;
+
 import java.util.ArrayList;
 
     public class WorldBuilder {
 
         private static ArrayList<ArrayList<Node>> nodeCostMatrix;
+        private static ArrayList<PlayerTestComponent> playerList;
 
         public static void parseTiledObjectLayer(World world, MapObjects objects, MapLayer layer) {
             TiledMapTileLayer mapLayer = (TiledMapTileLayer) layer;
@@ -80,5 +83,18 @@ import java.util.ArrayList;
 
         public static ArrayList<ArrayList<Node>> getNodeCostMatrix() {
             return nodeCostMatrix;
+        }
+
+        public static ArrayList<PlayerTestComponent> getPlayerList() {
+            return playerList;
+        }
+
+        public static void createPlayer(World world) {
+           PlayerTestComponent player = new PlayerTestComponent();
+           player.createPlayerBody(world, "Boks_2", 32, 102);
+           PlayerTestComponent player2 = new PlayerTestComponent();
+           player2.createPlayerBody(world, "Boks_3", 102, 302);
+
+
         }
     }

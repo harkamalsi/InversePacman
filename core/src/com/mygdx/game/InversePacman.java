@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.systems.PlayerContactListener;
 import com.mygdx.game.worldbuilder.WorldBuilder;
 import com.mygdx.game.managers.SaveManager;
 
@@ -53,15 +54,6 @@ public class InversePacman extends Game {
 
 	// Texture for testing (Use AssetsManager later an remove this)
 	public Texture img;
-
-//	//World building
-//	public World world;
-//	public Body player;
-//	public Box2DDebugRenderer b2dr;
-//
-//	//Box2d
-//	public OrthogonalTiledMapRenderer tmr;
-//	public TiledMap map;
 
 	//Camera
 	public OrthographicCamera camera;
@@ -135,28 +127,12 @@ public class InversePacman extends Game {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false,V_WIDTH, V_HEIGHT);
 
-//		//world
-//		world = new World(new Vector2(0f, 0), false);
-//		b2dr = new Box2DDebugRenderer();
-//
-//
-//		//Tiled map creation and WorldBuilder call
-//		map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
-//		tmr = new OrthogonalTiledMapRenderer(map);
-//		WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects(), map.getLayers().get("BackgroundLayer"));
-
-		//Player
-//		player = createPlayer();
 	}
 
 	@Override
 	public void render() {
 		super.render();
 
-		//Disse tre er noe som også bør flyttes til playscreen eller inn i renedringklassen. Den siste er kun en debugger og ska skrus av når alt fungerer.
-//		update(Gdx.graphics.getDeltaTime());
-//		tmr.setView(camera);
-//		b2dr.render(world, camera.combined.scl(1.0f));
 
 		// Changing the different screens based on the button pressed, should be changed to touch inputs from menu.
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
@@ -178,56 +154,6 @@ public class InversePacman extends Game {
 		}
 	}
 
-
-
-
-
-	//Flytt denne til nødvendig klasse
-//	public Body createPlayer(){
-//		Body pBody;
-//		BodyDef def = new BodyDef();
-//		def.type = BodyDef.BodyType.DynamicBody;
-//		def.position.set(32,32);
-//		def.fixedRotation = true;
-//		pBody = world.createBody(def);
-//		PolygonShape shape = new PolygonShape();
-//		shape.setAsBox(32/2,32/2);
-//
-//		pBody.createFixture(shape, 1.0f);
-//		shape.dispose();
-//		return pBody;
-//	}
-
-	// Egenlaget update funksjon, kalles på i render. Bør kanskje fjernes og flyttes til playscreen?
-//	public void update(float delta) {
-//		world.step(1/60f,6,2);
-//		inputUpdate(delta);
-//	}
-
-	// Bør også fjernes og legges inn i enten playscreen?
-	// Får box2d player til å bevege seg.
-//	public void inputUpdate(float delta){
-//		int horizontalForce = 0;
-//		int verticalForce = 0;
-//
-//		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//			horizontalForce -= 5;
-//		}
-//
-//		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//			horizontalForce += 5;
-//		}
-//		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//			verticalForce += 5;
-//		}
-//		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//			verticalForce -= 5;
-//		}
-//		player.setLinearVelocity(horizontalForce*50, player.getLinearVelocity().y);
-//		player.setLinearVelocity(player.getLinearVelocity().x, verticalForce*50);
-//
-//
-//	}
 
 
 
