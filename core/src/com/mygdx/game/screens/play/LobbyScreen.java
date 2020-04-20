@@ -12,9 +12,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.TableComponent;
@@ -111,6 +116,10 @@ public class LobbyScreen extends AbstractScreen {
     @Override
     public void render(float delta){
         super.render(delta);
+        //engine.update(delta);
+        batch.begin();
+        batch.draw(bg, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
+        batch.end();
         engine.update(delta);
         /*batch.begin();
         font.setUseIntegerPositions(false);
@@ -181,7 +190,7 @@ public class LobbyScreen extends AbstractScreen {
         bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() +2,
                 Gdx.graphics.getHeight() +2,false,false))
                 .add(new TransformComponent(0,0));
-        engine.addEntity(bgEntity);
+        //engine.addEntity(bgEntity);
 
         tbEntity = new Entity();
         tbEntity.add(new TableComponent());
@@ -210,7 +219,7 @@ public class LobbyScreen extends AbstractScreen {
                 .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 20f));
         engine.addEntity(createLobbyButton);
 
-
+        
     }
 
     @Override

@@ -17,10 +17,11 @@ public class TableComponent implements Component {
     private Stage stage;
     public boolean draw;
     public boolean getLobbies;
+    private Container<Table> tableContainer;
 
     public TableComponent() {
         stage = new Stage(new ScreenViewport());
-        Container<Table> tableContainer = new Container<Table>();
+        tableContainer = new Container<Table>();
         float sw = Gdx.graphics.getWidth();
         float sh = Gdx.graphics.getHeight();
         float cw = sw * 1f;
@@ -36,8 +37,6 @@ public class TableComponent implements Component {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         skin.getFont("default-font").getData().setScale(5f, 5f);
         table = new Table(skin);
-
-        table.debugAll();
         tableContainer.setActor(table);
         stage.addActor(tableContainer);
         Gdx.input.setInputProcessor(stage);
@@ -57,6 +56,7 @@ public class TableComponent implements Component {
     }
 
     public void draw() {
+        System.out.println(stage.getActors());
         stage.act();
         stage.draw();
     }
