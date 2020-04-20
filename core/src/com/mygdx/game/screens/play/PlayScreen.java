@@ -10,8 +10,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.CollisionComponent;
 import com.mygdx.game.components.PlayerComponent;
@@ -22,6 +24,7 @@ import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.AnimationSystem;
+import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -41,7 +44,15 @@ public final class PlayScreen extends AbstractScreen {
 
     private Texture pacmansprite;
 
+    private TextureRegion pausescreen;
+    private TextureRegion back;
+
+    private Sprite pauseSprite;
+    private Sprite backSprite;
+
     private Entity pacman;
+    private Entity pauseEntity;
+    private Entity backButton;
 
     private Engine engine;
 
@@ -53,11 +64,15 @@ public final class PlayScreen extends AbstractScreen {
     private PlayerInputSystem playerInputSystem;
     private RenderingSystem renderingSystem;
     private MusicSystem musicSystem;
+    private ButtonSystem buttonSystem;
+
 
     public BitmapFont font = new BitmapFont(); //or use alex answer to use custom font
 
     public PlayScreen(final InversePacman app) {
         super(app);
+        back = new TextureRegion(new Texture("back.png"));
+
         // Sets the camera; width and height.
         // this.camera = new OrthographicCamera();
         // this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
@@ -77,6 +92,10 @@ public final class PlayScreen extends AbstractScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             pause = false;
         }
+        if(backButton.flags == 1) {
+            pause = true;
+            backButton.flags = 0;
+        }
     }
 
     @Override
@@ -89,6 +108,10 @@ public final class PlayScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        this.camera = new OrthographicCamera();
+        //this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 
         // To add a new songs, place the file under the folder assets/music/play
@@ -98,6 +121,7 @@ public final class PlayScreen extends AbstractScreen {
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();
         renderingSystem = new RenderingSystem(batch);
+        buttonSystem = new ButtonSystem(camera);
         musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
 
         engine = new Engine();
@@ -106,6 +130,8 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(collisionSystem);
         engine.addSystem(renderingSystem);
         engine.addSystem(musicSystem);
+        engine.addSystem(buttonSystem);
+
         pacmansprite = new Texture("ghosts.png");
         pacman = new Entity();
         pacman.add(new VelocityComponent())
@@ -115,6 +141,17 @@ public final class PlayScreen extends AbstractScreen {
                 .add(new CollisionComponent())
                 .add(new PlayerComponent());
         engine.addEntity(pacman);
+
+        pausescreen = new TextureRegion(new Texture("playscreen/pausescreen.png"));
+        pauseSprite = new Sprite(pausescreen);
+        pauseEntity = new Entity();
+        pauseEntity.add(new TextureComponent(pauseSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),false, false, false))
+            .add(new TransformComponent(0,0));
+        //engine.addEntity(pauseEntity);
+
+        backSprite = new Sprite(back);
+        backButton = new Entity();
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
 
     }
 
@@ -129,19 +166,32 @@ public final class PlayScreen extends AbstractScreen {
         app.batch.draw(app.img, 0, 0);
         app.batch.end();
 
+
         // when paused engine stops updating, and textures "disappear"
         if(!pause) {
             if(resume) {
+                //engine.removeEntity(pauseEntity);
+                //engine.addEntity(pacman);
                 musicSystem.resume();
                 resume = false;
             }
             engine.update(delta);
-
         }
-        if(pause && !resume){
+        if(pause){
+            batch.begin();
+            batch.draw(pausescreen, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight()/ 32f);
+            batch.end();
+            //engine.addEntity(pauseEntity);
+            //engine.removeEntity(pacman);
             musicSystem.pause();
             resume = true;
+            if(Gdx.input.justTouched()) {
+                pause = false;
+            }
         }
+        //engine.update(delta);
+
+
     }
 
     @Override
