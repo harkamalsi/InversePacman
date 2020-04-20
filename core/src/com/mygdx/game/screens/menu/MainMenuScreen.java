@@ -232,8 +232,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         ellipseSprite = new Sprite(ellipse);
         //ellipseSprite.setBounds(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY)), ellipse.getRegionWidth() * (scaleX), ellipse.getRegionHeight() * (scaleY));
 
-
-
         buttonSystem = new ButtonSystem(camera);
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
