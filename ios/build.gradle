@@ -12,6 +12,11 @@ launchIPadSimulator.dependsOn build
 launchIOSDevice.dependsOn build
 createIPA.dependsOn build
 
+dependencies {
+	implementation 'io.socket:socket.io-client:1.0.0'
+	implementation 'org.json:json:20190722'
+}
+
 robovm {
 	archs = "thumbv7:arm64"
 }

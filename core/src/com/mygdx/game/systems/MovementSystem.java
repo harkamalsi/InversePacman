@@ -23,14 +23,14 @@ public class MovementSystem extends IteratingSystem {
 
     @Override
     public void processEntity(Entity entity, float deltaTime) {
-        TransformComponent pos = tm.get(entity);
+        TransformComponent tc = tm.get(entity);
         VelocityComponent vel = vm.get(entity);
 
         temp.set(vel.acceleration).scl(deltaTime);
         vel.velocity.add(temp);
 
         temp.set(vel.velocity).scl(deltaTime);
-        pos.position.add(temp.x,temp.y);
+        tc.position.add(temp.x,temp.y);
     }
 
     public void minimax() {
