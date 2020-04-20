@@ -34,7 +34,7 @@ public class PlayerTestComponent implements Component {
             bdef.position.set(x,y);
             bdef.fixedRotation = true;
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(32/2,32/2);
+            shape.setAsBox(30/2,30/2);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
@@ -55,6 +55,10 @@ public class PlayerTestComponent implements Component {
 
         public void setCurrentState(int state) {
             currentState = state;
+        }
+
+        public void hit() {
+            System.out.println(id + " har blitt truffet!");
         }
 
     }

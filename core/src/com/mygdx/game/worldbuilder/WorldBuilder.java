@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -11,14 +12,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.components.PlayerTestComponent;
+import com.mygdx.game.components.PlayerComponent;
 
 import java.util.ArrayList;
 
     public class WorldBuilder {
 
+        private static ArrayList<RectangleMapObject> pointsList = new ArrayList<>();
         private static ArrayList<ArrayList<Node>> nodeCostMatrix;
-        private static ArrayList<PlayerTestComponent> playerList;
+        private static ArrayList<PlayerComponent> playerList = new ArrayList<>();
 
         public static void parseTiledObjectLayer(World world, MapObjects objects, MapLayer layer) {
             TiledMapTileLayer mapLayer = (TiledMapTileLayer) layer;
@@ -29,6 +31,12 @@ import java.util.ArrayList;
                 Shape shape;
                 if (object instanceof PolygonMapObject) {
                     shape = createPolyLine((PolygonMapObject) object);
+
+                }
+                else if (object instanceof RectangleMapObject) {
+                    RectangleMapObject point =(RectangleMapObject) object;
+                    pointsList.add(point);
+                    continue;
 
                 }
                 else {
@@ -85,15 +93,33 @@ import java.util.ArrayList;
             return nodeCostMatrix;
         }
 
-        public static ArrayList<PlayerTestComponent> getPlayerList() {
+        public static ArrayList<PlayerComponent> getPlayerList() {
             return playerList;
         }
 
+        public static ArrayList<RectangleMapObject> getPointsList() {
+            return pointsList;
+        }
+
         public static void createPlayer(World world) {
-           PlayerTestComponent player = new PlayerTestComponent();
-           player.createPlayerBody(world, "Boks_2", 32, 102);
-           PlayerTestComponent player2 = new PlayerTestComponent();
-           player2.createPlayerBody(world, "Boks_3", 102, 302);
+           for (int i=0; i < getPointsList().size(); i++) {
+               System.out.println(getPointsList().get(i).getName());
+
+               PlayerComponent player = new PlayerComponent();
+               Vector2 vector = new Vector2();
+               getPointsList().get(i).getRectangle().getCenter(vector);
+
+
+               if (getPointsList().get(i).getName().equals("Ghost")) {
+                   player.createPlayerBody(world, "GHOST_" + i, vector.x, vector.y);
+                   playerList.add(player);
+               }
+               else if (getPointsList().get(i).getName().equals("Pacman")) {
+                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y);
+                   playerList.add(player);
+               }
+
+           }
 
 
         }

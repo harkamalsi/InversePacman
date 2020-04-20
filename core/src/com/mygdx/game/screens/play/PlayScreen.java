@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -23,7 +22,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
-import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -76,7 +74,6 @@ public final class PlayScreen extends AbstractScreen {
     private AnimationSystem animationSystem;
     private MusicSystem musicSystem;
 
-    public BitmapFont font = new BitmapFont(); //or use alex answer to use custom font
 
     public PlayScreen(final InversePacman app, Engine engine) {
         super(app, engine);
@@ -176,7 +173,7 @@ public final class PlayScreen extends AbstractScreen {
 
         ghost = new Entity();
         ghost.add(new VelocityComponent())
-                .add(new PlayerComponent(createPlayer()))
+                .add(WorldBuilder.getPlayerList().get(0))
                 .add(new TextureComponent())
                 .add(animcomponent)
                 .add(new StateComponent(0))

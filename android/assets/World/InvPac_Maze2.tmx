@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="51" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="97">
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="51" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="107">
  <tileset firstgid="1" source="Terrain .tsx"/>
  <layer id="1" name="CollisionLayer" width="51" height="50">
   <data encoding="base64">
@@ -131,6 +131,21 @@
   </object>
   <object id="96" x="175.879" y="383.829">
    <polygon points="0.103005,-0.171869 0.103005,15.9838 96.1036,15.9838 96.0339,-48.1223 208.112,-48.1223 208.095,-63.7223 80.1006,-63.6335 79.8337,-0.0863414"/>
+  </object>
+  <object id="99" name="Ghost" x="38.8848" y="58.6174">
+   <point/>
+  </object>
+  <object id="103" name="Ghost" x="775.374" y="62.6799">
+   <point/>
+  </object>
+  <object id="104" name="Ghost" x="778.276" y="765.508">
+   <point/>
+  </object>
+  <object id="105" name="Ghost" x="38.8848" y="767.249">
+   <point/>
+  </object>
+  <object id="106" name="Pacman" x="408.58" y="430.634">
+   <point/>
   </object>
  </objectgroup>
 </map>

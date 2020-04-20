@@ -1,24 +1,19 @@
 package com.mygdx.game.managers;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.components.CollisionComponent;
-import com.mygdx.game.components.PlayerComponent;
-import com.mygdx.game.components.SpriteComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
-import com.badlogic.ashley.core.Entity;
 import com.mygdx.game.components.VelocityComponent;
-import com.mygdx.game.systems.RenderingSystem;
+import com.mygdx.game.worldbuilder.WorldBuilder;
 
 import java.util.Comparator;
 
@@ -43,7 +38,7 @@ public class EntityManager {
                 .add(new TransformComponent(20,20))
                 .add(new VelocityComponent())
                 .add(new CollisionComponent())
-                .add(new PlayerComponent(createPlayer()));
+                .add(WorldBuilder.getPlayerList().get(0));
 
         return pacman;
 
