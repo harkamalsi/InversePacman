@@ -34,8 +34,8 @@ public class TableComponent implements Component {
         tableContainer.setPosition((sw - cw) / 2.0f, (sh - ch) / 2.0f);
         tableContainer.fillX();
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-        skin.getFont("default-font").getData().setScale(5f, 5f);
+        skin = new Skin(Gdx.files.internal("font/uiskin.json"));
+        skin.getFont("default-font").getData().setScale(1f, 1f);
         table = new Table(skin);
         tableContainer.setActor(table);
         stage.addActor(tableContainer);
