@@ -90,7 +90,7 @@ public class LobbyScreen extends AbstractScreen {
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
         networkManager = new NetworkManager();
 
-        bg = new TextureRegion(new Texture("menuscreen/menu_bg.png"));
+        bg = new TextureRegion(new Texture("lobbyscreen/lobbyScreen.png"));
         play = new TextureRegion(new Texture("menuscreen/play.png"));
         multiplay = new TextureRegion(new Texture("menuscreen/multi.png"));
         highscore = new TextureRegion(new Texture("menuscreen/high.png"));
@@ -173,22 +173,20 @@ public class LobbyScreen extends AbstractScreen {
         engine.addSystem(musicSystem);
         engine.addSystem(renderingSystem);
 
+        bgSprite = new Sprite(bg);
+
+        bgEntity = new Entity();
+
+        //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
+        bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() +2,
+                Gdx.graphics.getHeight() +2,false,false))
+                .add(new TransformComponent(0,0));
+        engine.addEntity(bgEntity);
+
         tbEntity = new Entity();
         tbEntity.add(new TableComponent());
         engine.addEntity(tbEntity);
 
-        ellipseEntity = new Entity();
-        ellipseEntity.add(new TextureComponent(ellipseSprite, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), true, true))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))));
-        engine.addEntity(ellipseEntity);
-
-
-        front_ellipseSprite = new Sprite(front_ellipse);
-
-        front_ellipseEntity = new Entity();
-        front_ellipseEntity.add(new TextureComponent(front_ellipseSprite, Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17));
-        engine.addEntity(front_ellipseEntity);
 
         playsprite = new Sprite(play);
 
