@@ -81,7 +81,7 @@ public final class PlayScreen extends AbstractScreen {
 //        this.engine = engine;
 //         Sets the camera; width and height.
          this.camera = new OrthographicCamera();
-         this.camera.setToOrtho(false, InversePacman.APP_WIDTH, InversePacman.APP_HEIGHT);
+         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
     }
 
