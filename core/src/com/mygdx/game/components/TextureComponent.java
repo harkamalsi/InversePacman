@@ -16,9 +16,16 @@ public class TextureComponent implements Component {
 
     public Sprite sprite;
 
+
+
     public TextureComponent(TextureRegion region){
         this.region = new TextureRegion(region);
     }
+
+    public TextureComponent(){
+        ;
+    }
+  
     public TextureComponent(Sprite sprite, float x, float y, float width, float height, boolean changeOpacity, boolean bounds, boolean changeColor, float ...rgb) {
         this.sprite = new Sprite(sprite);
         this.sprite.setBounds(x, y, width, height);
@@ -30,6 +37,5 @@ public class TextureComponent implements Component {
             i = i / 255f;
             colors.add(i);
         }
-
     }
 }
