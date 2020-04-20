@@ -32,8 +32,8 @@ public class InversePacman extends Game {
 	public static final String APP_TITLE = "InversePacman v0.1";
 	public static final int APP_WIDTH = 816;
 	public static final int APP_HEIGHT = 800;
-	public static final int APP_WIDTH_MOBILE = 1080;
-	public static final int APP_HEIGHT_MOBILE = 1800;
+	public static final int APP_WIDTH_MOBILE = 816;
+	public static final int APP_HEIGHT_MOBILE = 800;
 	public static final int APP_FPS = 60;
 
 	// Game Variables
@@ -123,9 +123,9 @@ public class InversePacman extends Game {
 		//Picture
 		img = new Texture("Test1.png");
 
-		// Camera
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false,V_WIDTH, V_HEIGHT);
+//		// Camera
+//		camera = new OrthographicCamera();
+//		camera.setToOrtho(false,V_WIDTH, V_HEIGHT);
 
 	}
 

@@ -81,7 +81,7 @@ public final class PlayScreen extends AbstractScreen {
 //        this.engine = engine;
 //         Sets the camera; width and height.
          this.camera = new OrthographicCamera();
-         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
+         this.camera.setToOrtho(false, InversePacman.APP_WIDTH, InversePacman.APP_HEIGHT);
 
     }
 
@@ -192,7 +192,7 @@ public final class PlayScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.setView(camera);
         tmr.render();
-        b2dr.render(world, camera.combined.scl(1.0f));
+        b2dr.render(world, camera.combined.scl(1f));
 //        engine.update(delta);
 
         // when paused engine stops updating, and textures "disappear"

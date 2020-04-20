@@ -37,6 +37,9 @@ public class MovementSystem extends IteratingSystem {
 //        temp.set(vel.velocity).scl(deltaTime);
 //        tc.position.add(temp.x,temp.y);
         temp2 = pc.body.getPosition();
-        tc.position.set(temp2).scl(0.0313f,0.0313f);
+        temp2.x = temp2.x/RenderingSystem.PPM;
+        temp2.y = temp2.y/RenderingSystem.PPM;
+        tc.position.set(temp2);
+//        tc.position.set(temp2).scl(0.0313f,0.0313f);
     }
 }
