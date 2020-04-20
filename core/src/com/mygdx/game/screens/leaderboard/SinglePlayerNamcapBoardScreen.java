@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.leaderboard;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.InversePacman;
@@ -7,8 +8,8 @@ import com.mygdx.game.InversePacman;
 import java.util.ArrayList;
 
 public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
-    public SinglePlayerNamcapBoardScreen(final InversePacman app) {
-        super(app);
+    public SinglePlayerNamcapBoardScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
 
         this.bg = new TextureRegion(new Texture(AbstractBoardScreen.LEADERBOARD_DIRECTORY + "namcap.png"));
     }

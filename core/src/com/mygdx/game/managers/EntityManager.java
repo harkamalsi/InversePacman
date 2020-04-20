@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.components.CollisionComponent;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.SpriteComponent;
@@ -22,6 +26,7 @@ public class EntityManager {
     private Engine engine;
     private Family family;
     private Comparator comparator;
+    private World world;
 
 
     public EntityManager(){
@@ -38,7 +43,7 @@ public class EntityManager {
                 .add(new TransformComponent(20,20))
                 .add(new VelocityComponent())
                 .add(new CollisionComponent())
-                .add(new PlayerComponent());
+                .add(new PlayerComponent(createPlayer()));
 
         return pacman;
 
@@ -49,5 +54,20 @@ public class EntityManager {
 
     private void createGhostAi(){
 
+    }
+
+    public Body createPlayer(){
+        Body pBody;
+        BodyDef def = new BodyDef();
+        def.type = BodyDef.BodyType.DynamicBody;
+        def.position.set(32,32);
+        def.fixedRotation = true;
+        pBody = world.createBody(def);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(32/2,32/2);
+
+        pBody.createFixture(shape, 1.0f);
+        shape.dispose();
+        return pBody;
     }
 }

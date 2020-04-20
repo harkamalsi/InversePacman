@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.play;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,12 +12,15 @@ import com.mygdx.game.screens.AbstractScreen;
 
 public final class PauseScreen extends AbstractScreen {
 
+    private Engine engine;
+
     private OrthographicCamera camera;
 
     public BitmapFont font = new BitmapFont(); //or use alex answer to use custom font
 
-    public PauseScreen(final InversePacman app) {
-        super(app);
+    public PauseScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
+        this.engine = engine;
 
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);

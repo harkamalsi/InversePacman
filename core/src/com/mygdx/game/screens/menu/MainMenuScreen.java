@@ -90,8 +90,9 @@ public class MainMenuScreen extends AbstractScreen {
 I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacman.V_WIDTH/HEIGHT
  */
 
-    public MainMenuScreen(final InversePacman app) {
-        super(app);
+    public MainMenuScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
+        this.engine = engine;
 
         bg = new TextureRegion(new Texture("menuscreen/menu_bg.png"));
         play = new TextureRegion(new Texture("menuscreen/play.png"));
@@ -238,7 +239,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
 
-
         engine = new Engine();
         engine.addSystem(buttonSystem);
         engine.addSystem(musicSystem);
@@ -343,5 +343,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
     @Override
     public void dispose(){
         super.dispose();
+        engine.removeAllEntities();
     }
 }

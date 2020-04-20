@@ -1,5 +1,7 @@
 package com.mygdx.game.screens;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,10 +12,12 @@ public abstract class AbstractScreen implements Screen {
 
     protected final InversePacman app;
     Stage stage;
+    private Engine engine;
 
-    public AbstractScreen(final InversePacman app) {
+    public AbstractScreen(final InversePacman app, Engine engine) {
         this.app = app;
         this.stage = new Stage();
+        this.engine = engine;
     }
 
     public abstract void update(float delta);
@@ -34,5 +38,10 @@ public abstract class AbstractScreen implements Screen {
     @Override
     public void dispose() {
         this.stage.dispose();
+        engine.removeAllEntities();
+        for (EntitySystem system : engine.getSystems()){
+            engine.removeSystem(system);
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 package com.mygdx.game.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.physics.box2d.Body;
 
 public class PlayerComponent implements Component {
     public static final int IDLE = 0;
@@ -11,6 +12,8 @@ public class PlayerComponent implements Component {
     public static final int HURT = 5;
     public static final int DIE = 6;
 
+    public Body body;
+
 
     public int currentState;
 
@@ -18,7 +21,8 @@ public class PlayerComponent implements Component {
 
     public float invincibleTimer;
 
-    public PlayerComponent() {
+    public PlayerComponent(Body body) {
+        this.body = body;
         currentState = IDLE;
         hp = 1;
         invincibleTimer = 0;

@@ -1,5 +1,6 @@
 package com.mygdx.game.managers;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.screens.AbstractScreen;
@@ -24,6 +25,7 @@ public class GameScreenManager {
     public final InversePacman app;
     private HashMap<STATE, AbstractScreen> gameScreens;
     private Array<STATE> prevScreens;
+    private Engine engine;
     public enum STATE {
         PLAY,
         PAUSE,
@@ -44,6 +46,9 @@ public class GameScreenManager {
         this.app = app;
         prevScreens = new Array<>();
 
+        //engine to be passed to all ecs screens
+        engine = new Engine();
+
         initGameScreens();
         setScreen(STATE.MAIN_MENU_SCREEN);
 
@@ -53,18 +58,18 @@ public class GameScreenManager {
 
     private void initGameScreens() {
         this.gameScreens = new HashMap<>();
-        this.gameScreens.put(STATE.PLAY, new PlayScreen(app));
-        this.gameScreens.put(STATE.PAUSE, new PauseScreen(app));
-        this.gameScreens.put(STATE.LOBBY_SCREEN, new LobbyScreen(app));
-        this.gameScreens.put(STATE.GAME_OVER_SCREEN, new GameOverScreen(app));
-        this.gameScreens.put(STATE.MAIN_MENU_SCREEN, new MainMenuScreen(app));
-        this.gameScreens.put(STATE.IN_GAME_MENU_SCREEN, new InGameMenuScreen(app));
-        this.gameScreens.put(STATE.OPTION_SCREEN, new OptionScreen(app));
-        this.gameScreens.put(STATE.LEADERBOARD_MENU_SCREEN, new LeaderboardMenuScreen(app));
-        this.gameScreens.put(STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN, new SinglePlayerGhostsBoardScreen(app));
-        this.gameScreens.put(STATE.SINGLE_PLAYER_NAMPAC_BOARD_SCREEN, new SinglePlayerNamcapBoardScreen(app));
-        this.gameScreens.put(STATE.MULTIPLAYER_GHOSTS_BOARD_SCREEN, new MultiplayerGhostsBoardScreen(app));
-        this.gameScreens.put(STATE.MULTIPLAYER_NAMPAC_BOARD_SCREEN, new MultiplayerNamcapBoardScreen(app));
+        this.gameScreens.put(STATE.PLAY, new PlayScreen(app, engine));
+        this.gameScreens.put(STATE.PAUSE, new PauseScreen(app, engine));
+        this.gameScreens.put(STATE.LOBBY_SCREEN, new LobbyScreen(app, engine));
+        this.gameScreens.put(STATE.GAME_OVER_SCREEN, new GameOverScreen(app, engine));
+        this.gameScreens.put(STATE.MAIN_MENU_SCREEN, new MainMenuScreen(app, engine));
+        this.gameScreens.put(STATE.IN_GAME_MENU_SCREEN, new InGameMenuScreen(app, engine));
+        this.gameScreens.put(STATE.OPTION_SCREEN, new OptionScreen(app, engine));
+        this.gameScreens.put(STATE.LEADERBOARD_MENU_SCREEN, new LeaderboardMenuScreen(app, engine));
+        this.gameScreens.put(STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN, new SinglePlayerGhostsBoardScreen(app, engine));
+        this.gameScreens.put(STATE.SINGLE_PLAYER_NAMPAC_BOARD_SCREEN, new SinglePlayerNamcapBoardScreen(app, engine));
+        this.gameScreens.put(STATE.MULTIPLAYER_GHOSTS_BOARD_SCREEN, new MultiplayerGhostsBoardScreen(app, engine));
+        this.gameScreens.put(STATE.MULTIPLAYER_NAMPAC_BOARD_SCREEN, new MultiplayerNamcapBoardScreen(app, engine));
     }
 
     public void setScreen(STATE nextScreen) {

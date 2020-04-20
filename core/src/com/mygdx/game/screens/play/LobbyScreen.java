@@ -1,14 +1,17 @@
 package com.mygdx.game.screens.play;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.screens.AbstractScreen;
 
 public class LobbyScreen extends AbstractScreen {
     private OrthographicCamera camera;
+    private Engine engine;
 
-    public LobbyScreen(final InversePacman app) {
-        super(app);
+    public LobbyScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
+        this.engine = engine;
 
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
