@@ -33,7 +33,6 @@ import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.GameScreenManager;
-import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -142,9 +141,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         if(multiplayerButton.flags == 1) {
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
-            //NetworkManager nm = new NetworkManager();
-            //nm.joinLobby("lobby0","foker", "pacman");
-            //nm.createLobby("foker", "pacman");
             app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
 
@@ -343,37 +339,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         // ***** Option button END *****
 
         //entityManager = new EntityManager(engine, app.batch);
-        Container<Table> tableContainer = new Container<Table>();
-        float sw = Gdx.graphics.getWidth();
-        float sh = Gdx.graphics.getHeight();
-        float cw = sw * 1f;
-        float ch = sh * 0.1f;
-
-        tableContainer.setSize(cw, ch);
-        tableContainer.setPosition((sw - cw) / 2.0f, (sh - ch) / 2.0f);
-        tableContainer.fillX();
-        tableContainer.height(ch);
-
-
-
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-        skin.getFont("default-font").getData().setScale(5f, 5f);
-        //BitmapFont skinFont = new BitmapFont(), Color.RED);
-        lobbyName = new Label("Lobby1", skin);
-        lobbyPlayers = new Label("2/5", skin);
-
-        Table table = new Table();
-
-
-        tableContainer.setActor(table);
-        stage.addActor(tableContainer);
-        Gdx.input.setInputProcessor(stage);
-
-        table.add(lobbyName).expand();
-        table.add(lobbyPlayers).expand();
-        table.row();
-        table.setDebug(true);
-
     }
 
     @Override

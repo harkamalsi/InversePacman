@@ -32,7 +32,7 @@ public class NetworkManager {
         //socket = new SocketIOManager().getSocketInstance();
         //socketID = socket.connect().id();
         setSocket();
-        createLobby("foker", "pacman");
+        //createLobby("foker", "pacman");
     }
 
     public void setSocket() {

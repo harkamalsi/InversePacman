@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -31,7 +34,6 @@ public class TableSystem extends IteratingSystem {
         super(Family.all(TableComponent.class).get());
         tableM = ComponentMapper.getFor(TableComponent.class);
         //tc = ComponentMapper.getFor(TransformComponent.class);
-        networkManager = new NetworkManager();
     }
 
     @Override
@@ -39,12 +41,17 @@ public class TableSystem extends IteratingSystem {
         super.update(deltaTime);
     }
 
+    private void handleLobbyButtonClicked(String lobbyName) {
+        this.networkManager.joinLobby(lobbyName, "Pepsi", "pacman");
+    }
+
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
+        this.networkManager = cc.networkManager;
         cc.reset();
-        JSONArray lobbies = networkManager.getLobbies();
+        JSONArray lobbies = this.networkManager.getLobbies();
 
         if(cc.draw) {
             for (int i = 0; i < lobbies.length(); i++) { //lobbies.length
@@ -58,26 +65,11 @@ public class TableSystem extends IteratingSystem {
         }
         cc.draw();
 
+        if (cc.joinLobby) {
+            handleLobbyButtonClicked(cc.getJoinLobbyName());
+        }
+        cc.joinLobby = false;
 
-        // TransformComponent transform = tc.get(entity);
-
-        /*//update click bounds
-        click.bounds.x = transform.position.x;
-        click.bounds.y = transform.position.y;
-        // not done yet example I found and modified needs testing with the menubuttons
-        if(Gdx.input.justTouched()){
-            // touching
-            Vector3 clickPosition = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            System.out.println(clickPosition+":"+click.bounds.toString());
-            if(click.bounds.contains(clickPosition.x, clickPosition.y)){
-                //object clicked
-                //do your thing
-                System.out.println("Touched"+entity.toString());
-
-                entity.flags = 1;
-
-            }
-        }*/
     }
 
 

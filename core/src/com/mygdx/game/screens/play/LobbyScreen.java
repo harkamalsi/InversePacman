@@ -52,7 +52,7 @@ public class LobbyScreen extends AbstractScreen {
     private RenderingSystem renderingSystem;
     private MusicSystem musicSystem;
 
-    private TextureRegion play;
+    private TextureRegion createLobby;
     private TextureRegion multiplay;
     private TextureRegion highscore;
     private TextureRegion option;
@@ -72,7 +72,7 @@ public class LobbyScreen extends AbstractScreen {
     private Entity tbEntity;
 
 
-    private Sprite playsprite;
+    private Sprite createLobbySprite;
     private Sprite multisprite;
     private Sprite highscoresprite;
     private Sprite optionsprite;
@@ -96,7 +96,7 @@ public class LobbyScreen extends AbstractScreen {
         networkManager = new NetworkManager();
 
         bg = new TextureRegion(new Texture("lobbyscreen/lobbyScreen.png"));
-        play = new TextureRegion(new Texture("menuscreen/play.png"));
+        createLobby = new TextureRegion(new Texture("lobbyscreen/createLobbyButton.png"));
         multiplay = new TextureRegion(new Texture("menuscreen/multi.png"));
         highscore = new TextureRegion(new Texture("menuscreen/high.png"));
         option = new TextureRegion(new Texture("menuscreen/options.png"));
@@ -107,8 +107,8 @@ public class LobbyScreen extends AbstractScreen {
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
         layout = new GlyphLayout(); //dont do this every frame! Store it as member
 
-        scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
-        scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
+        scaleX = (Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE) * 0.8f;
+        scaleY = (Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE) * 0.8f;
 
 
     }
@@ -121,15 +121,6 @@ public class LobbyScreen extends AbstractScreen {
         batch.draw(bg, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
         batch.end();
         engine.update(delta);
-        /*batch.begin();
-        font.setUseIntegerPositions(false);
-        font.getData().setScale(scaleX / 32f, scaleY / 32f);
-        layout.setText(font,"MENU");
-
-        font.draw(batch,"menu", (Gdx.graphics.getWidth() / 64f - layout.width / 2f),
-                (Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
-
-        batch.end();*/
     }
 
 
@@ -145,12 +136,6 @@ public class LobbyScreen extends AbstractScreen {
         String playerType = "pacman";
         String joinLobbyName = "Lobby1";
 
-
-        if(joinLobbyButton.flags == 1) {
-            System.out.println("JoinLobby pressed!");
-            networkManager.joinLobby(joinLobbyName, nickname, playerType);
-            joinLobbyButton.flags = 0;
-        }
         if(createLobbyButton.flags == 1) {
             System.out.println("CreateLobby pressed!");
             networkManager.createLobby(nickname, playerType);
@@ -193,30 +178,19 @@ public class LobbyScreen extends AbstractScreen {
         //engine.addEntity(bgEntity);
 
         tbEntity = new Entity();
-        tbEntity.add(new TableComponent());
+        tbEntity.add(new TableComponent(networkManager));
         engine.addEntity(tbEntity);
 
 
-        playsprite = new Sprite(play);
-
-        joinLobbyButton = new Entity();
-        joinLobbyButton.add(new TextureComponent(playsprite,
-                (Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 0.2f,
-                Gdx.graphics.getHeight() / 20f, playsprite.getRegionWidth() * scaleX ,
-                playsprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2 * scaleX) * 0.2f,
-                        Gdx.graphics.getHeight() / 20f, playsprite.getRegionWidth() * scaleX , playsprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2 * scaleX) * 0.2f,
-                        Gdx.graphics.getHeight() / 20f));
-        engine.addEntity(joinLobbyButton);
+        createLobbySprite = new Sprite(createLobby);
 
         createLobbyButton = new Entity();
-        createLobbyButton.add(new TextureComponent(playsprite,
-                (Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f,
-                Gdx.graphics.getHeight() / 20f, playsprite.getRegionWidth() * scaleX,
-                playsprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 20f, playsprite.getRegionWidth() * scaleX, playsprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 20f));
+        createLobbyButton.add(new TextureComponent(createLobbySprite,
+                (Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)),
+                Gdx.graphics.getHeight() / 20f, createLobbySprite.getRegionWidth() * scaleX,
+                createLobbySprite.getRegionHeight() * scaleY, false, false))
+                .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f, createLobbySprite.getRegionWidth() * scaleX, createLobbySprite.getRegionHeight() * scaleY))
+                .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f));
         engine.addEntity(createLobbyButton);
 
         
