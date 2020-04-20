@@ -1,5 +1,7 @@
 package com.mygdx.game.managers;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.screens.AbstractScreen;
@@ -11,6 +13,7 @@ import com.mygdx.game.screens.menu.InGameMenuScreen;
 import com.mygdx.game.screens.menu.LeaderboardMenuScreen;
 import com.mygdx.game.screens.menu.MainMenuScreen;
 import com.mygdx.game.screens.menu.OptionScreen;
+import com.mygdx.game.screens.menu.SplashScreen;
 import com.mygdx.game.screens.play.GameOverScreen;
 import com.mygdx.game.screens.play.LobbyScreen;
 import com.mygdx.game.screens.play.PauseScreen;
@@ -24,6 +27,7 @@ public class GameScreenManager {
     public final InversePacman app;
     private HashMap<STATE, AbstractScreen> gameScreens;
     private Array<STATE> prevScreens;
+    public Engine engine;
     public enum STATE {
         PLAY,
         PAUSE,
@@ -37,15 +41,17 @@ public class GameScreenManager {
         MULTIPLAYER_NAMPAC_BOARD_SCREEN,
         OPTION_SCREEN,
         LEADERBOARD_MENU_SCREEN,
+        SPLASH_SCREEN,
     }
     public STATE currentState;
 
     public GameScreenManager(final InversePacman app) {
         this.app = app;
         prevScreens = new Array<>();
+        this.engine = engine;
 
         initGameScreens();
-        setScreen(STATE.MAIN_MENU_SCREEN);
+        setScreen(STATE.SPLASH_SCREEN);
 
 
         //System.out.println(prevScreens);
@@ -65,6 +71,7 @@ public class GameScreenManager {
         this.gameScreens.put(STATE.SINGLE_PLAYER_NAMPAC_BOARD_SCREEN, new SinglePlayerNamcapBoardScreen(app));
         this.gameScreens.put(STATE.MULTIPLAYER_GHOSTS_BOARD_SCREEN, new MultiplayerGhostsBoardScreen(app));
         this.gameScreens.put(STATE.MULTIPLAYER_NAMPAC_BOARD_SCREEN, new MultiplayerNamcapBoardScreen(app));
+        this.gameScreens.put(STATE.SPLASH_SCREEN, new SplashScreen(app));
     }
 
     public void setScreen(STATE nextScreen) {

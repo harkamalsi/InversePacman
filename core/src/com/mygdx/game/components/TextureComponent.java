@@ -5,10 +5,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+
 public class TextureComponent implements Component {
     public TextureRegion region;
-    public boolean change;
+    public boolean changeOpacity;
     public boolean bounds;
+    public boolean changeColor;
+    public ArrayList<Float> colors;
 
     public Sprite sprite;
 
@@ -22,11 +26,16 @@ public class TextureComponent implements Component {
         ;
     }
   
-    public TextureComponent(Sprite sprite, float x, float y, float width, float height, boolean change, boolean bounds) {
+    public TextureComponent(Sprite sprite, float x, float y, float width, float height, boolean changeOpacity, boolean bounds, boolean changeColor, float ...rgb) {
         this.sprite = new Sprite(sprite);
         this.sprite.setBounds(x, y, width, height);
-        this.change = change;
+        this.changeOpacity = changeOpacity;
         this.bounds = bounds;
-
+        this.changeColor = changeColor;
+        this.colors = new ArrayList<Float>();
+        for(Float i : rgb) {
+            i = i / 255f;
+            colors.add(i);
+        }
     }
 }
