@@ -92,8 +92,9 @@ public class OptionScreen extends AbstractScreen {
 
 
 
-    public OptionScreen(InversePacman app) {
-        super(app);
+    public OptionScreen(InversePacman app, Engine engine) {
+        super(app, engine);
+        this.engine = engine;
         bg = new TextureRegion(new Texture("optionscreen/option_bg.png"));
         back = new TextureRegion(new Texture("back.png"));
         settings = new TextureRegion(new Texture("optionscreen/options_button.png"));

@@ -45,8 +45,8 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
     private static String LEADERBOARD_MENU_DIRECTORY = "leaderboardmenuscreen/";
 
-    public LeaderboardMenuScreen(final InversePacman app) {
-        super(app);
+    public LeaderboardMenuScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
 
         bg = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "leaderboard_menu_bg.png"));
         ghosts = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "ghosts_button.png"));

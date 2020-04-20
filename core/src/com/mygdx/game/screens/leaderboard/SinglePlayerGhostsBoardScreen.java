@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.leaderboard;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Json;
@@ -9,8 +10,8 @@ import java.util.ArrayList;
 
 public class SinglePlayerGhostsBoardScreen extends AbstractBoardScreen {
 
-    public SinglePlayerGhostsBoardScreen(final InversePacman app) {
-        super(app);
+    public SinglePlayerGhostsBoardScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
 
         this.bg = new TextureRegion(new Texture(AbstractBoardScreen.LEADERBOARD_DIRECTORY + "ghosts.png"));
     }

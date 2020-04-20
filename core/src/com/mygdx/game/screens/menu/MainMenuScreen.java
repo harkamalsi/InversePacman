@@ -2,13 +2,8 @@ package com.mygdx.game.screens.menu;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,18 +15,15 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
-import com.mygdx.game.components.CollisionComponent;
-import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
-import com.mygdx.game.components.VelocityComponent;
+import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.RenderingSystem;
-import com.mygdx.game.managers.EntityManager;
 
 
 public class MainMenuScreen extends AbstractScreen {
@@ -90,8 +82,9 @@ public class MainMenuScreen extends AbstractScreen {
 I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacman.V_WIDTH/HEIGHT
  */
 
-    public MainMenuScreen(final InversePacman app) {
-        super(app);
+    public MainMenuScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
+        this.engine = engine;
 
         bg = new TextureRegion(new Texture("menuscreen/menu_bg.png"));
         play = new TextureRegion(new Texture("menuscreen/play.png"));
@@ -198,9 +191,9 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         font.setUseIntegerPositions(false);
         font.getData().setScale(scaleX / 32f, scaleY / 32f);
         layout.setText(font,"MENU");
-        System.out.println("font x: " + (Gdx.graphics.getWidth() / 2 - layout.width / 2));
-        System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
-        System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
+        //System.out.println("font x: " + (Gdx.graphics.getWidth() / 2 - layout.width / 2));
+        //System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
+        //System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
 
 
         font.draw(batch,"menu", (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
@@ -237,7 +230,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         buttonSystem = new ButtonSystem(camera);
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
-
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
@@ -343,5 +335,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
     @Override
     public void dispose(){
         super.dispose();
+        engine.removeAllEntities();
     }
 }

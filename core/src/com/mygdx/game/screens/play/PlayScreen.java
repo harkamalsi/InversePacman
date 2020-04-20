@@ -4,22 +4,24 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
-import com.mygdx.game.components.GhostComponent;
-import com.mygdx.game.components.PacmanComponent;
-import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -32,12 +34,11 @@ import com.mygdx.game.systems.AnimationSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
+import com.mygdx.game.systems.PlayerContactListener;
 import com.mygdx.game.systems.PlayerInputSystem;
 import com.mygdx.game.systems.RenderingSystem;
 import com.mygdx.game.systems.StateSystem;
-import com.badlogic.gdx.files.FileHandle;
-import java.util.ArrayList;
-import java.util.Random;
+import com.mygdx.game.worldbuilder.WorldBuilder;
 
 public final class PlayScreen extends AbstractScreen {
 
@@ -51,6 +52,15 @@ public final class PlayScreen extends AbstractScreen {
 
     private Entity pacman;
     private Entity ghost;
+
+    //World building
+    public World world;
+    public Body player;
+    public Box2DDebugRenderer b2dr;
+
+    //Box2d
+    public OrthogonalTiledMapRenderer tmr;
+    public TiledMap map;
 
     private Engine engine;
 
@@ -66,13 +76,15 @@ public final class PlayScreen extends AbstractScreen {
     private AnimationSystem animationSystem;
     private MusicSystem musicSystem;
 
-    public BitmapFont font = new BitmapFont(); //or use alex answer to use custom font
 
-    public PlayScreen(final InversePacman app) {
-        super(app);
-        // Sets the camera; width and height.
-        // this.camera = new OrthographicCamera();
-        // this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
+    public PlayScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
+        this.engine = engine;
+//        this.engine = engine;
+//         Sets the camera; width and height.
+         this.camera = new OrthographicCamera();
+         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
     }
 
     public void handleInput(){
@@ -102,6 +114,17 @@ public final class PlayScreen extends AbstractScreen {
     @Override
     public void show() {
 
+        //world
+        world = new World(new Vector2(0f, 0), false);
+        world.setContactListener(new PlayerContactListener());
+        b2dr = new Box2DDebugRenderer();
+
+        //Tiled map creation and WorldBuilder call
+        map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
+        tmr = new OrthogonalTiledMapRenderer(map);
+        WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects(), map.getLayers().get("BackgroundLayer"));
+        WorldBuilder.createPlayer(world);
+
 
         // To add a new songs, place the file under the folder assets/music/play
 
@@ -115,7 +138,6 @@ public final class PlayScreen extends AbstractScreen {
         animationSystem = new AnimationSystem();
         musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
 
-        engine = new Engine();
         engine.addSystem(playerInputSystem);
         engine.addSystem(aiSystem);
         engine.addSystem(movementSystem);
@@ -146,7 +168,7 @@ public final class PlayScreen extends AbstractScreen {
 
         ghost = new Entity();
         ghost.add(new VelocityComponent())
-                .add(new GhostComponent())
+                .add(WorldBuilder.getPlayerList().get(0))
                 .add(new TextureComponent())
                 .add(animcomponent)
                 .add(new StateComponent(0))
@@ -176,9 +198,10 @@ public final class PlayScreen extends AbstractScreen {
         super.render(delta);
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        app.batch.begin();
-        app.batch.draw(app.img, 0, 0);
-        app.batch.end();
+        tmr.setView(camera);
+        tmr.render();
+        b2dr.render(world, camera.combined.scl(1f));
+//        engine.update(delta);
 
         // when paused engine stops updating, and textures "disappear"
         if(!pause) {
@@ -187,12 +210,28 @@ public final class PlayScreen extends AbstractScreen {
                 resume = false;
             }
             engine.update(delta);
+            world.step(1/60f,6,2);
 
         }
         if(pause && !resume){
             musicSystem.pause();
             resume = true;
         }
+    }
+
+    public Body createPlayer(){
+        Body pBody;
+        BodyDef def = new BodyDef();
+        def.type = BodyDef.BodyType.DynamicBody;
+        def.position.set(30,30);
+        def.fixedRotation = true;
+        pBody = world.createBody(def);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(30/2,30/2);
+
+        pBody.createFixture(shape, 1.0f);
+        shape.dispose();
+        return pBody;
     }
 
     @Override
@@ -214,5 +253,7 @@ public final class PlayScreen extends AbstractScreen {
 
     @Override
     public void dispose(){
+        super.dispose();
+        engine.removeAllEntities();
     }
 }

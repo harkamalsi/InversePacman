@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.leaderboard;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,8 +24,8 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     private SpriteBatch batch;
     private BitmapFont font;
 
-    public AbstractBoardScreen(InversePacman app) {
-        super(app);
+    public AbstractBoardScreen(InversePacman app, Engine engine) {
+        super(app, engine);
         font = new BitmapFont();
     }
 

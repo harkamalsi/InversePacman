@@ -1,12 +1,12 @@
 package com.mygdx.game.systems;
 
+
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.GhostComponent;
 import com.mygdx.game.components.PacmanComponent;
@@ -315,6 +315,7 @@ class BoardDummy {
         }
         return legalMoves;
     }
+
 
 }
 
