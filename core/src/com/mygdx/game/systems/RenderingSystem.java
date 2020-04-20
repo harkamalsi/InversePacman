@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -56,6 +57,7 @@ public class RenderingSystem extends IteratingSystem {
 
         cam = new OrthographicCamera(CAMERA_WIDTH, CAMERA_HEIGHT);
         cam.position.set(CAMERA_WIDTH / 2f, CAMERA_HEIGHT / 2f, 0);
+
     }
 
 
@@ -111,11 +113,19 @@ public class RenderingSystem extends IteratingSystem {
                     tex.sprite.setBounds(tex.sprite.getX() / PPM, tex.sprite.getY() / PPM, tex.sprite.getWidth() / PPM, tex.sprite.getHeight() / PPM);
                     tex.bounds = false;
                 }
-                if(tex.change) {
+                if(tex.changeOpacity) {
                     tex.sprite.setColor(tex.sprite.getColor().r,tex.sprite.getColor().g, tex.sprite.getColor().b,a);
+                    if(tex.changeColor) {
+                        try {
+                            tex.sprite.setColor(tex.colors.get(0), tex.colors.get(1), tex.colors.get(2), tex.sprite.getColor().a);
+                        }
+                        catch (IndexOutOfBoundsException e) {
+                            System.out.println("Wrong color format RGB! Setting standard values for: " + tex.sprite);
+                        }
+                    }
                     tex.sprite.draw(batch);
                 }
-                if(!tex.change) {
+                if(!tex.changeOpacity) {
                     batch.draw(tex.sprite, tex.sprite.getX() / PPM, tex.sprite.getY() / PPM, tex.sprite.getWidth() / PPM, tex.sprite.getHeight() / PPM);
                 }
                 //tex.sprite.setBounds(0,0, tex.sprite.getRegionWidth() / 5, tex.sprite.getRegionHeight() / 5);
