@@ -62,6 +62,10 @@ public class AISystem extends IteratingSystem{
         texM = ComponentMapper.getFor(TextureComponent.class);
 
         //Gdx.input.setInputProcessor(this);
+
+    }
+    @Override
+    protected void processEntity(Entity entity, float deltaTime) {
         GhostComponent gc = ghostM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
@@ -111,13 +115,6 @@ public class AISystem extends IteratingSystem{
 
         vc.setVelocity(x,y);
         vc.setAcceleration(x,y);
-    }
-    @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        /*
-        VelocityComponent velocity = vm.get(entity);
-        TransformComponent pos = tm.get(entity);
-         */
     }
 
     public BoardDummy miniMax(BoardDummy board, int depth) {
