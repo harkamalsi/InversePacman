@@ -160,7 +160,6 @@ public class LobbyScreen extends AbstractScreen {
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
 
-
         engine = new Engine();
         engine.addSystem(buttonSystem);
         engine.addSystem(tableSystem);
@@ -172,8 +171,8 @@ public class LobbyScreen extends AbstractScreen {
         bgEntity = new Entity();
 
         //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
-        bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() +2,
-                Gdx.graphics.getHeight() +2,false,false))
+        bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() + 2,
+                Gdx.graphics.getHeight() + 2,false,false,false,0,0,0))
                 .add(new TransformComponent(0,0));
         //engine.addEntity(bgEntity);
 
@@ -181,19 +180,18 @@ public class LobbyScreen extends AbstractScreen {
         tbEntity.add(new TableComponent(networkManager));
         engine.addEntity(tbEntity);
 
-
         createLobbySprite = new Sprite(createLobby);
 
         createLobbyButton = new Entity();
         createLobbyButton.add(new TextureComponent(createLobbySprite,
                 (Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)),
                 Gdx.graphics.getHeight() / 20f, createLobbySprite.getRegionWidth() * scaleX,
-                createLobbySprite.getRegionHeight() * scaleY, false, false))
+                createLobbySprite.getRegionHeight() * scaleY, false, false,false,0,0,0))
                 .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f, createLobbySprite.getRegionWidth() * scaleX, createLobbySprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f));
         engine.addEntity(createLobbyButton);
 
-        
+
     }
 
     @Override

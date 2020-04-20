@@ -26,7 +26,6 @@ import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.GameScreenManager;
-import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -127,9 +126,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         if(multiplayerButton.flags == 1) {
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
-            NetworkManager nm = new NetworkManager();
-            //nm.joinLobby("lobby0","foker", "pacman");
-            nm.createLobby("foker", "pacman");
             app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
 
