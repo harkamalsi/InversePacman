@@ -19,7 +19,6 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
-import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
 
@@ -33,6 +32,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
     private TextureRegion ellipse;
     private TextureRegion front_ellipse;
+    private TextureRegion back;
 
     private Entity singlePlayerGhostsButton;
     private Entity singlePlayerNampacButton;
@@ -41,6 +41,10 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     private Entity ellipseEntity;
     private Entity front_ellipseEntity;
     private Entity bgEntity;
+
+    private Entity ellipseEntity;
+    private Entity front_ellipseEntity;
+    private Entity backButton;
 
     private SpriteBatch batch;
     private SpriteBatch bgBatch;
@@ -59,32 +63,35 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     private BitmapFont font;
     private GlyphLayout layout;
 
-    private RenderingSystem renderingSystem;
+    private Sprite ellipseSprite;
+    private Sprite front_ellipseSprite;
+    private Sprite backSprite;
+
     private ButtonSystem buttonSystem;
-    private MusicSystem musicSystem;
+    private RenderingSystem renderSystem;
 
     private Engine engine;
+    private float scaleX;
+    private float scaleY;
 
     private static String LEADERBOARD_MENU_DIRECTORY = "leaderboardmenuscreen/";
 
     public LeaderboardMenuScreen(final InversePacman app) {
         super(app);
+        scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
+        scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
 
-        bg = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "leaderboard_menu_bg.png"));
+        bg = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "leaderboardcorrectiswear.png"));
         ghosts = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "ghosts_button.png"));
         nampac = new TextureRegion(new Texture(LEADERBOARD_MENU_DIRECTORY + "nampac_button.png"));
 
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
-
-        font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
-        layout = new GlyphLayout(); //dont do this every frame! Store it as member
-
-        scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
-        scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
+        back = new TextureRegion(new Texture("back.png"));
+        //System.out.println(this.engine.getSystems());
     }
 
-    public void handleInput() {
+    private void handleInput() {
         if (singlePlayerGhostsButton.flags == 1) {
             musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
@@ -100,9 +107,12 @@ public class LeaderboardMenuScreen extends AbstractScreen {
             app.gsm.setScreen(GameScreenManager.STATE.MULTIPLAYER_GHOSTS_BOARD_SCREEN);
         }
 
-        if (multiplayerGhostsButton.flags == 1) {
-            musicSystem.dispose();
+        if (multiplayerNampacButton.flags == 1) {
             app.gsm.setScreen(GameScreenManager.STATE.MULTIPLAYER_NAMPAC_BOARD_SCREEN);
+        }
+
+        if(backButton.flags == 1) {
+            app.gsm.setScreen((GameScreenManager.STATE.MAIN_MENU_SCREEN));
         }
     }
 
@@ -110,16 +120,26 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
 
-        this.engine.update(delta);
+
+        //batch.setProjectionMatrix(camera.combined);
+
+        Gdx.gl.glClearColor(0.2f, 0.2f, 0.1f, 1.0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
         font.setUseIntegerPositions(false);
         font.getData().setScale(scaleX / 40f, scaleY / 40f);
         layout.setText(font, "HIGHSCORE");
 
-        font.draw(batch, "highscore", (Gdx.graphics.getWidth() / 64f - layout.width / 2f), (Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+        batch.draw(this.bg, 0, 0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
+        //singlePlayerGhostsSprite.draw(batch);
+        //singlePlayerNampacSprite.draw(batch);
+        //multiplayerGhostsSprite.draw(batch);
+        //multiplayerNampacSprite.draw(batch);
+
 
         batch.end();
+        engine.update(delta);
     }
 
     @Override
@@ -130,7 +150,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         this.camera = new OrthographicCamera();
-        this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), this.camera);
+        this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -140,55 +160,57 @@ public class LeaderboardMenuScreen extends AbstractScreen {
         ellipseSprite = new Sprite(ellipse);
 
         buttonSystem = new ButtonSystem(this.camera);
-        renderingSystem = new RenderingSystem(batch);
-        musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
+        renderSystem = new RenderingSystem(batch);
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
-        engine.addSystem(musicSystem);
-        engine.addSystem(renderingSystem);
+        engine.addSystem(renderSystem);
 
-        // Essentially duplicating logic from MainMenuScreen.
-        // This should be pulled up into a parent class.
-        bgSprite = new Sprite(bg);
-        bgEntity = new Entity();
-        bgEntity.add(new TextureComponent(bgSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false))
-                .add(new TransformComponent(0, 0));
-        engine.addEntity(bgEntity);
+        ellipseSprite = new Sprite(ellipse);
 
         ellipseEntity = new Entity();
-        ellipseEntity.add(new TextureComponent(ellipseSprite, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), true, true))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))));
-        engine.addEntity(ellipseEntity);
+        app.addSpriteEntity(ellipseSprite, ellipseEntity, engine, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), false, true, true, false);
+
 
         front_ellipseSprite = new Sprite(front_ellipse);
 
         front_ellipseEntity = new Entity();
-        front_ellipseEntity.add(new TextureComponent(front_ellipseSprite, Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17));
-        engine.addEntity(front_ellipseEntity);
+        app.addSpriteEntity(front_ellipseSprite, front_ellipseEntity, engine,Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false, false, false);
+
 
         // Single Player ghosts button
-        float firstYPosition = Gdx.graphics.getHeight() / 1.75f;
+        float firstYPosition = Gdx.graphics.getHeight();
 
         singlePlayerGhostsSprite = new Sprite(ghosts);
         singlePlayerGhostsButton = new Entity();
-        addButton(singlePlayerGhostsSprite, singlePlayerGhostsButton, firstYPosition);
+        app.addSpriteEntity(singlePlayerGhostsSprite, singlePlayerGhostsButton, engine, Gdx.graphics.getWidth()/ 2  - (singlePlayerGhostsSprite.getRegionWidth() / 2 * (scaleX)) ,
+                firstYPosition / 1.75f, singlePlayerGhostsSprite.getRegionWidth() * scaleX, singlePlayerGhostsSprite.getRegionHeight() * scaleY, true,  false, false, false);
+
 
         // Single Player Nam-Pac button
         singlePlayerNampacSprite = new Sprite(nampac);
         singlePlayerNampacButton = new Entity();
-        addButton(singlePlayerNampacSprite, singlePlayerNampacButton, firstYPosition - 60);
+        app.addSpriteEntity(singlePlayerNampacSprite, singlePlayerNampacButton, engine, Gdx.graphics.getWidth()/ 2  - (singlePlayerNampacSprite.getRegionWidth() / 2 * (scaleX)) ,
+                firstYPosition / 2f, singlePlayerNampacSprite.getRegionWidth() * scaleX, singlePlayerNampacSprite.getRegionHeight() * scaleY, true, false, false, false);
+        //addButton(singlePlayerNampacSprite, singlePlayerNampacButton, firstYPosition / 2f);
 
         // Multiplayer ghosts button
         multiplayerGhostsSprite = new Sprite(ghosts);
         multiplayerGhostsButton = new Entity();
-        addButton(multiplayerGhostsSprite, multiplayerGhostsButton, firstYPosition - 275);
+        app.addSpriteEntity(multiplayerGhostsSprite, multiplayerGhostsButton , engine, Gdx.graphics.getWidth()/ 2  - (multiplayerGhostsSprite.getRegionWidth() / 2 * (scaleX)) ,
+                firstYPosition / 4f, multiplayerGhostsSprite.getRegionWidth() * scaleX, multiplayerGhostsSprite.getRegionHeight() * scaleY, true, false, false, false);
+        //addButton(multiplayerGhostsSprite, multiplayerGhostsButton, firstYPosition / 4f);
 
         // Multiplayer Nam-Pac button
         multiplayerNampacSprite = new Sprite(nampac);
         multiplayerNampacButton = new Entity();
-        addButton(multiplayerNampacSprite, multiplayerNampacButton, firstYPosition - 335);
+        app.addSpriteEntity(multiplayerNampacSprite, multiplayerNampacButton , engine, Gdx.graphics.getWidth()/ 2  - (multiplayerNampacSprite.getRegionWidth() / 2 * (scaleX)) ,
+                firstYPosition / 5.6f, multiplayerNampacSprite.getRegionWidth() * scaleX, multiplayerNampacSprite.getRegionHeight() * scaleY, true, false, false, false);
+        //addButton(multiplayerNampacSprite, multiplayerNampacButton, firstYPosition / 5.6f);
+
+        backSprite = new Sprite(back);
+        backButton = new Entity();
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
     }
 
     @Override
@@ -206,16 +228,19 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
     }
 
-    private void addButton(Sprite sprite, Entity button, float y) {
-        sprite.setBounds(Gdx.graphics.getWidth()/ 2 - sprite.getRegionWidth() / 2,
-                y, sprite.getRegionWidth(), sprite.getRegionHeight());
 
-        button.add(new TextureComponent(sprite, Gdx.graphics.getWidth() / 2 - (sprite.getWidth() / 2 * scaleX), y, sprite.getRegionWidth() * scaleX, sprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 - (sprite.getRegionWidth() / 2 * scaleX),
+
+    private void addButton(Sprite sprite, Entity button, float y) {
+        //sprite.setBounds(Gdx.graphics.getWidth()/ 2 - sprite.getRegionWidth() / 2,
+                //y, sprite.getRegionWidth(), sprite.getRegionHeight());
+
+        button.add(new TextureComponent(sprite, Gdx.graphics.getWidth()/ 2  - (sprite.getRegionWidth() / 2 * (scaleX)) ,
+                y, sprite.getRegionWidth() * scaleX, sprite.getRegionHeight() * scaleY, false, false, false))
+                .add(new ButtonComponent(Gdx.graphics.getWidth()/ 2  - (sprite.getRegionWidth() / 2 * (scaleX)) ,
                         y, sprite.getRegionWidth() * scaleX, sprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (sprite.getRegionWidth() / 2 * scaleX),
+                .add(new TransformComponent(Gdx.graphics.getWidth()/ 2  - (sprite.getRegionWidth() / 2 * (scaleX)) ,
                         y));
-        this.engine.addEntity(button);
+        engine.addEntity(button);
     }
 
 }

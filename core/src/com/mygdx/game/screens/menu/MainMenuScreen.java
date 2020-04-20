@@ -198,12 +198,12 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         font.setUseIntegerPositions(false);
         font.getData().setScale(scaleX / 32f, scaleY / 32f);
         layout.setText(font,"MENU");
-        System.out.println("font x: " + (Gdx.graphics.getWidth() / 2 - layout.width / 2));
-        System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
-        System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
+        //System.out.println("font x: " + (Gdx.graphics.getWidth() / 2 - layout.width / 2));
+        //System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
+        //System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
 
 
-        font.draw(batch,"menu", (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
         batch.end();
 
 
@@ -224,18 +224,12 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-
-
         batch = new SpriteBatch();
         bgBatch = new SpriteBatch();
-
-        ellipseSprite = new Sprite(ellipse);
-        //ellipseSprite.setBounds(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY)), ellipse.getRegionWidth() * (scaleX), ellipse.getRegionHeight() * (scaleY));
 
         buttonSystem = new ButtonSystem(camera);
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
-
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
@@ -243,80 +237,49 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         engine.addSystem(renderingSystem);
 
         bgSprite = new Sprite(bg);
-
         bgEntity = new Entity();
-
         //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
-        bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() +2, Gdx.graphics.getHeight() +2,false,false))
-                .add(new TransformComponent(0,0));
-        engine.addEntity(bgEntity);
+        app.addSpriteEntity(bgSprite, bgEntity, engine,0, -2, Gdx.graphics.getWidth() +2, Gdx.graphics.getHeight() +2,false,false,false, false );
 
 
+        ellipseSprite = new Sprite(ellipse);
         ellipseEntity = new Entity();
-        ellipseEntity.add(new TextureComponent(ellipseSprite, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), true, true))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))));
-        engine.addEntity(ellipseEntity);
+        app.addSpriteEntity(ellipseSprite, ellipseEntity, engine, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), false, true, true, false);
 
 
         front_ellipseSprite = new Sprite(front_ellipse);
-
         front_ellipseEntity = new Entity();
-        front_ellipseEntity.add(new TextureComponent(front_ellipseSprite, Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17));
-        engine.addEntity(front_ellipseEntity);
+        app.addSpriteEntity(front_ellipseSprite, front_ellipseEntity, engine, Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY),false, false, false, false );
+
         // ***** Play button START *****
 
         playsprite = new Sprite(play);
-        //playsprite.setBounds(Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.80, playsprite.getRegionWidth() * scaleX, playsprite.getRegionHeight() * scaleY);
-
         singleplayerButton = new Entity();
-
-        singleplayerButton.add(new TextureComponent(playsprite, Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.80, playsprite.getRegionWidth() * scaleX , playsprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.80, playsprite.getRegionWidth() * scaleX , playsprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.80));
-        engine.addEntity(singleplayerButton);
+        app.addSpriteEntity(playsprite, singleplayerButton, engine, Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.80, playsprite.getRegionWidth() * scaleX ,playsprite.getRegionHeight() * scaleY, true,false, false, false);
 
         // ***** Play button END *****
 
         // ***** Multiplayer button START *****
 
         multisprite = new Sprite(multiplay);
-        //multisprite.setBounds(Gdx.graphics.getWidth() / 2 - (multisprite.getWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)2.9, multisprite.getRegionWidth() * scaleX, multisprite.getRegionHeight() * scaleY);
-
         multiplayerButton = new Entity();
-
-        multiplayerButton.add(new TextureComponent(multisprite, Gdx.graphics.getWidth() / 2 - (multisprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)2.9, multisprite.getRegionWidth() * scaleX, multisprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 - (multisprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)2.9, multisprite.getRegionWidth() * scaleX, multisprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (multisprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)2.9));
-        engine.addEntity(multiplayerButton);
+        app.addSpriteEntity(multisprite, multiplayerButton, engine, Gdx.graphics.getWidth() / 2 - (multisprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)2.9, multisprite.getRegionWidth() * scaleX, multisprite.getRegionHeight() * scaleY, true,false, false, false);
 
         // ***** Multiplayer button END *****
 
         // ***** Highscore button START *****
 
         highscoresprite = new Sprite(highscore);
-        //highscoresprite.setBounds(Gdx.graphics.getWidth() / 2 - (highscoresprite.getWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)3.8, highscoresprite.getRegionWidth() * scaleX, highscoresprite.getRegionHeight() * scaleY);
-
         highscoreButton = new Entity();
-
-        highscoreButton.add(new TextureComponent(highscoresprite, Gdx.graphics.getWidth() / 2 - (highscoresprite.getWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)3.8, highscoresprite.getRegionWidth() * scaleX, highscoresprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 - (highscoresprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)3.8, highscoresprite.getRegionWidth() * scaleX, highscoresprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (highscoresprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)3.8));
-        engine.addEntity(highscoreButton);
+        app.addSpriteEntity(highscoresprite, highscoreButton, engine, Gdx.graphics.getWidth() / 2 - (highscoresprite.getWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)3.8, highscoresprite.getRegionWidth() * scaleX, highscoresprite.getRegionHeight() * scaleY, true,false, false, false);
 
         // ***** Highscore button END *****
 
         // ***** Option button START *****
 
         optionsprite = new Sprite(option);
-        //optionsprite.setBounds(Gdx.graphics.getWidth() / 2 - (optionsprite.getWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)5.6, optionsprite.getRegionWidth() * scaleX, optionsprite.getRegionHeight() * scaleY);
-
         optionButton = new Entity();
-
-        optionButton.add(new TextureComponent(optionsprite, Gdx.graphics.getWidth() / 2 - (optionsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)5.6, optionsprite.getRegionWidth() * scaleX, optionsprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent(Gdx.graphics.getWidth() / 2 - (optionsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)5.6, optionsprite.getRegionWidth() * scaleX, optionsprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (optionsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)5.6));
-        engine.addEntity(optionButton);
+        app.addSpriteEntity(optionsprite, optionButton, engine, Gdx.graphics.getWidth() / 2 - (optionsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)5.6, optionsprite.getRegionWidth() * scaleX, optionsprite.getRegionHeight() * scaleY, true, false, false, false);
 
         // ***** Option button END *****
 
