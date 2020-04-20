@@ -22,6 +22,7 @@ import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -33,6 +34,7 @@ public class LobbyScreen extends AbstractScreen {
     private FitViewport viewport;
 
     private EntityManager entityManager;
+    private NetworkManager networkManager;
 
     private SpriteBatch batch;
     private SpriteBatch bgBatch;
@@ -69,7 +71,8 @@ public class LobbyScreen extends AbstractScreen {
     private Sprite multisprite;
     private Sprite highscoresprite;
     private Sprite optionsprite;
-
+    private Sprite ellipseSprite;
+    private Sprite front_ellipseSprite;
     private Sprite bgSprite;
 
 
@@ -85,12 +88,16 @@ public class LobbyScreen extends AbstractScreen {
 
         /*this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
+        networkManager = new NetworkManager();
 
         bg = new TextureRegion(new Texture("menuscreen/menu_bg.png"));
         play = new TextureRegion(new Texture("menuscreen/play.png"));
         multiplay = new TextureRegion(new Texture("menuscreen/multi.png"));
         highscore = new TextureRegion(new Texture("menuscreen/high.png"));
         option = new TextureRegion(new Texture("menuscreen/options.png"));
+
+        ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
+        front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
 
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
         layout = new GlyphLayout(); //dont do this every frame! Store it as member
@@ -125,12 +132,19 @@ public class LobbyScreen extends AbstractScreen {
     }
 
     public void handleInput() {
+        String nickname = "PepsiCoke";
+        String playerType = "pacman";
+        String joinLobbyName = "Lobby1";
+
+
         if(joinLobbyButton.flags == 1) {
             System.out.println("JoinLobby pressed!");
+            networkManager.joinLobby(joinLobbyName, nickname, playerType);
             joinLobbyButton.flags = 0;
         }
         if(createLobbyButton.flags == 1) {
             System.out.println("CreateLobby pressed!");
+            networkManager.createLobby(nickname, playerType);
             createLobbyButton.flags = 0;
         }
 
@@ -145,6 +159,8 @@ public class LobbyScreen extends AbstractScreen {
         batch = new SpriteBatch();
         bgBatch = new SpriteBatch();
 
+        ellipseSprite = new Sprite(ellipse);
+
         buttonSystem = new ButtonSystem(camera);
         tableSystem = new TableSystem();
         renderingSystem = new RenderingSystem(batch);
@@ -157,34 +173,46 @@ public class LobbyScreen extends AbstractScreen {
         engine.addSystem(musicSystem);
         engine.addSystem(renderingSystem);
 
-        bgSprite = new Sprite(bg);
-
-        bgEntity = new Entity();
-
         tbEntity = new Entity();
-
-        //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
-        bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() +2, Gdx.graphics.getHeight() +2,false,false))
-                .add(new TransformComponent(0,0));
-
         tbEntity.add(new TableComponent());
+        engine.addEntity(tbEntity);
+
+        ellipseEntity = new Entity();
+        ellipseEntity.add(new TextureComponent(ellipseSprite, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), true, true))
+                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))));
+        engine.addEntity(ellipseEntity);
+
+
+        front_ellipseSprite = new Sprite(front_ellipse);
+
+        front_ellipseEntity = new Entity();
+        front_ellipseEntity.add(new TextureComponent(front_ellipseSprite, Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false))
+                .add(new TransformComponent(Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17));
+        engine.addEntity(front_ellipseEntity);
 
         playsprite = new Sprite(play);
 
         joinLobbyButton = new Entity();
-        joinLobbyButton.add(new TextureComponent(playsprite, (Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 0.2f, Gdx.graphics.getHeight() / 5f, playsprite.getRegionWidth() * scaleX , playsprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2 * scaleX) * 0.2f, Gdx.graphics.getHeight() / 5f, playsprite.getRegionWidth() * scaleX , playsprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2 * scaleX) * 0.2f, Gdx.graphics.getHeight() / 5f));
+        joinLobbyButton.add(new TextureComponent(playsprite,
+                (Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 0.2f,
+                Gdx.graphics.getHeight() / 20f, playsprite.getRegionWidth() * scaleX ,
+                playsprite.getRegionHeight() * scaleY, false, false))
+                .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2 * scaleX) * 0.2f,
+                        Gdx.graphics.getHeight() / 20f, playsprite.getRegionWidth() * scaleX , playsprite.getRegionHeight() * scaleY))
+                .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - playsprite.getRegionWidth() / 2 * scaleX) * 0.2f,
+                        Gdx.graphics.getHeight() / 20f));
         engine.addEntity(joinLobbyButton);
 
         createLobbyButton = new Entity();
-        createLobbyButton.add(new TextureComponent(playsprite, (Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 5f, playsprite.getRegionWidth() * scaleX, playsprite.getRegionHeight() * scaleY, false, false))
-                .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 5f, playsprite.getRegionWidth() * scaleX, playsprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 5f));
+        createLobbyButton.add(new TextureComponent(playsprite,
+                (Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f,
+                Gdx.graphics.getHeight() / 20f, playsprite.getRegionWidth() * scaleX,
+                playsprite.getRegionHeight() * scaleY, false, false))
+                .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 20f, playsprite.getRegionWidth() * scaleX, playsprite.getRegionHeight() * scaleY))
+                .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (playsprite.getRegionWidth() / 2 * scaleX)) * 1.8f, Gdx.graphics.getHeight() / 20f));
         engine.addEntity(createLobbyButton);
 
-        //engine.addEntity(bgEntity);
-        engine.addEntity(tbEntity);
+
     }
 
     @Override

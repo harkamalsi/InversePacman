@@ -23,7 +23,7 @@ public class TableSystem extends IteratingSystem {
     private TableComponent cc;
     private ComponentMapper<TableComponent> tableM;
     private ComponentMapper<TransformComponent> tc;
-    private NetworkManager nm;
+    private NetworkManager networkManager;
 
 
     @SuppressWarnings("unchecked")
@@ -31,7 +31,7 @@ public class TableSystem extends IteratingSystem {
         super(Family.all(TableComponent.class).get());
         tableM = ComponentMapper.getFor(TableComponent.class);
         //tc = ComponentMapper.getFor(TransformComponent.class);
-        nm = new NetworkManager();
+        networkManager = new NetworkManager();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class TableSystem extends IteratingSystem {
         //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
         cc.reset();
-        JSONArray lobbies = nm.getLobbies();
+        JSONArray lobbies = networkManager.getLobbies();
 
         if(cc.draw) {
             for (int i = 0; i < lobbies.length(); i++) { //lobbies.length
@@ -57,13 +57,6 @@ public class TableSystem extends IteratingSystem {
             cc.draw = false;
         }
         cc.draw();
-
-        String nickname = "PepsiCoke";
-        String playerType = "pacman";
-        String joinLobbyName = "Lobby1";
-
-        //nm.createLobby(nickname, playerType);
-        //nm.joinLobby(joinLobbyName, nickname, playerType);
 
 
         // TransformComponent transform = tc.get(entity);

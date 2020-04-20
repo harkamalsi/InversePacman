@@ -268,7 +268,8 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         bgEntity = new Entity();
 
         //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
-        bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() +2, Gdx.graphics.getHeight() +2,false,false))
+        bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() +2,
+                Gdx.graphics.getHeight() +2,false,false))
                 .add(new TransformComponent(0,0));
         engine.addEntity(bgEntity);
 
