@@ -17,29 +17,7 @@ import com.mygdx.game.systems.RenderingSystem;
 
 import java.util.ArrayList;
 
-
-
 public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
-    private OrthographicCamera camera;
-    private FitViewport viewport;
-    private Sprite ellipseSprite;
-    private Sprite front_ellipseSprite;
-    private Sprite backSprite;
-
-    private ButtonSystem buttonSystem;
-    private RenderingSystem renderSystem;
-    private TextureRegion ellipse;
-    private TextureRegion front_ellipse;
-    private TextureRegion back;
-
-    private Engine engine;
-    private float scaleX;
-    private float scaleY;
-
-    private Entity ellipseEntity;
-    private Entity front_ellipseEntity;
-    private Entity backButton;
-
     public SinglePlayerNamcapBoardScreen(final InversePacman app) {
         super(app);
 
@@ -57,9 +35,9 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
     public ArrayList<PlayerScore> retrieveTopPlayerScores() {
         //app.saveManager.loadDataValue("ghosts", ArrayList.class);
         ArrayList<PlayerScore> scores = new ArrayList<>();
-        scores.add(new PlayerScore("Player 1", "9000p"));
-        scores.add(new PlayerScore("Player 2", "2500p"));
-        scores.add(new PlayerScore("Player 3", "500p"));
+        scores.add(new PlayerScore("Player 1", 9000));
+        scores.add(new PlayerScore("Player 2", 2500));
+        scores.add(new PlayerScore("Player 3", 500));
 
         return scores;
     }
@@ -67,38 +45,23 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
     @Override
     public void show() {
         super.show();
-        this.camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        renderSystem = new RenderingSystem(batch);
-        buttonSystem = new ButtonSystem(camera);
-
-        engine = new Engine();
-        engine.addSystem(renderSystem);
-        engine.addSystem(buttonSystem);
-
-        ellipseSprite = new Sprite(ellipse);
-
-        ellipseEntity = new Entity();
-        app.addSpriteEntity(ellipseSprite, ellipseEntity, engine, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), false, true, true, true, 253f,181f,97f);
-
-
-        front_ellipseSprite = new Sprite(front_ellipse);
-
-        front_ellipseEntity = new Entity();
-        app.addSpriteEntity(front_ellipseSprite, front_ellipseEntity, engine,Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false, false, false);
-
-        backSprite = new Sprite(back);
-        backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
     }
 
-    public void handleInput() {
-        if(backButton.flags == 1) {
-            app.gsm.setScreen((GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN));
-        }
+    @Override
+    public void addEllipseSpriteEntity() {
+        app.addSpriteEntity(ellipseSprite, ellipseEntity, engine, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), false, true, true, true, 253f, 181f, 97f);
     }
+
+    @Override
+    public String formatScore(int score) {
+        return score + "p";
+    }
+
+    @Override
+    public void setBackground() {
+        this.bg = new TextureRegion(new Texture(AbstractBoardScreen.LEADERBOARD_DIRECTORY + "namcap.png"));
+    }
+
 
     @Override
     public void update(float delta) {
@@ -108,7 +71,6 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        engine.update(delta);
 
     }
 
