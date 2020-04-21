@@ -53,6 +53,16 @@ public class TableSystem extends IteratingSystem {
         cc.reset();
         JSONArray lobbies = this.networkManager.getLobbies();
 
+        if (networkManager.connected) {
+            cc.createLobby = true;
+        }
+
+        if (!cc.createLobby && cc.draw) {
+            cc.reset();
+            cc.addConnectingToServerMessage();
+            cc.draw = false;
+        }
+
         if(cc.draw) {
             for (int i = 0; i < lobbies.length(); i++) { //lobbies.length
                 JSONObject lobbyObject = lobbies.getJSONObject(i);

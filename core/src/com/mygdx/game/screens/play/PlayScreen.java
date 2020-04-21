@@ -6,8 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import  com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -20,10 +21,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.components.GhostComponent;
 import com.mygdx.game.components.PacmanComponent;
-import com.mygdx.game.components.PlayerComponent;
+import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -52,6 +52,7 @@ public final class PlayScreen extends AbstractScreen {
 
     private Texture pacmansprite;
     private Texture ghostsheet;
+    private Texture pillSprite;
 
     private TextureRegion pausescreen;
     private TextureRegion back;
@@ -63,6 +64,7 @@ public final class PlayScreen extends AbstractScreen {
     private Entity pauseEntity;
     private Entity backButton;
     private Entity ghost;
+    private Entity pill;
 
     //World building
     public World world;
@@ -147,9 +149,9 @@ public final class PlayScreen extends AbstractScreen {
         WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects()
                 ,map.getLayers().get("BackgroundLayer")
                 ,map.getLayers().get("Players").getObjects()
-                ,map.getLayers().get("Coins").getObjects());
+                ,map.getLayers().get("Pills").getObjects());
         WorldBuilder.createPlayers(world);
-        WorldBuilder.createCoins(world);
+        WorldBuilder.createPills(world);
 
 
         // To add a new songs, place the file under the folder assets/music/play
@@ -174,7 +176,6 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(animationSystem);
         engine.addSystem(musicSystem);
         engine.addSystem(buttonSystem);
-
 
         //splitting up the different frames in the ghost sheet and adding them to an animation
         ghostsheet = new Texture("ghosts.png");
@@ -207,12 +208,24 @@ public final class PlayScreen extends AbstractScreen {
             engine.addEntity(ghost);
         }
 
+        pillSprite = new Texture("white_pill.png");
+        Vector2 scale = new Vector2(0.05f, 0.05f);
+        for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
+            PillComponent pillComponent = WorldBuilder.getPillList().get(i);
+            Vector2 vector = pillComponent.body.getPosition();
 
+            pill = new Entity();
+            pill.add(WorldBuilder.getPillList().get(i))
+                    .add(new TextureComponent(new TextureRegion(pillSprite)))
+                    .add(new TransformComponent(vector.x / RenderingSystem.PPM,
+                            vector.y / RenderingSystem.PPM, scale.x, scale.y, 0f));
 
+            engine.addEntity(pill);
+        }
 
         pacmansprite = new Texture("pacman.png");
         Vector2 position = new Vector2(20,20);
-        Vector2 scale = new Vector2(0.15f,0.15f);
+        scale = new Vector2(0.15f,0.15f);
         pacman = new Entity();
         pacman.add(new VelocityComponent())
 //                .add(new PacmanComponent())

@@ -122,7 +122,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     }
     //function for deciding drag direction
     private void toggleDirection(int locationStartTouchedX, int locationStartTouchedY, int screenX, int screenY) {
-
+        // This is great code!
         boolean yIsGreater = ((Math.abs(locationStartTouchedY - screenY)) - (Math.abs(locationStartTouchedX - screenX)) > 0);
 
         if (yIsGreater){

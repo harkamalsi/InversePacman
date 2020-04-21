@@ -27,6 +27,7 @@ public class NetworkManager {
 
     private JSONArray lobbies = new JSONArray();
     private JSONObject response;
+    public Boolean connected = false;
 
     public NetworkManager() {
         //socket = new SocketIOManager().getSocketInstance();
@@ -55,8 +56,8 @@ public class NetworkManager {
             @Override
             public void call(Object... args) {
                 socketID = socket.connect().id();
-                System.out.println(socketID + "****************************");
                 fetch = true;
+                connected = true;
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
             @Override
@@ -123,6 +124,12 @@ public class NetworkManager {
 
         getSocket().emit(Constants.JOIN_LOBBY, socketID, inputs);
 
+    }
+
+    public void leaveLobby(String lobbyName) {
+        // args: lobbyName
+        System.out.println("Leave Lobby is called!");
+        getSocket().emit(Constants.LEAVE_LOBBY, socketID, lobbyName);
     }
 
     public void sendInput(Object ...args) {

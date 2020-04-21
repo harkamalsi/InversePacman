@@ -1,6 +1,7 @@
 package com.mygdx.game.screens.leaderboard;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,28 +11,47 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
-import java.util.ArrayList;
+import java.util.Collections;
 
 public abstract class AbstractBoardScreen extends AbstractScreen {
     protected TextureRegion bg;
 
     protected static String LEADERBOARD_DIRECTORY = "leaderboard/";
-    private OrthographicCamera camera;
-    private FitViewport viewport;
+    protected OrthographicCamera camera;
+    protected FitViewport viewport;
 
     protected SpriteBatch batch;
-    private BitmapFont font;
-    private GlyphLayout layout;
+    protected BitmapFont font;
+    protected GlyphLayout layout;
 
-    private float scaleX;
-    private float scaleY;
+    protected float scaleX;
+    protected float scaleY;
+
+    protected Entity ellipseEntity;
+    protected Entity front_ellipseEntity;
+    protected Entity backButton;
+
+    protected Sprite ellipseSprite;
+    protected Sprite front_ellipseSprite;
+    protected Sprite backSprite;
+
+    protected RenderingSystem renderSystem;
+    protected ButtonSystem buttonSystem;
+    protected Engine engine;
+
+    protected TextureRegion ellipse;
+    protected TextureRegion front_ellipse;
+    protected TextureRegion back;
 
 
     public AbstractBoardScreen(InversePacman app, Engine engine) {
@@ -40,6 +60,14 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
         layout = new GlyphLayout(); //dont do this every frame! Store it as member
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
+
+        ellipse = new TextureRegion(new Texture("menuscreen/Ellipse 11.png"));
+        front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
+        back = new TextureRegion(new Texture("back.png"));
+        scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
+        scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
+
+        setBackground();
     }
 
     @Override
@@ -56,11 +84,14 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         batch.draw(this.bg, 0, 0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
         font.getData().setScale(scaleX / (32f * 1.2f), scaleY / (32f * 1.2f));
 
-        ArrayList<PlayerScore> players = retrieveTopPlayerScores();
+        Array<PlayerScore> players = retrieveSortedPlayerScores();
+
         drawNames(batch, font, players);
         drawScores(batch, font, players);
 
         batch.end();
+
+        engine.update(delta);
     }
 
     @Override
@@ -74,6 +105,26 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.batch = new SpriteBatch();
+
+
+        renderSystem = new RenderingSystem(batch);
+        buttonSystem = new ButtonSystem(camera);
+
+        engine = new Engine();
+        engine.addSystem(renderSystem);
+        engine.addSystem(buttonSystem);
+
+        ellipseSprite = new Sprite(ellipse);
+        ellipseEntity = new Entity();
+        addEllipseSpriteEntity();
+
+        front_ellipseSprite = new Sprite(front_ellipse);
+        front_ellipseEntity = new Entity();
+        app.addSpriteEntity(front_ellipseSprite, front_ellipseEntity, engine,Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false, false, false);
+
+        backSprite = new Sprite(back);
+        backButton = new Entity();
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
     }
 
     @Override
@@ -91,40 +142,98 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
     }
 
-    public abstract ArrayList<PlayerScore> retrieveTopPlayerScores();
+    public  Array<PlayerScore> retrieveSortedPlayerScores() {
+        Array<PlayerScore> players = retrievePlayerScores();
 
-    public void drawNames(SpriteBatch batch, BitmapFont font, ArrayList<PlayerScore> players) {
-        layout.setText(font, players.get(0).name);
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
-        layout.setText(font, players.get(1).name);
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.8f * 32f) + layout.height / 2);
-        layout.setText(font, players.get(2).name);
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (2.1f * 32f) + layout.height / 2);
+        if (players != null && players.size > 0) {
+            players.sort(Collections.<PlayerScore>reverseOrder());
+        } else {
+            players = null;
+        }
+
+        return players;
     }
 
-    public void drawScores(SpriteBatch batch, BitmapFont font, ArrayList<PlayerScore> players) {
-        layout.setText(font, players.get(0).score);
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
-        layout.setText(font, players.get(1).score);
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.8f * 32f) + layout.height / 2);
-        layout.setText(font, players.get(2).score);
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (2.1f * 32f) + layout.height / 2);
+    public abstract Array<PlayerScore> retrievePlayerScores();
+    public abstract String formatScore(int score);
+    public abstract void addEllipseSpriteEntity();
+    public abstract void setBackground();
+
+    // Some classes will override this
+    public String formatName(String name) {
+        return name;
     }
 
-    public class PlayerScore {
+    public void drawNames(SpriteBatch batch, BitmapFont font, Array<PlayerScore> players) {
+        if (players == null || players.size == 0) {
+            layout.setText(font, "NO SCORES");
+            font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
+        } else {
+
+            layout.setText(font, formatName(players.get(0).name));
+            font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f * 32f) - layout.width / 2, Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
+
+            if (players.size > 1) {
+                layout.setText(font, formatName(players.get(1).name));
+                font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f * 32f) - layout.width / 2, Gdx.graphics.getHeight() / (1.8f * 32f) + layout.height / 2);
+            }
+
+            if (players.size > 2) {
+                layout.setText(font, formatName(players.get(2).name));
+                font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f * 32f) - layout.width / 2, Gdx.graphics.getHeight() / (2.1f * 32f) + layout.height / 2);
+            }
+        }
+    }
+
+    public void drawScores(SpriteBatch batch, BitmapFont font, Array<PlayerScore> players) {
+        if (players != null && players.size > 0) {
+            layout.setText(font, formatScore(players.get(0).score));
+            font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
+
+            if (players.size > 1) {
+                layout.setText(font, formatScore(players.get(1).score));
+                font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f * 32f) - layout.width / 2, Gdx.graphics.getHeight() / (1.8f * 32f) + layout.height / 2);
+            }
+
+            if (players.size > 2) {
+                layout.setText(font, formatScore(players.get(2).score));
+                font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (2.1f * 32f) + layout.height / 2);
+            }
+        }
+    }
+
+    public void handleInput() {
+        if(backButton.flags == 1) {
+            app.gsm.setScreen((GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN));
+        }
+    }
+
+    static public class PlayerScore implements Json.Serializable, Comparable<PlayerScore> {
         private String name;
-        private String score;
+        private int score;
 
-        public PlayerScore(String name, String score) {
+        public PlayerScore() {
+        }
+
+        public PlayerScore(String name, int score) {
             this.name = name;
             this.score = score;
+        }
+
+        public void write (Json json) {
+            json.writeValue(name, score);
+        }
+
+        public void read (Json json, JsonValue jsonMap) {
+            name = jsonMap.child().next().name();
+            score = jsonMap.child().next().asInt();
         }
 
         public String getName() {
             return name;
         }
 
-        public String getScore() {
+        public int getScore() {
             return score;
         }
 
@@ -132,8 +241,13 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
             this.name = name;
         }
 
-        public void setScore(String score) {
+        public void setScore(int score) {
             this.score = score;
+        }
+
+        @Override
+        public int compareTo(PlayerScore playerScore) {
+            return ((Integer)this.score).compareTo(playerScore.score);
         }
     }
 

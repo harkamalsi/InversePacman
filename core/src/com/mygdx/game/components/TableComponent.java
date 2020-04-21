@@ -35,6 +35,7 @@ public class TableComponent implements Component {
     public boolean getLobbies;
     public String joinLobbyName = "";
     public boolean joinLobby = false;
+    public boolean createLobby = false;
     private Container<Table> tableContainer;
     public NetworkManager networkManager;
 
@@ -66,23 +67,34 @@ public class TableComponent implements Component {
         TextButton lobbyButton = new TextButton(nameLabel, skin);
         Label lobbyPlayers = new Label(nameText, skin);
 
-
         table.add(lobbyButton).expand().padBottom(20);
         table.add(lobbyPlayers).expand().padBottom(20);
 
-        lobbyButton.addListener(new InputListener(){
+        lobbyButton.addListener(new InputListener() {
             @Override
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
             }
+
             @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 joinLobbyName = nameLabel;
                 joinLobby = true;
                 return true;
             }
         });
 
+        table.row();
+    }
+
+    public void addConnectingToServerMessage() {
+        Label message1 = new Label("Connecting to", skin);
+        Label message2 = new Label(" server...", skin);
+        message1.setFontScale(0.9f);
+        message2.setFontScale(0.9f);
+        table.add(message1).padBottom(20);
+        table.row();
+        table.add(message2);
         table.row();
     }
 
