@@ -23,6 +23,7 @@ import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
 import com.mygdx.game.components.GhostComponent;
 import com.mygdx.game.components.PacmanComponent;
+import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -51,6 +52,7 @@ public final class PlayScreen extends AbstractScreen {
 
     private Texture pacmansprite;
     private Texture ghostsheet;
+    private Texture pillSprite;
 
     private TextureRegion pausescreen;
     private TextureRegion back;
@@ -62,11 +64,12 @@ public final class PlayScreen extends AbstractScreen {
     private Entity pauseEntity;
     private Entity backButton;
     private Entity ghost;
+    private Entity pill;
 
     //World building
     public World world;
     public Body player;
-    public Box2DDebugRenderer b2dr;
+    //public Box2DDebugRenderer b2dr;
 
     //Box2d
     public OrthogonalTiledMapRenderer tmr;
@@ -138,7 +141,7 @@ public final class PlayScreen extends AbstractScreen {
         //world
         world = new World(new Vector2(0f, 0), false);
         world.setContactListener(new PlayerContactListener());
-        b2dr = new Box2DDebugRenderer();
+        //b2dr = new Box2DDebugRenderer();
 
         //Tiled map creation and WorldBuilder call
         map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
@@ -174,7 +177,6 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(musicSystem);
         engine.addSystem(buttonSystem);
 
-
         //splitting up the different frames in the ghost sheet and adding them to an animation
         ghostsheet = new Texture("ghosts.png");
         TextureRegion[][] temp = TextureRegion.split(ghostsheet,ghostsheet.getWidth()/10, ghostsheet.getHeight());
@@ -207,9 +209,6 @@ public final class PlayScreen extends AbstractScreen {
 
         }
 
-
-
-
         pacmansprite = new Texture("pacman.png");
         Vector2 position = new Vector2(20,20);
         Vector2 scale = new Vector2(0.15f,0.15f);
@@ -222,6 +221,22 @@ public final class PlayScreen extends AbstractScreen {
                 .add(new TransformComponent(position,scale,0f))
                 .add(new CollisionComponent());
         engine.addEntity(pacman);
+
+        // Pills
+        pillSprite = new Texture("orange_pill.png");
+        scale = new Vector2(0.075f, 0.075f);
+        for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
+            PillComponent pillComponent = WorldBuilder.getPillList().get(i);
+            Vector2 vector = pillComponent.body.getPosition();
+
+            pill = new Entity();
+            pill.add(WorldBuilder.getPillList().get(i))
+                    .add(new TextureComponent(new TextureRegion(pillSprite)))
+                    .add(new TransformComponent(vector.x / RenderingSystem.PPM,
+                            vector.y / RenderingSystem.PPM, scale.x, scale.y, 90f));
+
+            engine.addEntity(pill);
+        }
 
         pausescreen = new TextureRegion(new Texture("playscreen/pausescreen.png"));
         pauseSprite = new Sprite(pausescreen);
@@ -245,7 +260,7 @@ public final class PlayScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.setView(camera);
         tmr.render();
-        b2dr.render(world, camera.combined.scl(1f));
+        //b2dr.render(world, camera.combined.scl(1f));
 //        engine.update(delta);
 
 
