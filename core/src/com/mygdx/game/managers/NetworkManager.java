@@ -55,7 +55,6 @@ public class NetworkManager {
             @Override
             public void call(Object... args) {
                 socketID = socket.connect().id();
-                System.out.println(socketID + "****************************");
                 fetch = true;
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {

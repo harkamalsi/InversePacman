@@ -7,13 +7,13 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class CoinComponent implements Component {
+public class PillComponent implements Component {
 
     private Body body, triggerBody;
     private String id;
     private boolean collected = false;
 
-    public CoinComponent() {
+    public PillComponent() {
     }
 
     public void createTriggerBody(World world, float x, float y) {
@@ -39,7 +39,7 @@ public class CoinComponent implements Component {
 
         */
     }
-    public void createCoinBody(World world, String id, float x, float y){
+    public void createPillBody(World world, String id, float x, float y){
         createTriggerBody(world, x, y);
 
         this.id = id;
@@ -62,8 +62,8 @@ public class CoinComponent implements Component {
 
     }
 
-    public void CoinCollected() {
-        System.out.println("Coin " + id + " is collected!");
+    public void PillCollected() {
+        System.out.println(id + " is collected!");
         collected = true;
     }
 

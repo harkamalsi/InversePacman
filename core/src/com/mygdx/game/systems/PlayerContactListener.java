@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.mygdx.game.components.CoinComponent;
+import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.PlayerComponent;
 
 
@@ -24,10 +24,10 @@ public class PlayerContactListener implements ContactListener {
                 PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
                 //playerA.hit();
             }
-            else if (fixtureA.getUserData() instanceof CoinComponent) {
-                CoinComponent coinA = (CoinComponent) fixtureA.getUserData();
+            else if (fixtureA.getUserData() instanceof PillComponent) {
+                PillComponent coinA = (PillComponent) fixtureA.getUserData();
                 if(!coinA.isCollected()) {
-                    //coinA.CoinCollected();
+                    //coinA.PillCollected();
                 }
 
             }
@@ -36,10 +36,10 @@ public class PlayerContactListener implements ContactListener {
                 PlayerComponent playerB = (PlayerComponent) fixtureB.getUserData();
                 playerB.hit();
             }
-            else if (fixtureB.getUserData() instanceof CoinComponent) {
-                CoinComponent coinB = (CoinComponent) fixtureB.getUserData();
+            else if (fixtureB.getUserData() instanceof PillComponent) {
+                PillComponent coinB = (PillComponent) fixtureB.getUserData();
                 if(!coinB.isCollected()) {
-                    coinB.CoinCollected();
+                    coinB.PillCollected();
                 }
             }
 
