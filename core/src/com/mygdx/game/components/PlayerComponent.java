@@ -25,8 +25,9 @@ public class PlayerComponent implements Component {
     public float invincibleTimer;
 
     public Body body;
-    public String id;
-    public boolean ai;
+    private String id;
+    private boolean ai;
+    private String type;
 
     public PlayerComponent() {
         currentState = IDLE;
@@ -34,8 +35,9 @@ public class PlayerComponent implements Component {
         invincibleTimer = 0;
     }
 
-    public void createPlayerBody(World world, String id, float x, float y){
+    public void createPlayerBody(World world, String id, float x, float y, String type){
         this.id = id;
+        this.type = type;
         BodyDef bdef = new BodyDef();
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set(x,y);
@@ -52,6 +54,10 @@ public class PlayerComponent implements Component {
 
         body.createFixture(shape, 1.0f);
         shape.dispose();
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void setCurrentState(int state) {
