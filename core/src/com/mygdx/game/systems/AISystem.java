@@ -62,20 +62,22 @@ public class AISystem extends IteratingSystem{
         TextureComponent texc = texM.get(entity);
         BoardDummy board = new BoardDummy();
         board.createFromWorld(this.world);
+        miniMax(board, 5);
+        Vector2 bestMove = board.bestMove;
 
         
 
         float x = 0f;
         float y = 0f;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.T)){
+        if (bestMove.equals(new Vector2(0, 1))){
             x = 0f;
             y = Y_VELOCITY;
 
             sc.setState(1);
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.G)){
+        if (bestMove.equals(new Vector2(0, -1))){
             x = 0f;
             y = -Y_VELOCITY;
 
@@ -83,7 +85,7 @@ public class AISystem extends IteratingSystem{
         }
 
 
-        if (Gdx.input.isKeyPressed(Input.Keys.F)){
+        if (bestMove.equals(new Vector2(-1, 0))){
             x = -X_VELOCITY;
             y = 0f;
 
@@ -95,7 +97,7 @@ public class AISystem extends IteratingSystem{
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.H)){
+        if (bestMove.equals(new Vector2(0, 1))){
             x = X_VELOCITY;
             y = 0f;
 
@@ -121,9 +123,10 @@ public class AISystem extends IteratingSystem{
             for (BoardDummy nextBoard : board.getLegalMoves()) {
                 BoardDummy max = miniMax(nextBoard, depth-1);
                 if(max.getPredictedUtility() > bestBoard.getPredictedUtility()) {
-                    bestBoard = nextBoard;
+                    board.setPredictedUtility(nextBoard.getPredictedUtility());
                 }
             }
+            board.bestMove = bestBoard.movedDirection;
             return bestBoard;
         }
         else {
@@ -132,9 +135,10 @@ public class AISystem extends IteratingSystem{
             for (BoardDummy nextBoard : board.getLegalMoves()) {
                 BoardDummy min = miniMax(nextBoard, depth-1);
                 if(min.getPredictedUtility() < bestBoard.getPredictedUtility()) {
-                    bestBoard = nextBoard;
+                    board.setPredictedUtility(nextBoard.getPredictedUtility());
                 }
             }
+            board.bestMove = bestBoard.movedDirection;
             return bestBoard;
         }
     }
@@ -143,6 +147,8 @@ public class AISystem extends IteratingSystem{
 
 class BoardDummy {
     private float predictedUtility;
+    public Vector2 movedDirection;
+    public Vector2 bestMove;
     private int currentPlayer = 0;
     private DummyPlayer pacMan = new PackMan(new Vector2(3,3));
     private DummyPlayer ghost = new Ghost(new Vector2(3,0));
@@ -258,7 +264,7 @@ class BoardDummy {
         return false;
     }
 
-    public float utility() { //only works for one maxPlayer
+    public float utility() {
         int distance = 100000000;
         for(DummyPlayer player1: this.players) {
             for (DummyPlayer player2: this.players) {
@@ -277,6 +283,7 @@ class BoardDummy {
         ArrayList<BoardDummy> legalMoves = new ArrayList<BoardDummy>();
         for(Vector2 direction: this.directions) {
             BoardDummy board = new BoardDummy();
+            board.movedDirection = direction;
             board.setCurrentPlayer(this.currentPlayer);
             for(int i = 0; i<this.players.size(); i++) {
                 board.getPlayers().get(i).setPosition(this.getPlayers().get(i).getPosition());
