@@ -10,10 +10,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.GhostComponent;
 import com.mygdx.game.components.PacmanComponent;
+import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
+import com.mygdx.game.worldbuilder.Node;
+import com.mygdx.game.worldbuilder.WorldBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +34,7 @@ public class AISystem extends IteratingSystem{
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<StateComponent> stateM;
     private ComponentMapper<TextureComponent> texM;
+    WorldBuilder world = new WorldBuilder(); //must get the actual world builder!!!
 
     public AISystem(){
         super(Family.all(GhostComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
@@ -41,9 +45,11 @@ public class AISystem extends IteratingSystem{
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
 
+
         //Gdx.input.setInputProcessor(this);
 
     }
+
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         GhostComponent gc = ghostM.get(entity);
@@ -51,6 +57,8 @@ public class AISystem extends IteratingSystem{
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
+        BoardDummy board = new BoardDummy();
+        board.createFromWorld(this.world);
 
         
 
@@ -128,31 +136,6 @@ public class AISystem extends IteratingSystem{
         }
     }
 
-    public static void main(String[] args) {
-        AISystem ai = new AISystem();
-        BoardDummy board = new BoardDummy();
-        System.out.println(board.getLegalMoves());
-        board.printBoard();
-        /*
-        BoardDummy newBoard = board.getLegalMoves().get(0);
-        newBoard.printBoard();
-         */
-        for(int i = 0; i<18; i++) {
-            Integer a = i;
-            board = ai.miniMax(board, 5);
-            board.printBoard();
-            System.out.println(board.currentPlayer().getPlayerRep());
-            System.out.println(i);
-        }
-        /*
-        System.out.println("______Moves:________");
-        for(BoardDummy moves:board.getLegalMoves()) {
-            moves.printBoard();
-            System.out.println(moves.utility());
-        }
-         */
-    }
-
 }
 
 class BoardDummy {
@@ -160,9 +143,11 @@ class BoardDummy {
     private int currentPlayer = 0;
     private DummyPlayer pacMan = new PackMan(new Vector2(3,3));
     private DummyPlayer ghost = new Ghost(new Vector2(3,0));
-    private ArrayList<DummyPlayer> players = new ArrayList<DummyPlayer>();
-    private ArrayList<ArrayList<String>> board = new ArrayList<ArrayList<String>>();
+    private ArrayList<DummyPlayer> players = new ArrayList<>();
+    private ArrayList<ArrayList<Node>> board = new ArrayList<>();
     private int boardSize = 6;
+    private double xTileRatio = 0.1;
+    private double yTileRatio = 0.1;
     private ArrayList<Vector2> directions = new ArrayList(Arrays.asList(
             new Vector2(1, 0),
             new Vector2(0, 1),
@@ -170,26 +155,38 @@ class BoardDummy {
             new Vector2(0, -1)));
 
     public BoardDummy() {
+        /*
         this.players.add(pacMan);
         this.players.add(ghost);
-        for(int i = 0; i < this.boardSize; i++) {
-            board.add(new ArrayList<String>());
-            for(int j = 0; j < this.boardSize; j++) {
-                board.get(i).add("X");
-            }
-        }
-        /*
-        writePosition(pacMan);
-        writePosition(ghost);
          */
     }
 
-    private void movePlayer(DummyPlayer player, Vector2 dir) {
+    public void createFromWorld(WorldBuilder world) {
+        this.board = world.getNodeCostMatrix();
+        this.players = playersFromComponent(world.getPlayerList());
+    }
+
+    public Vector2 getTiledPosition(Vector2 position) {
+        return new Vector2((int)xTileRatio*position.x, (int)yTileRatio*position.y);
+    }
+
+    public ArrayList<DummyPlayer> playersFromComponent(ArrayList<PlayerComponent> comPlayers) {
+        ArrayList<DummyPlayer> dummyPlayers = new ArrayList<>();
+        for (PlayerComponent comPlayer: comPlayers) {
+            DummyPlayer dummyPlayer = new DummyPlayer(getTiledPosition(comPlayer.body.getPosition()));
+            dummyPlayers.add(dummyPlayer);
+        }
+        return dummyPlayers;
+     }
+
+     /*
+     private void movePlayer(DummyPlayer player, Vector2 dir) {
         erasePosition(player);
         Vector2 newPos = new Vector2(player.getPosition().x + dir.x, player.getPosition().y + dir.y);
         player.setPosition(newPos);
         writePosition(player);
     }
+      */
 
     public float getPredictedUtility() {
         return this.predictedUtility;
@@ -197,29 +194,6 @@ class BoardDummy {
 
     public void setPredictedUtility(float utility) {
         this.predictedUtility = utility;
-    }
-
-    public void movePac(Vector2 dir) {
-        movePlayer(this.pacMan, dir);
-    }
-
-    public void erasePosition(DummyPlayer player) {
-        board.get((int) player.getPosition().y).set((int) player.getPosition().x, "X");
-    }
-
-    public void writePosition(DummyPlayer player) {
-        board.get((int) player.getPosition().y).set((int) player.getPosition().x, player.getPlayerRep());
-    }
-
-    public void printBoard() {
-        System.out.println("______________________________");
-        for(ArrayList<String> i:board) {
-            for(DummyPlayer player:this.players) {
-                this.board.get((int) player.getPosition().y).set((int) player.getPosition().x, player.getPlayerRep());
-            }
-            System.out.println(i);
-        }
-        System.out.println("______________________________");
     }
 
     public void setCurrentPlayer(int player) {
@@ -250,19 +224,18 @@ class BoardDummy {
     }
 
     public boolean legalState() {
-        for(DummyPlayer player: this.players) {
-            float xPos = player.getPosition().x;
-            float yPos = player.getPosition().y;
-            if(xPos > this.boardSize-1 || xPos < 0 || yPos > this.boardSize-1 || yPos < 0) {
+            int xPos = (int)this.currentPlayer().getPosition().x;
+            int yPos = (int)this.currentPlayer().getPosition().y;
+            if(xPos > this.board.get(0).size()-1 || xPos < 0 || yPos > this.board.size()-1 || yPos < 0) {
                 return false;
             }
-            /*
-            for(DummyPlayer compPlayer: this.players) {
-                if(!(player == compPlayer)) {//&& (player.getPosition().equals(compPlayer.getPosition()) && !(player.isMaxPlayer() ^ compPlayer.isMaxPlayer()))) {
-                    return false;
-                }
+            if(!board.get(yPos).get(xPos).isWalkThrough()) {
+                return false;
             }
-             */
+            for(DummyPlayer player: this.players) {
+                if(player.getPosition().equals(this.currentPlayer())) {
+                    return false;
+            }
         }
         return true;
     }
@@ -274,11 +247,9 @@ class BoardDummy {
     }
 
     public boolean isTerminal() {
-        for(DummyPlayer player1: this.players) {
-            for(DummyPlayer player2: this.players) {
-                if(player1.getPosition().equals(player2.getPosition()) && !(player1==player2)) {
-                    return true;
-                }
+        for(DummyPlayer player: this.players) {
+            if(currentPlayer().getPosition().equals(player.getPosition()) && (currentPlayer().isMaxPlayer() ^ player.isMaxPlayer())) {
+                return true;
             }
         }
         return false;
