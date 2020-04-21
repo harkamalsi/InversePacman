@@ -37,6 +37,7 @@ import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
+import com.mygdx.game.systems.PillSystem;
 import com.mygdx.game.systems.PlayerContactListener;
 import com.mygdx.game.systems.PlayerInputSystem;
 import com.mygdx.game.systems.RenderingSystem;
@@ -89,7 +90,7 @@ public final class PlayScreen extends AbstractScreen {
     private AnimationSystem animationSystem;
     private MusicSystem musicSystem;
     private ButtonSystem buttonSystem;
-
+    private PillSystem pillSystem;
 
 
     public PlayScreen(final InversePacman app, Engine engine) {
@@ -166,6 +167,7 @@ public final class PlayScreen extends AbstractScreen {
         stateSystem = new StateSystem();
         animationSystem = new AnimationSystem();
         musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
+        pillSystem = new PillSystem();
 
         engine.addSystem(playerInputSystem);
         engine.addSystem(aiSystem);
@@ -176,6 +178,7 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(animationSystem);
         engine.addSystem(musicSystem);
         engine.addSystem(buttonSystem);
+        engine.addSystem(pillSystem);
 
         //splitting up the different frames in the ghost sheet and adding them to an animation
         ghostsheet = new Texture("ghosts.png");
