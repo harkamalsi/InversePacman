@@ -41,7 +41,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     public PlayerInputSystem(){
 
-        super(Family.all(PacmanComponent.class,PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
+        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
@@ -57,7 +57,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         PlayerComponent pc = playerM.get(entity);
-        PacmanComponent pacmanc = pacmanM.get(entity);
+//        PacmanComponent pacmanc = pacmanM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
@@ -68,51 +68,54 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         float y = 0f;
 
 
-        if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
-            x = 0f;
-            y = vc.velocity.y;
+        if (pc.id == "PACMAN"){
+            if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
+                x = 0f;
+                y = vc.velocity.y;
 
-            sc.setState(1);
-        }
-
-        if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
-            x = 0f;
-            y = -vc.velocity.y;
-          
-            sc.setState(2);
-        }
-
-
-        if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){
-            x = -vc.velocity.x;
-            y = 0f;
-
-            sc.setState(3);
-
-            //flips texture
-            if (texc.region != null && texc.region.isFlipX()){
-                texc.region.flip(true,false);
+                sc.setState(1);
             }
-        }
 
-        if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
-            x = vc.velocity.x;
-            y = 0f;
+            if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
+                x = 0f;
+                y = -vc.velocity.y;
 
-            sc.setState(4);
-
-            //flips texture
-            if (texc.region != null && !texc.region.isFlipX()){
-                texc.region.flip(true,false);
+                sc.setState(2);
             }
-        }
 
 
-        pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
-        pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
-        //sets velocity direction dictated by x and y
+            if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){
+                x = -vc.velocity.x;
+                y = 0f;
+
+                sc.setState(3);
+
+                //flips texture
+                if (texc.region != null && texc.region.isFlipX()){
+                    texc.region.flip(true,false);
+                }
+            }
+
+            if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
+                x = vc.velocity.x;
+                y = 0f;
+
+                sc.setState(4);
+
+                //flips texture
+                if (texc.region != null && !texc.region.isFlipX()){
+                    texc.region.flip(true,false);
+                }
+            }
+
+
+            pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
+            pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+            //sets velocity direction dictated by x and y
 //        vc.setVelocity(x,y);
 //        vc.setAcceleration(x,y);
+
+        }
 
 
 
