@@ -12,6 +12,7 @@ import com.mygdx.game.screens.menu.InGameMenuScreen;
 import com.mygdx.game.screens.menu.LeaderboardMenuScreen;
 import com.mygdx.game.screens.menu.MainMenuScreen;
 import com.mygdx.game.screens.menu.OptionScreen;
+import com.mygdx.game.screens.menu.SplashScreen;
 import com.mygdx.game.screens.play.GameOverScreen;
 import com.mygdx.game.screens.play.LobbyScreen;
 import com.mygdx.game.screens.play.PauseScreen;
@@ -39,12 +40,14 @@ public class GameScreenManager {
         MULTIPLAYER_NAMPAC_BOARD_SCREEN,
         OPTION_SCREEN,
         LEADERBOARD_MENU_SCREEN,
+        SPLASH_SCREEN,
     }
     public STATE currentState;
 
     public GameScreenManager(final InversePacman app) {
         this.app = app;
         prevScreens = new Array<>();
+        this.engine = engine;
 
         //engine to be passed to all ecs screens
         engine = new Engine();

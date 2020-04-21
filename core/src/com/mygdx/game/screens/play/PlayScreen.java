@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import  com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -20,6 +20,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.mygdx.game.components.GhostComponent;
+import com.mygdx.game.components.PacmanComponent;
+import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -27,7 +31,9 @@ import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
+import com.mygdx.game.systems.AISystem;
 import com.mygdx.game.systems.AnimationSystem;
+import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -47,7 +53,15 @@ public final class PlayScreen extends AbstractScreen {
     private Texture pacmansprite;
     private Texture ghostsheet;
 
+    private TextureRegion pausescreen;
+    private TextureRegion back;
+
+    private Sprite pauseSprite;
+    private Sprite backSprite;
+
     private Entity pacman;
+    private Entity pauseEntity;
+    private Entity backButton;
     private Entity ghost;
 
     //World building
@@ -67,19 +81,23 @@ public final class PlayScreen extends AbstractScreen {
     private CollisionSystem collisionSystem;
     private MovementSystem movementSystem;
     private PlayerInputSystem playerInputSystem;
+    private AISystem aiSystem;
     private RenderingSystem renderingSystem;
     private StateSystem stateSystem;
     private AnimationSystem animationSystem;
     private MusicSystem musicSystem;
+    private ButtonSystem buttonSystem;
+
 
 
     public PlayScreen(final InversePacman app, Engine engine) {
         super(app, engine);
         this.engine = engine;
+        back = new TextureRegion(new Texture("back.png"));
 //        this.engine = engine;
 //         Sets the camera; width and height.
-         this.camera = new OrthographicCamera();
-         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camera = new OrthographicCamera();
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
     }
 
@@ -97,6 +115,10 @@ public final class PlayScreen extends AbstractScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             pause = false;
         }
+        if(backButton.flags == 1) {
+            pause = true;
+            backButton.flags = 0;
+        }
     }
 
     @Override
@@ -109,6 +131,10 @@ public final class PlayScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        this.camera = new OrthographicCamera();
+        //this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //world
         world = new World(new Vector2(0f, 0), false);
@@ -130,20 +156,24 @@ public final class PlayScreen extends AbstractScreen {
 
         batch = new SpriteBatch();
         playerInputSystem = new PlayerInputSystem();
+        aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();
         renderingSystem = new RenderingSystem(batch);
+        buttonSystem = new ButtonSystem(camera);
         stateSystem = new StateSystem();
         animationSystem = new AnimationSystem();
         musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
 
         engine.addSystem(playerInputSystem);
+        engine.addSystem(aiSystem);
         engine.addSystem(movementSystem);
         engine.addSystem(collisionSystem);
         engine.addSystem(renderingSystem);
         engine.addSystem(stateSystem);
         engine.addSystem(animationSystem);
         engine.addSystem(musicSystem);
+        engine.addSystem(buttonSystem);
 
 
         //splitting up the different frames in the ghost sheet and adding them to an animation
@@ -155,7 +185,7 @@ public final class PlayScreen extends AbstractScreen {
                 walkFrames[i] = temp[0][i];
         }
 
-        Animation walkAnimation = new Animation<>(0.5f,walkFrames);
+        Animation walkAnimation = new Animation<>(0.1f,walkFrames);
         //adding animation to each direction state and idle
         AnimationComponent animcomponent = new AnimationComponent(0,walkAnimation);
         animcomponent.animations.put(0,walkAnimation);
@@ -163,25 +193,46 @@ public final class PlayScreen extends AbstractScreen {
         animcomponent.animations.put(2,walkAnimation);
         animcomponent.animations.put(3,walkAnimation);
         animcomponent.animations.put(4,walkAnimation);
-//        pacman = new Entity();
-//        pacman.add(new VelocityComponent())
-////                .add(new TextureComponent(new TextureRegion(pacmansprite)))
-//                .add(new TextureComponent())
-//                .add(animcomponent)
-//                .add(new StateComponent(0))
-//                .add(new TransformComponent(20,20))
-//                .add(new CollisionComponent());
-//        engine.addEntity(pacman);
 
-        ghost = new Entity();
-        ghost.add(new VelocityComponent())
-                .add(WorldBuilder.getPlayerList().get(0))
-                .add(new TextureComponent())
-                .add(animcomponent)
+        for (int i = 0; i<4; i++){
+            ghost = new Entity();
+            ghost.add(new VelocityComponent())
+                    .add(WorldBuilder.getPlayerList().get(i))
+                    .add(new GhostComponent())
+                    .add(new TextureComponent())
+                    .add(animcomponent)
+                    .add(new StateComponent(0))
+                    .add(new TransformComponent(20,20))
+                    .add(new CollisionComponent());
+            engine.addEntity(ghost);
+
+        }
+
+
+
+
+        pacmansprite = new Texture("pacman.png");
+        Vector2 position = new Vector2(20,20);
+        Vector2 scale = new Vector2(0.15f,0.15f);
+        pacman = new Entity();
+        pacman.add(new VelocityComponent())
+                .add(WorldBuilder.getPlayerList().get(4))
+                .add(new TextureComponent(new TextureRegion(pacmansprite)))
                 .add(new StateComponent(0))
-                .add(new TransformComponent(20,20))
+                .add(new TransformComponent(position,scale,0f))
                 .add(new CollisionComponent());
-        engine.addEntity(ghost);
+        engine.addEntity(pacman);
+
+        pausescreen = new TextureRegion(new Texture("playscreen/pausescreen.png"));
+        pauseSprite = new Sprite(pausescreen);
+        pauseEntity = new Entity();
+        pauseEntity.add(new TextureComponent(pauseSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),false, false, false))
+            .add(new TransformComponent(0,0));
+        //engine.addEntity(pauseEntity);
+
+        backSprite = new Sprite(back);
+        backButton = new Entity();
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
 
     }
 
@@ -197,9 +248,12 @@ public final class PlayScreen extends AbstractScreen {
         b2dr.render(world, camera.combined.scl(1f));
 //        engine.update(delta);
 
+
         // when paused engine stops updating, and textures "disappear"
         if(!pause) {
             if(resume) {
+                //engine.removeEntity(pauseEntity);
+                //engine.addEntity(pacman);
                 musicSystem.resume();
                 resume = false;
             }
@@ -207,10 +261,21 @@ public final class PlayScreen extends AbstractScreen {
             world.step(1/60f,6,2);
 
         }
-        if(pause && !resume){
+        if(pause){
+            batch.begin();
+            batch.draw(pausescreen, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight()/ 32f);
+            batch.end();
+            //engine.addEntity(pauseEntity);
+            //engine.removeEntity(pacman);
             musicSystem.pause();
             resume = true;
+            if(Gdx.input.justTouched()) {
+                pause = false;
+            }
         }
+        //engine.update(delta);
+
+
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.PlayerComponent;
+import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -31,10 +32,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private int locationStartTouchedX;
     private int locationStartTouchedY;
 
-    private int locationEndTouchedX = 0;
-    private int locationEndTouchedY = 0;
-
-
+    private ComponentMapper<PacmanComponent> pacmanM;
     private ComponentMapper<VelocityComponent> velocityM;
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<StateComponent> stateM;
@@ -42,12 +40,16 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private ComponentMapper<PlayerComponent> playerM;
 
     public PlayerInputSystem(){
-        super(Family.all(VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class, PlayerComponent.class).get());
+//<<<<<<< HEAD
+//        super(Family.all(VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class, PlayerComponent.class).get());
+
+        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
+
 
         Gdx.input.setInputProcessor(this);
 
@@ -55,11 +57,11 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
+        PlayerComponent pc = playerM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-        PlayerComponent pc = playerM.get(entity);
 
 
         float x = 0f;
@@ -97,7 +99,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             y = 0f;
 
             sc.setState(4);
-            //System.out.println("right move");
 
             //flips texture
             if (texc.region != null && !texc.region.isFlipX()){
@@ -105,14 +106,17 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             }
         }
 
-//        vc.setVelocity(x,y);
-//        vc.setAcceleration(x,y);
+
         pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
         pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+        //sets velocity direction dictated by x and y
+//        vc.setVelocity(x,y);
+//        vc.setAcceleration(x,y);
+
 
 
     }
-
+    //function for deciding drag direction
     private void toggleDirection(int locationStartTouchedX, int locationStartTouchedY, int screenX, int screenY) {
 
         boolean yIsGreater = ((Math.abs(locationStartTouchedY - screenY)) - (Math.abs(locationStartTouchedX - screenX)) > 0);

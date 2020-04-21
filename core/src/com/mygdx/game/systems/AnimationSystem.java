@@ -37,8 +37,8 @@ public class AnimationSystem extends IteratingSystem {
         }
         state.stateTime += deltaTime;
 
-        //loops animations after 6 deltatime
-        if (state.stateTime > 6f){
+        //loops animations after 4 deltatime
+        if (state.stateTime > 3f){
             state.stateTime = 0.0f;
         }
     }
