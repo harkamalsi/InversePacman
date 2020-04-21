@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.managers.GameScreenManager;
@@ -19,7 +21,7 @@ import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
-import java.util.ArrayList;
+import java.util.Collections;
 
 public abstract class AbstractBoardScreen extends AbstractScreen {
     protected TextureRegion bg;
@@ -81,7 +83,8 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         batch.draw(this.bg, 0, 0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
         font.getData().setScale(scaleX / (32f * 1.2f), scaleY / (32f * 1.2f));
 
-        ArrayList<PlayerScore> players = retrieveTopPlayerScores();
+        Array<PlayerScore> players = retrieveSortedPlayerScores();
+
         drawNames(batch, font, players);
         drawScores(batch, font, players);
 
@@ -138,7 +141,19 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
     }
 
-    public abstract ArrayList<PlayerScore> retrieveTopPlayerScores();
+    public  Array<PlayerScore> retrieveSortedPlayerScores() {
+        Array<PlayerScore> players = retrievePlayerScores();
+
+        if (players != null && players.size > 0) {
+            players.sort(Collections.<PlayerScore>reverseOrder());
+        } else {
+            players = null;
+        }
+
+        return players;
+    }
+
+    public abstract Array<PlayerScore> retrievePlayerScores();
     public abstract String formatScore(int score);
     public abstract void addEllipseSpriteEntity();
     public abstract void setBackground();
@@ -148,22 +163,42 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         return name;
     }
 
-    public void drawNames(SpriteBatch batch, BitmapFont font, ArrayList<PlayerScore> players) {
-        layout.setText(font, formatName(players.get(0).name));
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
-        layout.setText(font, formatName(players.get(1).name));
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.8f * 32f) + layout.height / 2);
-        layout.setText(font, formatName(players.get(2).name));
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (2.1f * 32f) + layout.height / 2);
+    public void drawNames(SpriteBatch batch, BitmapFont font, Array<PlayerScore> players) {
+        if (players == null || players.size == 0) {
+            layout.setText(font, "NO SCORES");
+            font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
+        } else {
+
+            layout.setText(font, formatName(players.get(0).name));
+            font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f * 32f) - layout.width / 2, Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
+
+            if (players.size > 1) {
+                layout.setText(font, formatName(players.get(1).name));
+                font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f * 32f) - layout.width / 2, Gdx.graphics.getHeight() / (1.8f * 32f) + layout.height / 2);
+            }
+
+            if (players.size > 2) {
+                layout.setText(font, formatName(players.get(2).name));
+                font.draw(batch, layout, Gdx.graphics.getWidth() / (3.5f * 32f) - layout.width / 2, Gdx.graphics.getHeight() / (2.1f * 32f) + layout.height / 2);
+            }
+        }
     }
 
-    public void drawScores(SpriteBatch batch, BitmapFont font, ArrayList<PlayerScore> players) {
-        layout.setText(font, formatScore(players.get(0).score));
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
-        layout.setText(font, formatScore(players.get(1).score));
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.8f * 32f) + layout.height / 2);
-        layout.setText(font, formatScore(players.get(2).score));
-        font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (2.1f * 32f) + layout.height / 2);
+    public void drawScores(SpriteBatch batch, BitmapFont font, Array<PlayerScore> players) {
+        if (players != null && players.size > 0) {
+            layout.setText(font, formatScore(players.get(0).score));
+            font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.575f * 32f) + layout.height / 2);
+
+            if (players.size > 1) {
+                layout.setText(font, formatScore(players.get(1).score));
+                font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f * 32f) - layout.width / 2, Gdx.graphics.getHeight() / (1.8f * 32f) + layout.height / 2);
+            }
+
+            if (players.size > 2) {
+                layout.setText(font, formatScore(players.get(2).score));
+                font.draw(batch, layout, Gdx.graphics.getWidth() / (1.3f *32f) - layout.width / 2,Gdx.graphics.getHeight() / (2.1f * 32f) + layout.height / 2);
+            }
+        }
     }
 
     public void handleInput() {
@@ -172,13 +207,25 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         }
     }
 
-    public class PlayerScore {
+    static public class PlayerScore implements Json.Serializable, Comparable<PlayerScore> {
         private String name;
         private int score;
+
+        public PlayerScore() {
+        }
 
         public PlayerScore(String name, int score) {
             this.name = name;
             this.score = score;
+        }
+
+        public void write (Json json) {
+            json.writeValue(name, score);
+        }
+
+        public void read (Json json, JsonValue jsonMap) {
+            name = jsonMap.child().next().name();
+            score = jsonMap.child().next().asInt();
         }
 
         public String getName() {
@@ -195,6 +242,11 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
         public void setScore(int score) {
             this.score = score;
+        }
+
+        @Override
+        public int compareTo(PlayerScore playerScore) {
+            return ((Integer)this.score).compareTo(playerScore.score);
         }
     }
 

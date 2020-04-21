@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.managers.GameScreenManager;
@@ -21,14 +22,9 @@ public class MultiplayerNamcapBoardScreen extends AbstractBoardScreen {
     }
 
     @Override
-    public ArrayList<PlayerScore> retrieveTopPlayerScores() {
-        //app.saveManager.loadDataValue("ghosts", ArrayList.class);
-        ArrayList<PlayerScore> scores = new ArrayList<>();
-        scores.add(new PlayerScore("Player 1", 3));
-        scores.add(new PlayerScore("Player 2", 2));
-        scores.add(new PlayerScore("Player 3", 1));
-
-        return scores;
+    public Array<PlayerScore> retrievePlayerScores() {
+        // TODO
+        return null;
     }
 
     @Override
@@ -43,7 +39,7 @@ public class MultiplayerNamcapBoardScreen extends AbstractBoardScreen {
 
     @Override
     public String formatScore(int score) {
-        return score + " WINS";
+        return score + "W";
     }
 
     @Override

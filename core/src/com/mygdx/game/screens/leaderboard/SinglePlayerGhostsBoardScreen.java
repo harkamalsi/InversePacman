@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
@@ -27,13 +28,8 @@ public class SinglePlayerGhostsBoardScreen extends AbstractBoardScreen {
     }
 
     @Override
-    public ArrayList<PlayerScore> retrieveTopPlayerScores() {
-        //app.saveManager.loadDataValue("ghosts", ArrayList.class);
-        ArrayList<PlayerScore> scores = new ArrayList<>();
-        scores.add(new PlayerScore("2011-12-03T10:15:30", 59));
-        scores.add(new PlayerScore("2020-12-08T23:15:30", 136));
-        scores.add(new PlayerScore("2018-12-09T10:15:30", 180));
-
+    public Array<PlayerScore> retrievePlayerScores() {
+        Array<PlayerScore> scores = app.saveManager.loadDataValue("ghosts", Array.class);
         return scores;
     }
 
@@ -55,7 +51,7 @@ public class SinglePlayerGhostsBoardScreen extends AbstractBoardScreen {
     @Override
     public String formatName(String name) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy");
             LocalDateTime dateTime = LocalDateTime.parse(name);
 
             return dateTime.format(formatter);
