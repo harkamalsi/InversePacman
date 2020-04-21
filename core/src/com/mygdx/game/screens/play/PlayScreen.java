@@ -69,7 +69,7 @@ public final class PlayScreen extends AbstractScreen {
     //World building
     public World world;
     public Body player;
-    //public Box2DDebugRenderer b2dr;
+    public Box2DDebugRenderer b2dr;
 
     //Box2d
     public OrthogonalTiledMapRenderer tmr;
@@ -141,7 +141,7 @@ public final class PlayScreen extends AbstractScreen {
         //world
         world = new World(new Vector2(0f, 0), false);
         world.setContactListener(new PlayerContactListener());
-        //b2dr = new Box2DDebugRenderer();
+        b2dr = new Box2DDebugRenderer();
 
         //Tiled map creation and WorldBuilder call
         map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
@@ -260,7 +260,7 @@ public final class PlayScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.setView(camera);
         tmr.render();
-        //b2dr.render(world, camera.combined.scl(1f));
+        b2dr.render(world, camera.combined.scl(1f));
 //        engine.update(delta);
 
 
