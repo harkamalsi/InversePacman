@@ -1,7 +1,6 @@
 package com.mygdx.game.screens.leaderboard;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -34,8 +33,9 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     private float scaleX;
     private float scaleY;
 
-    public AbstractBoardScreen(InversePacman app) {
-        super(app);
+
+    public AbstractBoardScreen(InversePacman app, Engine engine) {
+        super(app,engine);
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
         layout = new GlyphLayout(); //dont do this every frame! Store it as member

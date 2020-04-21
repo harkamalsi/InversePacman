@@ -3,7 +3,6 @@ package com.mygdx.game.screens.play;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -88,8 +87,9 @@ public class LobbyScreen extends AbstractScreen {
     private BitmapFont font;
     private GlyphLayout layout;
 
-    public LobbyScreen(final InversePacman app) {
-        super(app);
+    public LobbyScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
+        this.engine = engine;
 
         /*this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
