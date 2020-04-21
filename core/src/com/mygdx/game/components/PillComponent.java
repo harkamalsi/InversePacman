@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class PillComponent implements Component {
 
-    public Body body, triggerBody;
+    private Body body, triggerBody;
     private String id;
     private boolean collected = false;
 
@@ -70,5 +70,4 @@ public class PillComponent implements Component {
     public boolean isCollected() {
         return collected;
     }
-
 }

@@ -30,11 +30,11 @@ public class PlayerContactListener implements ContactListener {
                 playerB.hit();
             }
             else if ((fixtureB.getUserData() instanceof PillComponent)) {
-                PillComponent coinB = (PillComponent) fixtureB.getUserData();
+                PillComponent pillB = (PillComponent) fixtureB.getUserData();
                 PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
                 System.out.println(playerA.getType());
-                if(!coinB.isCollected() && playerA.getType().equals("PACMAN")) {
-                    coinB.PillCollected();
+                if(!pillB.isCollected() && playerA.getType().equals("PACMAN")) {
+                    pillB.PillCollected();
                 }
             }
 
