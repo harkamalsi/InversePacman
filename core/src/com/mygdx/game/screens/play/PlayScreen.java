@@ -6,8 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import  com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -20,10 +21,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.components.GhostComponent;
 import com.mygdx.game.components.PacmanComponent;
-import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -147,9 +146,9 @@ public final class PlayScreen extends AbstractScreen {
         WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects()
                 ,map.getLayers().get("BackgroundLayer")
                 ,map.getLayers().get("Players").getObjects()
-                ,map.getLayers().get("Coins").getObjects());
+                ,map.getLayers().get("Pills").getObjects());
         WorldBuilder.createPlayers(world);
-        WorldBuilder.createCoins(world);
+        WorldBuilder.createPills(world);
 
 
         // To add a new songs, place the file under the folder assets/music/play
@@ -216,6 +215,7 @@ public final class PlayScreen extends AbstractScreen {
         Vector2 scale = new Vector2(0.15f,0.15f);
         pacman = new Entity();
         pacman.add(new VelocityComponent())
+                .add(new PacmanComponent())
                 .add(WorldBuilder.getPlayerList().get(4))
                 .add(new TextureComponent(new TextureRegion(pacmansprite)))
                 .add(new StateComponent(0))
