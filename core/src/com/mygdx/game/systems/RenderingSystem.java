@@ -34,7 +34,7 @@ public class RenderingSystem extends IteratingSystem {
 
     private Array<Entity> renderQueue;
     private Comparator<Entity> comparator;
-    private OrthographicCamera cam;
+    public OrthographicCamera cam;
     private boolean set = false;
     private TextureComponent tex;
     private TransformComponent t;

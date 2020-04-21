@@ -216,6 +216,7 @@ public final class PlayScreen extends AbstractScreen {
         Vector2 scale = new Vector2(0.15f,0.15f);
         pacman = new Entity();
         pacman.add(new VelocityComponent())
+                .add(new PacmanComponent())
                 .add(WorldBuilder.getPlayerList().get(4))
                 .add(new TextureComponent(new TextureRegion(pacmansprite)))
                 .add(new StateComponent(0))

@@ -40,15 +40,14 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private ComponentMapper<PlayerComponent> playerM;
 
     public PlayerInputSystem(){
-//<<<<<<< HEAD
-//        super(Family.all(VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class, PlayerComponent.class).get());
 
-        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
+        super(Family.all(PacmanComponent.class,PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
+        pacmanM = ComponentMapper.getFor(PacmanComponent.class);
 
 
         Gdx.input.setInputProcessor(this);
@@ -58,6 +57,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         PlayerComponent pc = playerM.get(entity);
+        PacmanComponent pacmanc = pacmanM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
@@ -66,6 +66,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
         float x = 0f;
         float y = 0f;
+
 
         if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
             x = 0f;
