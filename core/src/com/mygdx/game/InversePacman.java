@@ -2,12 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,37 +17,41 @@ import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.SaveManager;
-
-import java.io.File;
 import java.io.IOException;
+
 
 public class InversePacman extends Game {
 
 
 	// App Variables
 	public static final String APP_TITLE = "InversePacman v0.1";
+	public static final int APP_WIDTH = 816;
+	public static final int APP_HEIGHT = 800;
 	public static final int APP_WIDTH_MOBILE = 1080;
 	public static final int APP_HEIGHT_MOBILE = 1800;
-	public static final int APP_WIDTH = 1200;
-	public static final int APP_HEIGHT = 2220;
 	public static final int APP_FPS = 60;
 
 	// Game Variables
-	public static final int V_WIDTH = 720;
-	public static final int V_HEIGHT = 420;
+	public static final int V_WIDTH = 816;
+	public static final int V_HEIGHT = 800;
 
 	// Managers
 	public GameScreenManager gsm;
 	public AssetManager assets;
 	public SaveManager saveManager;
-	private Engine engine;
 
 	// Batches
 	public SpriteBatch batch;
 	public ShapeRenderer shapeBatch;
 
+	//ashley engine
+	public Engine engine;
+
 	// Texture for testing (Use AssetsManager later an remove this)
 	public Texture img;
+
+	//Camera
+	public OrthographicCamera camera;
 
 
 	public float stored_music_volume;
@@ -129,19 +133,27 @@ public class InversePacman extends Game {
 		batch = new SpriteBatch();
 		shapeBatch = new ShapeRenderer();
 
+		//Ashley Engine
+		engine = new Engine();
+
 		//Setup managers
 		assets = new AssetManager();
-		gsm = new GameScreenManager(this);
+	gsm = new GameScreenManager(this);
 		saveManager = new SaveManager(false);
 
 		//Picture
 		img = new Texture("Test1.png");
-		//System.out.println(scaleX + " " + scaleY);
+
+//		// Camera
+//		camera = new OrthographicCamera();
+//		camera.setToOrtho(false,V_WIDTH, V_HEIGHT);
+
 	}
 
 	@Override
 	public void render() {
 		super.render();
+
 
 		// Changing the different screens based on the button pressed, should be changed to touch inputs from menu.
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
@@ -162,6 +174,9 @@ public class InversePacman extends Game {
 			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
 		}
 	}
+
+
+
 
 	@Override
 	public void dispose() {

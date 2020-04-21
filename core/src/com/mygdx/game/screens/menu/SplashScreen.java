@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.menu;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,8 +21,8 @@ public class SplashScreen extends AbstractScreen {
     private SpriteBatch batch;
 
 
-    public SplashScreen(InversePacman app) {
-        super(app);
+    public SplashScreen(InversePacman app, Engine engine) {
+        super(app,engine);
 
         bg = new TextureRegion(new Texture("invpac_splash_screen.png"));
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));

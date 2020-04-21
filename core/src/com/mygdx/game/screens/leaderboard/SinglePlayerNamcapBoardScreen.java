@@ -22,8 +22,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
-    public SinglePlayerNamcapBoardScreen(final InversePacman app) {
-        super(app);
+    public SinglePlayerNamcapBoardScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
     }
 
     @Override
@@ -74,6 +74,21 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
 
     }
 

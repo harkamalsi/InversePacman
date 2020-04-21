@@ -55,7 +55,6 @@ public class NetworkManager {
             @Override
             public void call(Object... args) {
                 socketID = socket.connect().id();
-                System.out.println(socketID + "****************************");
                 fetch = true;
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
@@ -123,6 +122,12 @@ public class NetworkManager {
 
         getSocket().emit(Constants.JOIN_LOBBY, socketID, inputs);
 
+    }
+
+    public void leaveLobby(String lobbyName) {
+        // args: lobbyName
+        System.out.println("Leave Lobby is called!");
+        getSocket().emit(Constants.LEAVE_LOBBY, socketID, lobbyName);
     }
 
     public void sendInput(Object ...args) {

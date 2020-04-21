@@ -20,9 +20,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class MultiplayerGhostsBoardScreen extends AbstractBoardScreen {
-
-    public MultiplayerGhostsBoardScreen(final InversePacman app) {
-        super(app);
+    public MultiplayerGhostsBoardScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
     }
 
     @Override

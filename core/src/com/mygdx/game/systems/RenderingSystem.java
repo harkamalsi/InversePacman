@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RenderingSystem extends IteratingSystem {
     //pixels per meter
-    static final float PPM = 32.0f;
+    public static final float PPM = 32.0f;
     //we are going to have some sort of viewport
     static final float CAMERA_WIDTH = Gdx.graphics.getWidth()/PPM;
     static final float CAMERA_HEIGHT = Gdx.graphics.getHeight()/PPM;
@@ -34,7 +34,7 @@ public class RenderingSystem extends IteratingSystem {
 
     private Array<Entity> renderQueue;
     private Comparator<Entity> comparator;
-    private OrthographicCamera cam;
+    public OrthographicCamera cam;
     private boolean set = false;
     private TextureComponent tex;
     private TransformComponent t;

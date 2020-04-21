@@ -17,8 +17,8 @@ import com.mygdx.game.systems.RenderingSystem;
 import java.util.ArrayList;
 
 public class MultiplayerNamcapBoardScreen extends AbstractBoardScreen {
-    public MultiplayerNamcapBoardScreen(final InversePacman app) {
-        super(app);
+    public MultiplayerNamcapBoardScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
     }
 
     @Override

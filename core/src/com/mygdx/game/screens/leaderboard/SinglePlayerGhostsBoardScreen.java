@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SinglePlayerGhostsBoardScreen extends AbstractBoardScreen {
-    public SinglePlayerGhostsBoardScreen(final InversePacman app) {
-        super(app);
+    public SinglePlayerGhostsBoardScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
     }
 
     @Override
