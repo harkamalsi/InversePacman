@@ -30,6 +30,7 @@ public class AISystem extends IteratingSystem{
 
     private ComponentMapper<GhostComponent> ghostM;
     private ComponentMapper<PacmanComponent> packM;
+    private ComponentMapper<PlayerComponent> playerM;
     private ComponentMapper<VelocityComponent> velocityM;
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<StateComponent> stateM;
@@ -37,9 +38,10 @@ public class AISystem extends IteratingSystem{
     WorldBuilder world = new WorldBuilder(); //must get the actual world builder!!!
 
     public AISystem(){
-        super(Family.all(GhostComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
+        super(Family.all(GhostComponent.class, PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         ghostM = ComponentMapper.getFor(GhostComponent.class);
         packM = ComponentMapper.getFor(PacmanComponent.class);
+        playerM = ComponentMapper.getFor(PlayerComponent.class);
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
@@ -53,6 +55,7 @@ public class AISystem extends IteratingSystem{
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         GhostComponent gc = ghostM.get(entity);
+        PlayerComponent pc = playerM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);

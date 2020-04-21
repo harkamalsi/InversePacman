@@ -9,6 +9,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.PlayerComponent;
+import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -39,12 +40,14 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private ComponentMapper<PlayerComponent> playerM;
 
     public PlayerInputSystem(){
-        super(Family.all(VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class, PlayerComponent.class).get());
+
+        super(Family.all(PacmanComponent.class,PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
+        pacmanM = ComponentMapper.getFor(PacmanComponent.class);
 
 
         Gdx.input.setInputProcessor(this);
@@ -53,16 +56,17 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        PacmanComponent pc = pacmanM.get(entity);
+        PlayerComponent pc = playerM.get(entity);
+        PacmanComponent pacmanc = pacmanM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-        PlayerComponent pc = playerM.get(entity);
 
 
         float x = 0f;
         float y = 0f;
+
 
         if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
             x = 0f;
@@ -96,7 +100,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             y = 0f;
 
             sc.setState(4);
-            //System.out.println("right move");
+
             //flips texture
             if (texc.region != null && !texc.region.isFlipX()){
                 texc.region.flip(true,false);
@@ -104,10 +108,12 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         }
 
 
-//        vc.setVelocity(x,y);
-//        vc.setAcceleration(x,y);
         pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
         pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+        //sets velocity direction dictated by x and y
+//        vc.setVelocity(x,y);
+//        vc.setAcceleration(x,y);
+
 
 
     }

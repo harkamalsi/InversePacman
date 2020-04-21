@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -8,21 +9,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.TextureComponent;
+import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
-import com.mygdx.game.systems.PlayerContactListener;
-import com.mygdx.game.worldbuilder.WorldBuilder;
 import com.mygdx.game.managers.SaveManager;
+import java.io.IOException;
 
 
 public class InversePacman extends Game {
@@ -32,8 +27,8 @@ public class InversePacman extends Game {
 	public static final String APP_TITLE = "InversePacman v0.1";
 	public static final int APP_WIDTH = 816;
 	public static final int APP_HEIGHT = 800;
-	public static final int APP_WIDTH_MOBILE = 816;
-	public static final int APP_HEIGHT_MOBILE = 800;
+	public static final int APP_WIDTH_MOBILE = 1080;
+	public static final int APP_HEIGHT_MOBILE = 1800;
 	public static final int APP_FPS = 60;
 
 	// Game Variables
@@ -81,9 +76,35 @@ public class InversePacman extends Game {
 	// Creates The managers,
 	@Override
 	public void create () {
+
+		//FileHandle file = new FileHandle(Gdx.files.internal("settings.txt").path());
+		//file.
+		//System.out.println(file.exists());
+
+		/*File file = new File(Gdx.files.internal("settings.txt").path());
+		if(!file.exists()) {
+			try {
+				System.out.println("Yellow");
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+
+
+			}
+			catch (IOException e){
+				System.out.println(e);
+			}
+		}*/
+
 		if(!Gdx.files.local("settings.txt").exists()){
-			FileHandle put = Gdx.files.internal("settings.txt");
+			FileHandle put = Gdx.files.local("settings.txt");
+			try {
+				put.file().createNewFile();
+			}
+			catch (IOException e) {
+				System.out.println(e);
+			}
 			put.copyTo(Gdx.files.local("."));
+
 		}
         FileHandle settings = Gdx.files.local("settings.txt");
 		String text = settings.readString();
@@ -193,5 +214,27 @@ public class InversePacman extends Game {
             }
         }
 	}
+	// If a sprite needs to change opacity, bounds needs to be true so it will set sprite bounds one time
+	// making it possible for the sprite to change opacity. Did it like this incase we want to add dynamic color
+	// changing to our sprites
+	// IMPORTANT! when changing color of a sprite like its done here it will change the whole sprite and the sprite
+	// needs to be white to get the desired result, color format is RGB[0-255](its converted to a float betweeen 0-1)
+	public void addSpriteEntity(Sprite sprite, Entity entity, Engine engine, float x, float y, float width, float height, boolean isButton, boolean changeOpacity, boolean bounds, boolean changeColor, float red, float green, float blue) {
+		entity.add(new TextureComponent(sprite, x, y, width, height, changeOpacity, bounds, changeColor, red, green, blue))
+				.add(new TransformComponent(x, y));
+		if(isButton){
+			entity.add(new ButtonComponent(x, y, width, height));
+		}
+		engine.addEntity(entity);
+	}
+    public void addSpriteEntity(Sprite sprite, Entity entity, Engine engine, float x, float y, float width, float height, boolean isButton, boolean changeOpacity, boolean bounds, boolean changeColor) {
+        entity.add(new TextureComponent(sprite, x, y, width, height, changeOpacity, bounds, changeColor))
+                .add(new TransformComponent(x, y));
+        if(isButton){
+            entity.add(new ButtonComponent(x, y, width, height));
+        }
+        engine.addEntity(entity);
+    }
+
 
 }
