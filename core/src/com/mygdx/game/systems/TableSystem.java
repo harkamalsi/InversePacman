@@ -52,7 +52,8 @@ public class TableSystem extends IteratingSystem {
         this.networkManager = cc.networkManager;
         cc.reset();
         JSONArray lobbies = this.networkManager.getLobbies();
-        if (lobbies.length() >= 0) {
+
+        if (networkManager.connected) {
             cc.createLobby = true;
         }
 
