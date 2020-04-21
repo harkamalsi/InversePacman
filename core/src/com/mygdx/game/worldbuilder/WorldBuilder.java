@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
         private static ArrayList<RectangleMapObject> playersPostionList = new ArrayList<>();
         private static ArrayList<RectangleMapObject> pillsPostionList = new ArrayList<>();
-        private static ArrayList<ArrayList<Node>> nodeCostMatrix = new ArrayList<>();;
+        private static ArrayList<ArrayList<Node>> nodeCostMatrix = new ArrayList<>();
         private static ArrayList<PlayerComponent> playerList = new ArrayList<>();
         private static ArrayList<PillComponent> pillList = new ArrayList<>();
 

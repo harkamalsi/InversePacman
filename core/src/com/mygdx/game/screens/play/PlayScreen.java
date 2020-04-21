@@ -21,8 +21,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
-import com.mygdx.game.components.GhostComponent;
-import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
@@ -258,7 +256,7 @@ public final class PlayScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.setView(camera);
         tmr.render();
-        b2dr.render(world, camera.combined.scl(1f));
+        //b2dr.render(world, camera.combined.scl(1f));
 //        engine.update(delta);
 
 
