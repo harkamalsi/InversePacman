@@ -26,7 +26,8 @@ public class TextureComponent implements Component {
         ;
     }
   
-    public TextureComponent(Sprite sprite, float x, float y, float width, float height, boolean changeOpacity, boolean bounds, boolean changeColor, float ...rgb) {
+    public TextureComponent(Sprite sprite, float x, float y, float width, float height,
+                            boolean changeOpacity, boolean bounds, boolean changeColor, float ...rgb) {
         this.sprite = new Sprite(sprite);
         this.sprite.setBounds(x, y, width, height);
         this.changeOpacity = changeOpacity;

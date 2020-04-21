@@ -73,12 +73,10 @@ public class TableComponent implements Component {
         lobbyButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("Pressed!!!!!!!! UPPPP");
-                //joinLobby = false;
+
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("Pressed!!!!!!!! DOWN");
                 joinLobbyName = nameLabel;
                 joinLobby = true;
                 return true;

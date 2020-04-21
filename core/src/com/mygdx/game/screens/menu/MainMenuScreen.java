@@ -17,14 +17,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.CollisionComponent;
@@ -44,13 +37,10 @@ public class MainMenuScreen extends AbstractScreen {
     private OrthographicCamera camera;
     private FitViewport viewport;
 
-
     private EntityManager entityManager;
 
     private SpriteBatch batch;
     private SpriteBatch bgBatch;
-
-    private Stage stage;
 
     private Engine engine;
     private Vector3 clickPosition;
@@ -87,11 +77,7 @@ public class MainMenuScreen extends AbstractScreen {
     private Sprite bgSprite;
 
 
-    private Skin skin;
-    private Label lobbyName;
-    private Label lobbyPlayers;
-    private Label addressLabel;
-    private TextField addressText;
+
     private float scaleX;
     private float scaleY;
 
@@ -105,7 +91,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
     public MainMenuScreen(final InversePacman app) {
         super(app);
-        stage = new Stage(new ScreenViewport());
 
         bg = new TextureRegion(new Texture("menuscreen/menu_bg.png"));
         play = new TextureRegion(new Texture("menuscreen/play.png"));
@@ -205,10 +190,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
         batch.end();*/
         engine.update(delta);
-        stage.act();
-        stage.draw();
         batch.begin();
-
         font.setUseIntegerPositions(false);
         font.getData().setScale(scaleX / 32f, scaleY / 32f);
         layout.setText(font,"MENU");
@@ -216,8 +198,13 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         //System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
         //System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
 
+<<<<<<< HEAD
         font.draw(batch,"menu", (Gdx.graphics.getWidth() / 64f - layout.width / 2f),
                 (Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+=======
+
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+>>>>>>> 5f383ff036fdce7de22bdf044abe0aa768025033
         batch.end();
 
 
@@ -254,6 +241,10 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         bgEntity = new Entity();
         //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
         app.addSpriteEntity(bgSprite, bgEntity, engine,0, -2, Gdx.graphics.getWidth() +2, Gdx.graphics.getHeight() +2,false,false,false, false );
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5f383ff036fdce7de22bdf044abe0aa768025033
 
         ellipseSprite = new Sprite(ellipse);
         ellipseEntity = new Entity();
