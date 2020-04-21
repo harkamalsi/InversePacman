@@ -60,12 +60,16 @@ public class MusicSystem extends EntitySystem {
     }
 
     public void dispose() {
+        /*
         song.dispose();
+         */
     }
 
     public void pause() {
+        /*
         song.pause();
         pause = true;
+         */
     }
 
     public void resume() {
@@ -74,12 +78,13 @@ public class MusicSystem extends EntitySystem {
     }
 
     private void playMusic(ArrayList<FileHandle> tracks, int lasttrack) {
+        /*
         Random track = new Random();
         System.out.println("Start " + tracknr);
         System.out.println("Last track " + lasttrack);
         /* The if statements make sure that the same song never plays twice in a row, unless there
            is only one song
-         */
+         */ /*
         if(lasttrack > -1 && tracks.size() > 1) {
             store = tracks.remove(lasttrack);
         }
@@ -103,6 +108,7 @@ public class MusicSystem extends EntitySystem {
         song.setLooping(false);
         song.setVolume(music_volume);
         song.play();
+        */
     }
 
     private void setSettings() {
@@ -133,6 +139,7 @@ public class MusicSystem extends EntitySystem {
 
     @Override
     public void update(float dt) {
+        /*
         getMusic();
         if(!song.isPlaying() && !pause){
             System.out.println("updating music");
@@ -141,6 +148,6 @@ public class MusicSystem extends EntitySystem {
             song.dispose();
             playMusic(tracks, tracknr);
         }
-
+         */
     }
 }

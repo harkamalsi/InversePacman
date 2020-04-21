@@ -294,6 +294,7 @@ class BoardDummy {
                 board.nextPlayer();
             }
         }
+
         return legalMoves;
     }
 
