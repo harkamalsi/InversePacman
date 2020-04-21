@@ -21,6 +21,11 @@ import com.mygdx.game.worldbuilder.WorldBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//må gjøres:
+// gjenkjenne om en playercomponent er max eller min (packman eller ghost)
+//legge inn tile ratio
+//Må vite hvem som er currentPlayer
+
 public class AISystem extends IteratingSystem{
 
 
@@ -118,9 +123,10 @@ public class AISystem extends IteratingSystem{
             return board;
         }
         if(board.currentPlayer().isMaxPlayer()) {
-            BoardDummy bestBoard = new BoardDummy();
+            ArrayList<BoardDummy> legalMoves = board.getLegalMoves();
+            BoardDummy bestBoard = legalMoves.get(0);
             bestBoard.setPredictedUtility(-1000000);
-            for (BoardDummy nextBoard : board.getLegalMoves()) {
+            for (BoardDummy nextBoard : legalMoves) {
                 BoardDummy max = miniMax(nextBoard, depth-1);
                 if(max.getPredictedUtility() > bestBoard.getPredictedUtility()) {
                     board.setPredictedUtility(nextBoard.getPredictedUtility());
@@ -130,9 +136,10 @@ public class AISystem extends IteratingSystem{
             return bestBoard;
         }
         else {
-            BoardDummy bestBoard = new BoardDummy();
+            ArrayList<BoardDummy> legalMoves = board.getLegalMoves();
+            BoardDummy bestBoard = legalMoves.get(0);
             bestBoard.setPredictedUtility(1000000);
-            for (BoardDummy nextBoard : board.getLegalMoves()) {
+            for (BoardDummy nextBoard : legalMoves) {
                 BoardDummy min = miniMax(nextBoard, depth-1);
                 if(min.getPredictedUtility() < bestBoard.getPredictedUtility()) {
                     board.setPredictedUtility(nextBoard.getPredictedUtility());
@@ -150,11 +157,8 @@ class BoardDummy {
     public Vector2 movedDirection;
     public Vector2 bestMove;
     private int currentPlayer = 0;
-    private DummyPlayer pacMan = new PackMan(new Vector2(3,3));
-    private DummyPlayer ghost = new Ghost(new Vector2(3,0));
     private ArrayList<DummyPlayer> players = new ArrayList<>();
-    private ArrayList<ArrayList<Node>> board = new ArrayList<>();
-    private int boardSize = 6;
+    private ArrayList<ArrayList<Node>> board = WorldBuilder.getNodeCostMatrix();
     private double xTileRatio = 0.1;
     private double yTileRatio = 0.1;
     private ArrayList<Vector2> directions = new ArrayList(Arrays.asList(
@@ -279,6 +283,10 @@ class BoardDummy {
         return distance;
     }
 
+    public void addPlayer(DummyPlayer player) {
+        this.players.add(player);
+    }
+
     public ArrayList<BoardDummy> getLegalMoves() {
         ArrayList<BoardDummy> legalMoves = new ArrayList<BoardDummy>();
         for(Vector2 direction: this.directions) {
@@ -286,7 +294,9 @@ class BoardDummy {
             board.movedDirection = direction;
             board.setCurrentPlayer(this.currentPlayer);
             for(int i = 0; i<this.players.size(); i++) {
-                board.getPlayers().get(i).setPosition(this.getPlayers().get(i).getPosition());
+                DummyPlayer newPlayer = this.players.get(i).makeCopy();
+                board.addPlayer(newPlayer);
+                //board.getPlayers().get(i).setPosition(this.getPlayers().get(i).getPosition());
             }
             board.currentPlayer().getPosition().add(direction);
             if(board.legalState()) {
@@ -325,6 +335,12 @@ class DummyPlayer {
     public void setPosition(Vector2 position) {
         this.position.x = position.x;
         this.position.y = position.y;
+    }
+
+    public DummyPlayer makeCopy() {
+        DummyPlayer player = new DummyPlayer(new Vector2(this.position.x, this.position.y));
+        player.setMaxPlayer(this.isMaxPlayer());
+        return player;
     }
 
     public Vector2 getPosition() {
