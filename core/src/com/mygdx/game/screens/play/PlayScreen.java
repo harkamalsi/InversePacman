@@ -199,14 +199,13 @@ public final class PlayScreen extends AbstractScreen {
             ghost = new Entity();
             ghost.add(new VelocityComponent())
                     .add(WorldBuilder.getPlayerList().get(i))
-                    .add(new GhostComponent())
+//                    .add(new GhostComponent())
                     .add(new TextureComponent())
                     .add(animcomponent)
                     .add(new StateComponent(0))
                     .add(new TransformComponent(20,20))
                     .add(new CollisionComponent());
             engine.addEntity(ghost);
-
         }
 
         pillSprite = new Texture("white_pill.png");
@@ -229,7 +228,7 @@ public final class PlayScreen extends AbstractScreen {
         scale = new Vector2(0.15f,0.15f);
         pacman = new Entity();
         pacman.add(new VelocityComponent())
-                .add(new PacmanComponent())
+//                .add(new PacmanComponent())
                 .add(WorldBuilder.getPlayerList().get(4))
                 .add(new TextureComponent(new TextureRegion(pacmansprite)))
                 .add(new StateComponent(0))

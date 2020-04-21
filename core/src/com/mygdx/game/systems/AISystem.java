@@ -29,8 +29,8 @@ public class AISystem extends IteratingSystem{
     private ComponentMapper<TextureComponent> texM;
 
     public AISystem(){
-        super(Family.all(GhostComponent.class, PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
-        ghostM = ComponentMapper.getFor(GhostComponent.class);
+        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
+//        ghostM = ComponentMapper.getFor(GhostComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
@@ -45,7 +45,7 @@ public class AISystem extends IteratingSystem{
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        GhostComponent gc = ghostM.get(entity);
+//        GhostComponent gc = ghostM.get(entity);
         PlayerComponent pc = playerM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
@@ -55,48 +55,51 @@ public class AISystem extends IteratingSystem{
         float x = 0f;
         float y = 0f;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.T)){
-            x = 0f;
-            y = Y_VELOCITY;
+        if (pc.id != "PACMAN"){
+            if (Gdx.input.isKeyPressed(Input.Keys.T)){
+                x = 0f;
+                y = Y_VELOCITY;
 
-            sc.setState(1);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.G)){
-            x = 0f;
-            y = -Y_VELOCITY;
-
-            sc.setState(2);
-        }
-
-
-        if (Gdx.input.isKeyPressed(Input.Keys.F)){
-            x = -X_VELOCITY;
-            y = 0f;
-
-            sc.setState(3);
-
-            //flips texture
-            if (texc.region != null && texc.region.isFlipX()){
-                texc.region.flip(true,false);
+                sc.setState(1);
             }
-        }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.H)){
-            x = X_VELOCITY;
-            y = 0f;
+            if (Gdx.input.isKeyPressed(Input.Keys.G)){
+                x = 0f;
+                y = -Y_VELOCITY;
 
-            sc.setState(4);
-            //flips texture
-            if (texc.region != null && !texc.region.isFlipX()){
-                texc.region.flip(true,false);
+                sc.setState(2);
             }
-        }
+
+
+            if (Gdx.input.isKeyPressed(Input.Keys.F)){
+                x = -X_VELOCITY;
+                y = 0f;
+
+                sc.setState(3);
+
+                //flips texture
+                if (texc.region != null && texc.region.isFlipX()){
+                    texc.region.flip(true,false);
+                }
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.H)){
+                x = X_VELOCITY;
+                y = 0f;
+
+                sc.setState(4);
+                //flips texture
+                if (texc.region != null && !texc.region.isFlipX()){
+                    texc.region.flip(true,false);
+                }
+            }
 
 //        vc.setVelocity(x,y);
 //        vc.setAcceleration(x,y);
-        pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
-        pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+            pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
+            pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+
+        }
 
 
     }
