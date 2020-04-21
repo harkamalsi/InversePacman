@@ -27,6 +27,7 @@ public class NetworkManager {
 
     private JSONArray lobbies = new JSONArray();
     private JSONObject response;
+    public Boolean connected = false;
 
     public NetworkManager() {
         //socket = new SocketIOManager().getSocketInstance();
@@ -56,6 +57,7 @@ public class NetworkManager {
             public void call(Object... args) {
                 socketID = socket.connect().id();
                 fetch = true;
+                connected = true;
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
             @Override
