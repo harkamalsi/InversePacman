@@ -16,6 +16,7 @@ import com.mygdx.game.systems.RenderingSystem;
 import java.util.ArrayList;
 
 public class MultiplayerGhostsBoardScreen extends AbstractBoardScreen {
+
     private OrthographicCamera camera;
     private FitViewport viewport;
 
@@ -38,8 +39,8 @@ public class MultiplayerGhostsBoardScreen extends AbstractBoardScreen {
     private Entity front_ellipseEntity;
     private Entity backButton;
 
-    public MultiplayerGhostsBoardScreen(final InversePacman app) {
-        super(app);
+    public MultiplayerGhostsBoardScreen(final InversePacman app, Engine engine) {
+            super(app, engine);
         ellipse = new TextureRegion(new Texture("menuscreen/Ellipse 11.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
         back = new TextureRegion(new Texture("back.png"));

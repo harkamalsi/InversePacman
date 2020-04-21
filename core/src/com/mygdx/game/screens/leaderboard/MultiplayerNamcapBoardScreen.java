@@ -39,8 +39,8 @@ public class MultiplayerNamcapBoardScreen extends AbstractBoardScreen {
     private Entity front_ellipseEntity;
     private Entity backButton;
 
-    public MultiplayerNamcapBoardScreen(final InversePacman app) {
-        super(app);
+    public MultiplayerNamcapBoardScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
         ellipse = new TextureRegion(new Texture("menuscreen/Ellipse 11.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
         back = new TextureRegion(new Texture("back.png"));

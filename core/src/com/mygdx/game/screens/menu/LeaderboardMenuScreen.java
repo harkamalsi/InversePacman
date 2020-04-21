@@ -61,8 +61,8 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
     private static String LEADERBOARD_MENU_DIRECTORY = "leaderboardmenuscreen/";
 
-    public LeaderboardMenuScreen(final InversePacman app) {
-        super(app);
+    public LeaderboardMenuScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
 

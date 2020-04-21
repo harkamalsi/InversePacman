@@ -40,8 +40,8 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
     private Entity front_ellipseEntity;
     private Entity backButton;
 
-    public SinglePlayerNamcapBoardScreen(final InversePacman app) {
-        super(app);
+    public SinglePlayerNamcapBoardScreen(final InversePacman app, Engine engine) {
+        super(app, engine);
 
 
         ellipse = new TextureRegion(new Texture("menuscreen/Ellipse 11.png"));
@@ -66,7 +66,7 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
 
     @Override
     public void show() {
-        super.show();
+//        super.show();
         this.camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -109,6 +109,21 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
     public void render(float delta) {
         super.render(delta);
         engine.update(delta);
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
 
     }
 
