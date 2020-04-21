@@ -121,14 +121,12 @@ import java.util.ArrayList;
         private static ChainShape createPolyLine(PolygonMapObject polyline) {
             float[] vertices = polyline.getPolygon().getTransformedVertices();
             Vector2[] worldVertices = new Vector2[vertices.length/2];
-            System.out.println(vertices[7]);
 
 
             for(int i=0; i < worldVertices.length; i++) {
                 worldVertices[i] = new Vector2(vertices[i*2], vertices[i*2+1]);
 
             }
-            System.out.println(worldVertices[0]);
             ChainShape cs = new ChainShape();
             cs.createLoop(worldVertices);
             return cs;
@@ -143,11 +141,11 @@ import java.util.ArrayList;
 
 
                if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
-                   player.createPlayerBody(world, "GHOST_NUMBER_" + i, vector.x, vector.y);
+                   player.createPlayerBody(world, "GHOST_NUMBER_" + i, vector.x, vector.y, "GHOST");
                    playerList.add(player);
                }
                else if (getPlayerPositionList().get(i).getName().equals("Pacman")) {
-                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y);
+                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN");
                    playerList.add(player);
                }
 
@@ -157,7 +155,6 @@ import java.util.ArrayList;
 
         public static void createPills(World world) {
             for (int i=0; i < getPillsPostionList().size(); i++) {
-                System.out.println(getPillsPostionList().get(i).getName());
 
                 PillComponent pill = new PillComponent();
                 Vector2 vector = new Vector2();

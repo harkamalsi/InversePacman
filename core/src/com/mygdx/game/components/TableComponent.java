@@ -90,8 +90,8 @@ public class TableComponent implements Component {
     public void addConnectingToServerMessage() {
         Label message1 = new Label("Connecting to", skin);
         Label message2 = new Label(" server...", skin);
-        message1.setFontScale(0.5f);
-        message2.setFontScale(0.5f);
+        message1.setFontScale(0.9f);
+        message2.setFontScale(0.9f);
         table.add(message1).padBottom(20);
         table.row();
         table.add(message2);

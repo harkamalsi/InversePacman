@@ -20,25 +20,20 @@ public class PlayerContactListener implements ContactListener {
         if(fixtureA.getUserData() == null || fixtureB.getUserData() == null) return;
 
         if (isPlayerContact(fixtureA, fixtureB)) {
-            if (fixtureA.getUserData() instanceof PlayerComponent) {
+            if (fixtureA.getUserData() instanceof PlayerComponent ) {
                 PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
                 //playerA.hit();
-            }
-            else if (fixtureA.getUserData() instanceof PillComponent) {
-                PillComponent coinA = (PillComponent) fixtureA.getUserData();
-                if(!coinA.isCollected()) {
-                    //coinA.PillCollected();
-                }
-
             }
 
             if (fixtureB.getUserData() instanceof PlayerComponent) {
                 PlayerComponent playerB = (PlayerComponent) fixtureB.getUserData();
                 playerB.hit();
             }
-            else if (fixtureB.getUserData() instanceof PillComponent) {
+            else if ((fixtureB.getUserData() instanceof PillComponent)) {
                 PillComponent coinB = (PillComponent) fixtureB.getUserData();
-                if(!coinB.isCollected()) {
+                PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
+                System.out.println(playerA.getType());
+                if(!coinB.isCollected() && playerA.getType().equals("PACMAN")) {
                     coinB.PillCollected();
                 }
             }
