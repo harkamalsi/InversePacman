@@ -60,12 +60,20 @@ public class PlayerComponent implements Component {
         return type;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public void setCurrentState(int state) {
         currentState = state;
     }
 
-    public void hit() {
-        System.out.println(id + " har blitt truffet!");
+    public void hit(PlayerComponent playerHit) {
+        System.out.println(id + " have been hit by " + playerHit.getId());
+    }
+
+    public void hitBy(PlayerComponent playerHitBy) {
+        System.out.println(id + " have been hit by " + playerHitBy.getId());
     }
 
 }
