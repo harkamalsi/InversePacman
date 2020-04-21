@@ -67,7 +67,7 @@ public class GameScreenManager {
         this.gameScreens.put(STATE.MAIN_MENU_SCREEN, new MainMenuScreen(app, engine));
         this.gameScreens.put(STATE.IN_GAME_MENU_SCREEN, new InGameMenuScreen(app, engine));
         this.gameScreens.put(STATE.OPTION_SCREEN, new OptionScreen(app, engine));
-        this.gameScreens.put(STATE.LEADERBOARD_MENU_SCREEN, new LeaderboardMenuScreen(app));
+        this.gameScreens.put(STATE.LEADERBOARD_MENU_SCREEN, new LeaderboardMenuScreen(app, engine));
         this.gameScreens.put(STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN, new SinglePlayerGhostsBoardScreen(app, engine));
         this.gameScreens.put(STATE.SINGLE_PLAYER_NAMCAP_BOARD_SCREEN, new SinglePlayerNamcapBoardScreen(app, engine));
         this.gameScreens.put(STATE.MULTIPLAYER_GHOSTS_BOARD_SCREEN, new MultiplayerGhostsBoardScreen(app, engine));
