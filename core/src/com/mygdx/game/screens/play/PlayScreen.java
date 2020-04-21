@@ -209,9 +209,24 @@ public final class PlayScreen extends AbstractScreen {
 
         }
 
+        pillSprite = new Texture("white_pill.png");
+        Vector2 scale = new Vector2(0.05f, 0.05f);
+        for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
+            PillComponent pillComponent = WorldBuilder.getPillList().get(i);
+            Vector2 vector = pillComponent.body.getPosition();
+
+            pill = new Entity();
+            pill.add(WorldBuilder.getPillList().get(i))
+                    .add(new TextureComponent(new TextureRegion(pillSprite)))
+                    .add(new TransformComponent(vector.x / RenderingSystem.PPM,
+                            vector.y / RenderingSystem.PPM, scale.x, scale.y, 0f));
+
+            engine.addEntity(pill);
+        }
+
         pacmansprite = new Texture("pacman.png");
         Vector2 position = new Vector2(20,20);
-        Vector2 scale = new Vector2(0.15f,0.15f);
+        scale = new Vector2(0.15f,0.15f);
         pacman = new Entity();
         pacman.add(new VelocityComponent())
                 .add(new PacmanComponent())
@@ -221,22 +236,6 @@ public final class PlayScreen extends AbstractScreen {
                 .add(new TransformComponent(position,scale,0f))
                 .add(new CollisionComponent());
         engine.addEntity(pacman);
-
-        // Pills
-        pillSprite = new Texture("orange_pill.png");
-        scale = new Vector2(0.075f, 0.075f);
-        for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
-            PillComponent pillComponent = WorldBuilder.getPillList().get(i);
-            Vector2 vector = pillComponent.body.getPosition();
-
-            pill = new Entity();
-            pill.add(WorldBuilder.getPillList().get(i))
-                    .add(new TextureComponent(new TextureRegion(pillSprite)))
-                    .add(new TransformComponent(vector.x / RenderingSystem.PPM,
-                            vector.y / RenderingSystem.PPM, scale.x, scale.y, 90f));
-
-            engine.addEntity(pill);
-        }
 
         pausescreen = new TextureRegion(new Texture("playscreen/pausescreen.png"));
         pauseSprite = new Sprite(pausescreen);
