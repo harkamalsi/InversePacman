@@ -20,25 +20,20 @@ public class PlayerContactListener implements ContactListener {
         if(fixtureA.getUserData() == null || fixtureB.getUserData() == null) return;
 
         if (isPlayerContact(fixtureA, fixtureB)) {
-            if (fixtureA.getUserData() instanceof PlayerComponent ) {
-                PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
-                //playerA.hit();
-            }
+            PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
+            PlayerComponent playerB = (PlayerComponent) fixtureB.getUserData();
+            playerB.hit(playerA);
 
-            if (fixtureB.getUserData() instanceof PlayerComponent) {
-                PlayerComponent playerB = (PlayerComponent) fixtureB.getUserData();
-                playerB.hit();
-            }
-            else if ((fixtureB.getUserData() instanceof PillComponent)) {
+
+        }
+        else if (isPlayerAndCoinContact(fixtureA, fixtureB)) {
+            if ((fixtureB.getUserData() instanceof PillComponent)) {
                 PillComponent coinB = (PillComponent) fixtureB.getUserData();
                 PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
-                System.out.println(playerA.getType());
                 if(!coinB.isCollected() && playerA.getType().equals("PACMAN")) {
                     coinB.PillCollected();
                 }
             }
-
-
         }
 
     }
@@ -66,6 +61,15 @@ public class PlayerContactListener implements ContactListener {
     }
 
     private boolean isPlayerContact(Fixture A, Fixture B) {
+        if (A.getUserData() instanceof PlayerComponent && B.getUserData() instanceof PlayerComponent) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private boolean isPlayerAndCoinContact(Fixture A, Fixture B) {
         if (A.getUserData() instanceof PlayerComponent || B.getUserData() instanceof PlayerComponent) {
             return true;
         }
