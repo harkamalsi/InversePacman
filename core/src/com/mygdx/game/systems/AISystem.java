@@ -43,9 +43,8 @@ public class AISystem extends IteratingSystem{
     WorldBuilder world = new WorldBuilder(); //must get the actual world builder!!!
 
     public AISystem(){
-        super(Family.all(GhostComponent.class, PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
-        ghostM = ComponentMapper.getFor(GhostComponent.class);
-        packM = ComponentMapper.getFor(PacmanComponent.class);
+        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
+//        ghostM = ComponentMapper.getFor(GhostComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
@@ -59,7 +58,7 @@ public class AISystem extends IteratingSystem{
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        GhostComponent gc = ghostM.get(entity);
+//        GhostComponent gc = ghostM.get(entity);
         PlayerComponent pc = playerM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
@@ -74,47 +73,50 @@ public class AISystem extends IteratingSystem{
 
         float x = 0f;
         float y = 0f;
+        if(pc.id == "GHOST_NUMBER_0") {
+            if (Gdx.input.isKeyPressed(Input.Keys.T)) {//bestMove.equals(new Vector2(0, 1))) {
+                x = 0f;
+                y = Y_VELOCITY;
 
-        if (bestMove.equals(new Vector2(0, 1))){
-            x = 0f;
-            y = Y_VELOCITY;
+                sc.setState(1);
+            }
 
-            sc.setState(1);
-        }
+            if (bestMove.equals(new Vector2(0, -1))) {
+                x = 0f;
+                y = -Y_VELOCITY;
 
-        if (bestMove.equals(new Vector2(0, -1))){
-            x = 0f;
-            y = -Y_VELOCITY;
-
-            sc.setState(2);
-        }
+                sc.setState(2);
+            }
 
 
-        if (bestMove.equals(new Vector2(-1, 0))){
-            x = -X_VELOCITY;
-            y = 0f;
+            if (bestMove.equals(new Vector2(-1, 0))) {
+                x = -X_VELOCITY;
+                y = 0f;
 
-            sc.setState(3);
+                sc.setState(3);
 
-            //flips texture
-            if (texc.region != null && texc.region.isFlipX()){
-                texc.region.flip(true,false);
+                //flips texture
+                if (texc.region != null && texc.region.isFlipX()) {
+                    texc.region.flip(true, false);
+                }
+            }
+
+            if (bestMove.equals(new Vector2(0, 1))) {
+                x = X_VELOCITY;
+                y = 0f;
+
+                sc.setState(4);
+                //flips texture
+                if (texc.region != null && !texc.region.isFlipX()) {
+                    texc.region.flip(true, false);
+                }
             }
         }
 
-        if (bestMove.equals(new Vector2(0, 1))){
-            x = X_VELOCITY;
-            y = 0f;
-
-            sc.setState(4);
-            //flips texture
-            if (texc.region != null && !texc.region.isFlipX()){
-                texc.region.flip(true,false);
-            }
-        }
-
-        vc.setVelocity(x,y);
-        vc.setAcceleration(x,y);
+//        vc.setVelocity(x,y);
+//        vc.setAcceleration(x,y);
+        pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
+        pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
     }
 
     public BoardDummy miniMax(BoardDummy board, int depth) {

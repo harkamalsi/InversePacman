@@ -84,7 +84,7 @@ public class MusicSystem extends EntitySystem {
         System.out.println("Last track " + lasttrack);
         /* The if statements make sure that the same song never plays twice in a row, unless there
            is only one song
-         */ /*
+         *//*
         if(lasttrack > -1 && tracks.size() > 1) {
             store = tracks.remove(lasttrack);
         }
@@ -134,7 +134,9 @@ public class MusicSystem extends EntitySystem {
     }
 
     private void getMusic() {
+        /*
         song.setVolume(music_volume);
+         */
     }
 
     @Override

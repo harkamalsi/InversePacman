@@ -195,12 +195,11 @@ public class LobbyScreen extends AbstractScreen {
         createLobbyButton.add(new TextureComponent(createLobbySprite,
                 (Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)),
                 Gdx.graphics.getHeight() / 20f, createLobbySprite.getRegionWidth() * scaleX,
-                createLobbySprite.getRegionHeight() * scaleY, false, false,false))
+                createLobbySprite.getRegionHeight() * scaleY, false, false,false, 255, 0, 0))
                 .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f, createLobbySprite.getRegionWidth() * scaleX, createLobbySprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f));
+
         engine.addEntity(createLobbyButton);
-
-
     }
 
     @Override
