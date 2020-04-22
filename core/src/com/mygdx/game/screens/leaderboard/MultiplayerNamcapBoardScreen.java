@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.shared.Constants;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
@@ -19,12 +20,6 @@ import java.util.ArrayList;
 public class MultiplayerNamcapBoardScreen extends AbstractBoardScreen {
     public MultiplayerNamcapBoardScreen(final InversePacman app, Engine engine) {
         super(app, engine);
-    }
-
-    @Override
-    public Array<PlayerScore> retrievePlayerScores() {
-        // TODO
-        return null;
     }
 
     @Override
@@ -55,5 +50,15 @@ public class MultiplayerNamcapBoardScreen extends AbstractBoardScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
+    }
+
+    @Override
+    public String getScoreKey() {
+        return Constants.MULTIPLAYER_SCORE_KEY;
+    }
+
+    @Override
+    public int getScoresIndex() {
+        return 0;
     }
 }

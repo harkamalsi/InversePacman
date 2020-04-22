@@ -138,7 +138,7 @@ public class InversePacman extends Game {
 
 		//Setup managers
 		assets = new AssetManager();
-	gsm = new GameScreenManager(this);
+		gsm = new GameScreenManager(this);
 		saveManager = new SaveManager(false);
 
 		//Picture

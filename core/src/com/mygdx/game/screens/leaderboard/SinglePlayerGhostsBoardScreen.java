@@ -12,25 +12,24 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.shared.Constants;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.RenderingSystem;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class SinglePlayerGhostsBoardScreen extends AbstractBoardScreen {
     public SinglePlayerGhostsBoardScreen(final InversePacman app, Engine engine) {
         super(app, engine);
-    }
-
-    @Override
-    public Array<PlayerScore> retrievePlayerScores() {
-        Array<PlayerScore> scores = app.saveManager.loadDataValue("ghosts", Array.class);
-        return scores;
     }
 
     @Override
@@ -49,18 +48,6 @@ public class SinglePlayerGhostsBoardScreen extends AbstractBoardScreen {
     }
 
     @Override
-    public String formatName(String name) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy");
-            LocalDateTime dateTime = LocalDateTime.parse(name);
-
-            return dateTime.format(formatter);
-        } catch (DateTimeParseException exception) {
-            return "UNKNOWN DATE";
-        }
-    }
-
-    @Override
     public String formatScore(int score) {
         int minutes = score / 60;
         int seconds = score % 60;
@@ -68,6 +55,21 @@ public class SinglePlayerGhostsBoardScreen extends AbstractBoardScreen {
         String formattedScore = minutes + ":" + ((seconds > 0) ? seconds : "00");
 
         return formattedScore;
+    }
+
+    public void sortPlayerScores(Array<PlayerScore> playerScores) {
+        // forward, not reverse
+        playerScores.sort();
+    }
+
+    @Override
+    public String getScoreKey() {
+        return Constants.SINGLE_PLAYER_SCORE_KEY;
+    }
+
+    @Override
+    public int getScoresIndex() {
+        return 0;
     }
 
     @Override
