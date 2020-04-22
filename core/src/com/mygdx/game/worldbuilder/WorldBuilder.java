@@ -108,6 +108,8 @@ import java.util.ArrayList;
                 for (int x = 0; x < width; x++){
                     try {
                         mapLayer.getCell(x,height-y-1).getTile().getId();
+                        //System.out.println(mapLayer.getTileHeight());
+                        //System.out.println(mapLayer.getTileWidth());
                         System.out.print(" . ");
                         nodeCostMatrix.get(y).add(x, new Node(1, "ground", true));
                     } catch (Exception e) {
@@ -143,6 +145,7 @@ import java.util.ArrayList;
                if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
                    player.createPlayerBody(world, "GHOST_NUMBER_" + i, vector.x, vector.y, "GHOST");
                    playerList.add(player);
+
                }
                else if (getPlayerPositionList().get(i).getName().equals("Pacman")) {
                    player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN");
