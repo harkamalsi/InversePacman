@@ -114,7 +114,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         if(singleplayerButton.flags == 1 || Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
-            app.gsm.setScreen(GameScreenManager.STATE.PLAY);
+            app.gsm.setScreen(GameScreenManager.STATE.PLAY,false);
         }
         if(multiplayerButton.flags == 1) {
             engine.removeSystem(musicSystem);
@@ -191,10 +191,9 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         //System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
         //System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
 
-
-        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+        font.draw(batch,"menu", (Gdx.graphics.getWidth() / 64f - layout.width / 2f),
+                (Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
         batch.end();
-
 
     }
 
@@ -229,7 +228,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         bgEntity = new Entity();
         //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
         app.addSpriteEntity(bgSprite, bgEntity, engine,0, -2, Gdx.graphics.getWidth() +2, Gdx.graphics.getHeight() +2,false,false,false, false );
-
 
         ellipseSprite = new Sprite(ellipse);
         ellipseEntity = new Entity();

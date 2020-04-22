@@ -11,9 +11,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.StateComponent;
+import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
+import com.mygdx.game.managers.NetworkManager;
+
+import org.json.JSONArray;
+
 import java.lang.Math;
 
 public class PlayerInputSystem extends IteratingSystem implements InputProcessor {
@@ -23,6 +28,9 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private boolean isRightDragged = false;
     private boolean isUpDragged = false;
     private boolean isDownDragged = false;
+
+    private NetworkManager networkManager;
+    private boolean multiplayer;
 
     private static final float X_VELOCITY = 2.5f;
     private static final float Y_VELOCITY = 2.5f;
@@ -39,16 +47,21 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private ComponentMapper<TextureComponent> texM;
     private ComponentMapper<PlayerComponent> playerM;
 
-    public PlayerInputSystem(){
-//<<<<<<< HEAD
-//        super(Family.all(VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class, PlayerComponent.class).get());
+    private ComponentMapper<TableComponent> tableM;
 
-        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
+    public PlayerInputSystem(boolean multiplayer, NetworkManager networkManager){
+
+        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class, TableComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
+        pacmanM = ComponentMapper.getFor(PacmanComponent.class);
+        tableM = ComponentMapper.getFor(TableComponent.class);
+
+        this.multiplayer = multiplayer;
+        this.networkManager = networkManager;
 
 
         Gdx.input.setInputProcessor(this);
@@ -58,67 +71,89 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         PlayerComponent pc = playerM.get(entity);
+//        PacmanComponent pacmanc = pacmanM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
+        TableComponent tablec = tableM.get(entity);
 
 
         float x = 0f;
         float y = 0f;
 
-        if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
-            x = 0f;
-            y = vc.velocity.y;
 
-            sc.setState(1);
-        }
+        if (pc.id == "PACMAN"){
+            if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
+                x = 0f;
+                y = vc.velocity.y;
 
-        if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
-            x = 0f;
-            y = -vc.velocity.y;
-          
-            sc.setState(2);
-        }
-
-
-        if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){
-            x = -vc.velocity.x;
-            y = 0f;
-
-            sc.setState(3);
-
-            //flips texture
-            if (texc.region != null && texc.region.isFlipX()){
-                texc.region.flip(true,false);
+                sc.setState(1);
             }
-        }
 
-        if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
-            x = vc.velocity.x;
-            y = 0f;
+            if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
+                x = 0f;
+                y = -vc.velocity.y;
 
-            sc.setState(4);
-
-            //flips texture
-            if (texc.region != null && !texc.region.isFlipX()){
-                texc.region.flip(true,false);
+                sc.setState(2);
             }
-        }
 
 
-        pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
-        pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
-        //sets velocity direction dictated by x and y
+            if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){
+                x = -vc.velocity.x;
+                y = 0f;
+
+                sc.setState(3);
+
+                //flips texture
+                if (texc.region != null && texc.region.isFlipX()){
+                    texc.region.flip(true,false);
+                }
+            }
+
+            if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
+                x = vc.velocity.x;
+                y = 0f;
+
+                sc.setState(4);
+
+                //flips texture
+                if (texc.region != null && !texc.region.isFlipX()){
+                    texc.region.flip(true,false);
+                }
+            }
+
+
+            pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
+            pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+            if (multiplayer){
+                networkManager.fetchLobby();
+                String lobbyName = networkManager.getLobby();
+                JSONArray directionBooleans = new JSONArray();
+                directionBooleans.put(isLeftDragged);
+                directionBooleans.put(isRightDragged);
+                directionBooleans.put(isUpDragged);
+                directionBooleans.put(isDownDragged);
+                networkManager.sendInput(lobbyName, directionBooleans);
+
+            }
+            //sets velocity direction dictated by x and y
 //        vc.setVelocity(x,y);
 //        vc.setAcceleration(x,y);
+
+        }
 
 
 
     }
+
+    private void serverInput(){
+        networkManager.receiveInput();
+    }
+
     //function for deciding drag direction
     private void toggleDirection(int locationStartTouchedX, int locationStartTouchedY, int screenX, int screenY) {
-
+        // This is great code!
         boolean yIsGreater = ((Math.abs(locationStartTouchedY - screenY)) - (Math.abs(locationStartTouchedX - screenX)) > 0);
 
         if (yIsGreater){

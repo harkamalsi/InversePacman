@@ -33,6 +33,8 @@ import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.RenderingSystem;
 import com.mygdx.game.systems.TableSystem;
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 public class LobbyScreen extends AbstractScreen {
     private OrthographicCamera camera;
     private FitViewport viewport;
@@ -50,6 +52,8 @@ public class LobbyScreen extends AbstractScreen {
     private TableSystem tableSystem;
     private RenderingSystem renderingSystem;
     private MusicSystem musicSystem;
+
+    private TableComponent table;
 
     private TextureRegion createLobby;
     private TextureRegion multiplay;
@@ -94,6 +98,7 @@ public class LobbyScreen extends AbstractScreen {
         /*this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
         networkManager = new NetworkManager();
+        table = new TableComponent(networkManager);
 
         bg = new TextureRegion(new Texture("lobbyscreen/lobbyScreen.png"));
         createLobby = new TextureRegion(new Texture("lobbyscreen/createLobbyButton.png"));
@@ -137,8 +142,13 @@ public class LobbyScreen extends AbstractScreen {
         String joinLobbyName = "Lobby1";
 
         if(createLobbyButton.flags == 1) {
-            System.out.println("CreateLobby pressed!");
-            networkManager.createLobby(nickname, playerType);
+            System.out.println("CreateLobbyButton pressed but lobby not created!");
+
+            if (table.createLobby) {
+                System.out.println("Create Lobby Called!");
+                networkManager.createLobby(nickname, playerType);
+                app.gsm.setScreen(GameScreenManager.STATE.PLAY,true,networkManager);
+            } 
             createLobbyButton.flags = 0;
         }
 
@@ -156,7 +166,7 @@ public class LobbyScreen extends AbstractScreen {
         ellipseSprite = new Sprite(ellipse);
 
         buttonSystem = new ButtonSystem(camera);
-        tableSystem = new TableSystem();
+        tableSystem = new TableSystem(this.app);
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
 
@@ -172,12 +182,12 @@ public class LobbyScreen extends AbstractScreen {
 
         //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
         bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() + 2,
-                Gdx.graphics.getHeight() + 2,false,false,false,0,0,0))
+                Gdx.graphics.getHeight() + 2,false,false,false))
                 .add(new TransformComponent(0,0));
         //engine.addEntity(bgEntity);
 
         tbEntity = new Entity();
-        tbEntity.add(new TableComponent(networkManager));
+        tbEntity.add(table);
         engine.addEntity(tbEntity);
 
         createLobbySprite = new Sprite(createLobby);
@@ -186,12 +196,11 @@ public class LobbyScreen extends AbstractScreen {
         createLobbyButton.add(new TextureComponent(createLobbySprite,
                 (Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)),
                 Gdx.graphics.getHeight() / 20f, createLobbySprite.getRegionWidth() * scaleX,
-                createLobbySprite.getRegionHeight() * scaleY, false, false,false,0,0,0))
+                createLobbySprite.getRegionHeight() * scaleY, false, false,false, 255, 0, 0))
                 .add(new ButtonComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f, createLobbySprite.getRegionWidth() * scaleX, createLobbySprite.getRegionHeight() * scaleY))
                 .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f));
+
         engine.addEntity(createLobbyButton);
-
-
     }
 
     @Override

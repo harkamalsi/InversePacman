@@ -26,7 +26,8 @@ public class PlayerComponent implements Component {
 
     public Body body;
     public String id;
-    public boolean ai;
+    private boolean ai;
+    private String type;
 
     public PlayerComponent() {
         currentState = IDLE;
@@ -34,8 +35,9 @@ public class PlayerComponent implements Component {
         invincibleTimer = 0;
     }
 
-    public void createPlayerBody(World world, String id, float x, float y){
+    public void createPlayerBody(World world, String id, float x, float y, String type){
         this.id = id;
+        this.type = type;
         BodyDef bdef = new BodyDef();
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set(x,y);
@@ -50,16 +52,28 @@ public class PlayerComponent implements Component {
         this.body = world.createBody(bdef);
         this.body.createFixture(fixtureDef).setUserData(this);
 
-        body.createFixture(shape, 1.0f);
+//        body.createFixture(shape, 1.0f);
         shape.dispose();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setCurrentState(int state) {
         currentState = state;
     }
 
-    public void hit() {
-        System.out.println(id + " har blitt truffet!");
+    public void hit(PlayerComponent playerHit) {
+        System.out.println(id + " have been hit by " + playerHit.getId());
+    }
+
+    public void hitBy(PlayerComponent playerHitBy) {
+        System.out.println(id + " have been hit by " + playerHitBy.getId());
     }
 
 }
