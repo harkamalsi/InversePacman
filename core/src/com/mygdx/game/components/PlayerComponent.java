@@ -52,7 +52,7 @@ public class PlayerComponent implements Component {
         this.body = world.createBody(bdef);
         this.body.createFixture(fixtureDef).setUserData(this);
 
-        body.createFixture(shape, 1.0f);
+//        body.createFixture(shape, 1.0f);
         shape.dispose();
     }
 

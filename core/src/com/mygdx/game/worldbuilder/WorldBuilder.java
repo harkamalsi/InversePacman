@@ -32,6 +32,12 @@ import java.util.ArrayList;
                 ,MapObjects playerObjects
                 ,MapObjects pillObjects ) {
 
+            playersPostionList.clear();
+            pillsPostionList.clear();
+            nodeCostMatrix.clear();
+            playerList.clear();
+            pillList.clear();
+
             parseWallObjectLayer(wallObjects, world);
             parseMapToNode(backgroundLayer);
             parsePillObjectLayer(pillObjects);
@@ -68,6 +74,7 @@ import java.util.ArrayList;
         }
 
         private static void parsePlayerObjectLayer(MapObjects playerObjects) {
+
             for (MapObject object : playerObjects) {
                 if (object instanceof RectangleMapObject) {
                     RectangleMapObject point =(RectangleMapObject) object;
@@ -150,6 +157,7 @@ import java.util.ArrayList;
                }
 
            }
+
 
         }
 
