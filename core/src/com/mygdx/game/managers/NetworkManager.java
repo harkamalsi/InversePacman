@@ -90,27 +90,25 @@ public class NetworkManager {
     }
 
     private void fetchLobby() {
-        if (fetch) {
-            System.out.println("Fetch lobby is called!");
+        System.out.println("Fetch lobby is called!");
 
-            getSocket().emit(Constants.GET_LOBBY, socketID);
+        getSocket().emit(Constants.GET_LOBBY, socketID);
 
-            getSocket().on(Constants.GET_LOBBY, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONString response = (JSONString) args[0];
-                    System.out.println("LOBBYYYYYYYYYYYY " + response);
-                    setLobby(response.toString());
-                }
-            });
-
-            //fetch = false;
-        }
+        getSocket().on(Constants.GET_LOBBY, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject response = (JSONObject) args[0];
+                setLobby(response.getString("lobby"));
+            }
+        });
     }
 
     public String getLobby() {
-        this.fetchLobby();
-        return this.lobby;
+        if (fetch) {
+            this.fetchLobby();
+            return this.lobby;
+        }
+        return null;
     }
 
     public JSONArray getLobbies() {
