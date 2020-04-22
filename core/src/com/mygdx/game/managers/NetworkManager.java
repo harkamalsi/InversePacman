@@ -180,6 +180,7 @@ public class NetworkManager {
     }
 
     public JSONArray getUpdate() {
+        fetchUpdate();
         return serverInput;
     }
 
@@ -187,7 +188,7 @@ public class NetworkManager {
         this.serverInput = input;
     }
 
-    public void receiveUpdate() {
+    public void fetchUpdate() {
 
         System.out.println("Receive update is called!");
 
