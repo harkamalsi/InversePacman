@@ -43,6 +43,7 @@ public class LobbyScreen extends AbstractScreen {
 
     private EntityManager entityManager;
     private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
+    public static String LOBBY_JOINED;
 
     private SpriteBatch batch;
     private SpriteBatch bgBatch;

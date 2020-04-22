@@ -17,6 +17,7 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
+import com.mygdx.game.screens.play.LobbyScreen;
 
 import org.json.JSONArray;
 
@@ -75,20 +76,9 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
         float x = 0f;
         float y = 0f;
+
         if (multiplayer) {
-            // TODO: Dont need to call this everytime!
-            String lobbyName = networkManager.getLobby();
-
-            if (lobbyName != null) {
-                JSONArray directionBooleans = new JSONArray();
-                directionBooleans.put(isUpDragged);
-                directionBooleans.put(isRightDragged);
-                directionBooleans.put(isDownDragged);
-                directionBooleans.put(isLeftDragged);
-                networkManager.sendInput(lobbyName, directionBooleans);
-            }
-
-            System.out.println(getServerInput());
+            //System.out.println(getServerInput());
         }
 
         if (pc.id == "PACMAN") {
@@ -105,7 +95,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
                 sc.setState(2);
             }
-
 
             if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)) {
                 x = -vc.velocity.x;
@@ -125,11 +114,15 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
                 sc.setState(4);
 
-                //sets velocity direction dictated by x and y
-                pc.body.setLinearVelocity(x * 50, pc.body.getLinearVelocity().y);
-                pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y * 50);
+                //flips texture
+                if (texc.region != null && !texc.region.isFlipX()){
+                    texc.region.flip(true,false);
+                }
 
             }
+
+            pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
+            pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
 
         }
     }
@@ -139,14 +132,19 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     }
 
     private void sendServerInput(){
-        String lobbyName = networkManager.getLobby();
-        JSONArray directionBooleans = new JSONArray();
-        directionBooleans.put(isUpDragged);
-        directionBooleans.put(isRightDragged);
-        directionBooleans.put(isDownDragged);
-        directionBooleans.put(isLeftDragged);
-        networkManager.sendInput(lobbyName, directionBooleans);
+        // TODO: Dont need to call this everytime!
 
+        if (LobbyScreen.LOBBY_JOINED != null) {
+            System.out.println(LobbyScreen.LOBBY_JOINED);
+            JSONArray directionBooleans = new JSONArray();
+            directionBooleans.put(isUpDragged);
+            directionBooleans.put(isRightDragged);
+            directionBooleans.put(isDownDragged);
+            directionBooleans.put(isLeftDragged);
+            networkManager.sendInput(LobbyScreen.LOBBY_JOINED, directionBooleans);
+        } else {
+            LobbyScreen.LOBBY_JOINED = networkManager.getLobby();
+        }
     }
 
     //function for deciding drag direction
@@ -156,7 +154,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (multiplayer){
             sendServerInput();
         }
-
 
         if (yIsGreater){
             if ((locationStartTouchedY - screenY) > 0){
@@ -192,7 +189,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             }
 
         }
-
 
     }
 
