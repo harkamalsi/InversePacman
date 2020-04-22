@@ -147,6 +147,7 @@ public class LobbyScreen extends AbstractScreen {
             if (table.createLobby) {
                 System.out.println("Create Lobby Called!");
                 networkManager.createLobby(nickname, playerType);
+                app.gsm.setScreen(GameScreenManager.STATE.PLAY);
             } 
             createLobbyButton.flags = 0;
         }
