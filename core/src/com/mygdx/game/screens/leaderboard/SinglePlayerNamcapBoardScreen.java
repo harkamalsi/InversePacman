@@ -55,13 +55,7 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
 
     @Override
     public int getScoresIndex() {
-        return 1;
-    }
-
-
-    @Override
-    public void update(float delta) {
-        handleInput();
+        return 0;
     }
 
     @Override

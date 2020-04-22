@@ -32,7 +32,7 @@ public class MultiplayerGhostsBoardScreen extends AbstractBoardScreen {
 
     @Override
     public String formatScore(int score) {
-        return score + " WINS";
+        return score + " W";
     }
 
     @Override
@@ -44,12 +44,6 @@ public class MultiplayerGhostsBoardScreen extends AbstractBoardScreen {
     public void show() {
         super.show();
     }
-
-    @Override
-    public void update(float delta) {
-        handleInput();
-    }
-
 
     @Override
     public void render(float delta) {
@@ -65,6 +59,6 @@ public class MultiplayerGhostsBoardScreen extends AbstractBoardScreen {
 
     @Override
     public int getScoresIndex() {
-        return 0;
+        return 1;
     }
 }

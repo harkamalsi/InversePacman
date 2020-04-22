@@ -104,7 +104,6 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         batch.end();
     }
 
-
     @Override
     public void update(float delta) {
         players = retrieveSortedPlayerScores();
@@ -136,6 +135,8 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         backSprite = new Sprite(back);
         backButton = new Entity();
         app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
+
+        app.networkManager.fetchAllPlayers();
     }
 
     @Override
@@ -158,8 +159,8 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     }
 
     public  Array<PlayerScore> retrieveSortedPlayerScores() {
-        //JSONArray players = app.network_manager.getAllPlayers()
-        JSONArray players = new JSONArray();
+        JSONArray players = app.networkManager.getPlayers();
+
         Array<PlayerScore> playerScores = retrievePlayerScores(players);
         if (playerScores != null && playerScores.size > 0) {
             sortPlayerScores(playerScores);
@@ -180,8 +181,9 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
             PlayerScore playerScore = new PlayerScore();
             JSONObject playerJsonObject = players.getJSONObject(i);
             playerScore.setName(playerJsonObject.getString("nickname"));
-            JSONArray scoresJsonArray = playerJsonObject.getJSONArray("spScore");
-            playerScore.setScore(scoresJsonArray.getInt(0));
+            JSONArray scoresJsonArray = playerJsonObject.getJSONArray(getScoreKey());
+            playerScore.setScore(scoresJsonArray.getInt(getScoresIndex()));
+            playerScores.add(playerScore);
         }
         return playerScores;
     }

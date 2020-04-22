@@ -34,17 +34,12 @@ public class MultiplayerNamcapBoardScreen extends AbstractBoardScreen {
 
     @Override
     public String formatScore(int score) {
-        return score + "W";
+        return score + " W";
     }
 
     @Override
     public void setBackground() {
         this.bg = new TextureRegion(new Texture(AbstractBoardScreen.LEADERBOARD_DIRECTORY + "namcap.png"));
-    }
-
-    @Override
-    public void update(float delta) {
-        handleInput();
     }
 
     @Override

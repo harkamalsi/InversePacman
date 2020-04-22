@@ -16,6 +16,7 @@ import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.managers.SaveManager;
 import java.io.IOException;
 
@@ -39,6 +40,7 @@ public class InversePacman extends Game {
 	public GameScreenManager gsm;
 	public AssetManager assets;
 	public SaveManager saveManager;
+	public NetworkManager networkManager;
 
 	// Batches
 	public SpriteBatch batch;
@@ -137,9 +139,11 @@ public class InversePacman extends Game {
 		engine = new Engine();
 
 		//Setup managers
+		networkManager = new NetworkManager();
 		assets = new AssetManager();
 		gsm = new GameScreenManager(this);
 		saveManager = new SaveManager(false);
+
 
 		//Picture
 		img = new Texture("Test1.png");

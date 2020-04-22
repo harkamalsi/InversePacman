@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.SnapshotArray;
+import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -28,13 +29,15 @@ public class TableSystem extends IteratingSystem {
     private ComponentMapper<TableComponent> tableM;
     private ComponentMapper<TransformComponent> tc;
     private NetworkManager networkManager;
+    private InversePacman app;
 
 
     @SuppressWarnings("unchecked")
-    public TableSystem() {
+    public TableSystem(InversePacman app) {
         super(Family.all(TableComponent.class).get());
         tableM = ComponentMapper.getFor(TableComponent.class);
         //tc = ComponentMapper.getFor(TransformComponent.class);
+        this.app = app;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class TableSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
-        this.networkManager = cc.networkManager;
+        this.networkManager = app.networkManager;
         cc.reset();
         JSONArray lobbies = this.networkManager.getLobbies();
 

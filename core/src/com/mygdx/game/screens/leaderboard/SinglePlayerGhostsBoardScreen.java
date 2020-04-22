@@ -69,12 +69,7 @@ public class SinglePlayerGhostsBoardScreen extends AbstractBoardScreen {
 
     @Override
     public int getScoresIndex() {
-        return 0;
-    }
-
-    @Override
-    public void update(float delta) {
-        handleInput();
+        return 1;
     }
 
     @Override

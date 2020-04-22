@@ -166,7 +166,7 @@ public class LobbyScreen extends AbstractScreen {
         ellipseSprite = new Sprite(ellipse);
 
         buttonSystem = new ButtonSystem(camera);
-        tableSystem = new TableSystem();
+        tableSystem = new TableSystem(app);
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
 

@@ -311,7 +311,11 @@ public class NetworkManager {
         this.players = players;
     }
 
-    public JSONArray getAllPlayers(Object ...args) {
+    public JSONArray getPlayers() {
+        return players;
+    }
+
+    public void fetchAllPlayers() {
         if (fetch) {
             getSocket().emit(Constants.GET_ALL_PLAYERS, socketID);
 
@@ -319,12 +323,12 @@ public class NetworkManager {
                 @Override
                 public void call(Object... args) {
                     JSONArray response = (JSONArray) args[0];
+                    System.out.println("Players response: " + response);
                     setPlayers(response);
                 }
             });
 
             //fetch = false;
         }
-        return players;
     }
 }
