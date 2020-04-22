@@ -62,4 +62,7 @@ public class PlayerComponent implements Component {
         System.out.println(id + " har blitt truffet!");
     }
 
+    public Body getBody() {
+        return body;
+    }
 }

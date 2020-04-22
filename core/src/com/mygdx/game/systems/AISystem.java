@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 //må gjøres:
+//få riktig tile-koordinater på player/legge inn tile ratio
 // gjenkjenne om en playercomponent er max eller min (packman eller ghost)
-//legge inn tile ratio
 //Må vite hvem som er currentPlayer
 
 public class AISystem extends IteratingSystem{
@@ -159,8 +159,8 @@ class BoardDummy {
     private int currentPlayer = 0;
     private ArrayList<DummyPlayer> players = new ArrayList<>();
     private ArrayList<ArrayList<Node>> board = WorldBuilder.getNodeCostMatrix();
-    private double xTileRatio = 0.1;
-    private double yTileRatio = 0.1;
+    private double xTileRatio = 1/16;
+    private double yTileRatio = 1/16;
     private ArrayList<Vector2> directions = new ArrayList(Arrays.asList(
             new Vector2(1, 0),
             new Vector2(0, 1),
@@ -180,13 +180,13 @@ class BoardDummy {
     }
 
     public Vector2 getTiledPosition(Vector2 position) {
-        return new Vector2((int)xTileRatio*position.x, (int)yTileRatio*position.y);
+        return new Vector2((int)xTileRatio*position.x,(int)yTileRatio*position.y);
     }
 
     public ArrayList<DummyPlayer> playersFromComponent(ArrayList<PlayerComponent> comPlayers) {
         ArrayList<DummyPlayer> dummyPlayers = new ArrayList<>();
         for (PlayerComponent comPlayer: comPlayers) {
-            DummyPlayer dummyPlayer = new DummyPlayer(getTiledPosition(comPlayer.body.getPosition()));
+            DummyPlayer dummyPlayer = new DummyPlayer(getTiledPosition(comPlayer.body.getLocalCenter()));//.getPosition()));
             dummyPlayers.add(dummyPlayer);
         }
         return dummyPlayers;
