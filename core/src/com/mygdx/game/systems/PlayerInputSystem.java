@@ -74,13 +74,19 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
 
         if (multiplayer){
+            // TODO: Dont need to call this everytime!
             String lobbyName = networkManager.getLobby();
-            JSONArray directionBooleans = new JSONArray();
-            directionBooleans.put(isUpDragged);
-            directionBooleans.put(isRightDragged);
-            directionBooleans.put(isDownDragged);
-            directionBooleans.put(isLeftDragged);
-            networkManager.sendInput(lobbyName, directionBooleans);
+
+            if (lobbyName != null) {
+                JSONArray directionBooleans = new JSONArray();
+                directionBooleans.put(isUpDragged);
+                directionBooleans.put(isRightDragged);
+                directionBooleans.put(isDownDragged);
+                directionBooleans.put(isLeftDragged);
+                networkManager.sendInput(lobbyName, directionBooleans);
+            }
+
+            System.out.println(getServerInput());
         }
 
         else {
@@ -131,29 +137,12 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                 //sets velocity direction dictated by x and y
                 pc.body.setLinearVelocity(x * 50, pc.body.getLinearVelocity().y);
                 pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y * 50);
-
-                if (multiplayer) {
-                    // TODO: Dont need to call this everytime!
-                    String lobbyName = networkManager.getLobby();
-
-                    if (lobbyName != null) {
-                        System.out.println("LobbyName: " + lobbyName);
-                        JSONArray directionBooleans = new JSONArray();
-                        directionBooleans.put(isLeftDragged);
-                        directionBooleans.put(isRightDragged);
-                        directionBooleans.put(isUpDragged);
-                        directionBooleans.put(isDownDragged);
-                        networkManager.sendInput(lobbyName, directionBooleans);
-                    }
-
-                    getServerInput();
-                }
             }
         }
     }
 
-    private void getServerInput(){
-        System.out.println(networkManager.getUpdate());
+    private JSONArray getServerInput(){
+        return networkManager.getUpdate();
     }
 
     //function for deciding drag direction
@@ -185,9 +174,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                 isDownDragged = false;
                 isLeftDragged = true;
                 isRightDragged = false;
-
-
-
             }
 
             if ((locationStartTouchedX - screenX) < 0){

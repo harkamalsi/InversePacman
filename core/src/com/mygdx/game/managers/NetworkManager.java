@@ -24,19 +24,16 @@ public class NetworkManager {
 
     private Socket socket = null;
     private String socketID;
+    public Boolean connected = false;
     private boolean fetch = false;
 
     private JSONArray lobbies = new JSONArray();
-    private JSONObject response;
-    public Boolean connected = false;
-    private String lobby;
+    private JSONObject player = new JSONObject();
     private JSONArray serverInput;
+    private String lobby;
 
     public NetworkManager() {
-        //socket = new SocketIOManager().getSocketInstance();
-        //socketID = socket.connect().id();
         setSocket();
-        //createLobby("foker", "pacman");
     }
 
     public void setSocket() {
@@ -49,11 +46,9 @@ public class NetworkManager {
             }
         }
     }
-
     public Socket getSocket() {
         return socket;
     }
-
     private void initializeSocket(){
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
@@ -79,16 +74,12 @@ public class NetworkManager {
         socket.connect();
     }
 
-    private void setLobbies(JSONArray lobbies) {
-        //System.out.println(lobbies);
-        this.lobbies = lobbies;
-    }
-
+    // Single lobby
+    // Fetching a single lobby
     private void setLobby(String lobby) {
         //System.out.println(lobbies);
         this.lobby = lobby;
     }
-
     private void fetchLobby() {
         System.out.println("Fetch lobby is called!");
 
@@ -102,7 +93,6 @@ public class NetworkManager {
             }
         });
     }
-
     public String getLobby() {
         if (fetch) {
             this.fetchLobby();
@@ -111,26 +101,7 @@ public class NetworkManager {
         return null;
     }
 
-    public JSONArray getLobbies() {
-        if (fetch) {
-            //System.out.println("Get lobbies is called!");
-
-            getSocket().emit(Constants.GET_GAME_LOBBIES, socketID);
-
-            getSocket().on(Constants.GET_GAME_LOBBIES, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONArray response = (JSONArray) args[0];
-                    setLobbies(response);
-                    //System.out.println(response);
-                }
-            });
-
-            //fetch = false;
-        }
-        return lobbies;
-    }
-
+    // Creating, joining and leaving a lobby
     public void createLobby(Object ...args) {
         // args: getNickname(), getPlayerType()
         System.out.println("Create Lobby is called!");
@@ -162,6 +133,7 @@ public class NetworkManager {
         getSocket().emit(Constants.LEAVE_LOBBY, socketID, lobbyName);
     }
 
+    // Input sending a receiving
     public void sendInput(Object ...args) {
         /*
          args: lobbyName, direction
@@ -179,17 +151,12 @@ public class NetworkManager {
 
     }
 
-    public JSONArray getUpdate() {
-        return serverInput;
-    }
-
     private void setUpdate(JSONArray input) {
         this.serverInput = input;
     }
+    private void fetchUpdate() {
 
-    public void receiveUpdate() {
-
-        System.out.println("Receive update is called!");
+        System.out.println("Fetch update is called!");
 
         getSocket().on(Constants.GAME_UPDATE, new Emitter.Listener() {
             @Override
@@ -197,11 +164,42 @@ public class NetworkManager {
                 JSONObject response = (JSONObject)args[0];
                 JSONArray otherPlayers = response.getJSONArray("others");
                 setUpdate(otherPlayers);
-                //System.out.println(otherPlayers);
             }
         });
     }
+    public JSONArray getUpdate() {
+        fetchUpdate();
+        return serverInput;
+    }
 
+    // Multiple lobbies
+
+    // Fetching lobbies
+    private void setLobbies(JSONArray lobbies) {
+        //System.out.println(lobbies);
+        this.lobbies = lobbies;
+    }
+    public JSONArray getLobbies() {
+        if (fetch) {
+            //System.out.println("Get lobbies is called!");
+
+            getSocket().emit(Constants.GET_GAME_LOBBIES, socketID);
+
+            getSocket().on(Constants.GET_GAME_LOBBIES, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONArray response = (JSONArray) args[0];
+                    setLobbies(response);
+                    //System.out.println(response);
+                }
+            });
+
+            //fetch = false;
+        }
+        return lobbies;
+    }
+
+    // Player sockets
     public void addPlayer(final String nickname) {
         if (fetch) {
             System.out.println("Add player is called!");
@@ -220,7 +218,11 @@ public class NetworkManager {
         }
     }
 
-    public void getPlayerWithNickname(final String nickname) {
+    private void setPlayer(JSONObject player) {
+        this.player = player;
+    }
+
+    private void fetchPlayerWithNickname(final String nickname) {
         if (fetch) {
             System.out.println("Get player with nickname is called!");
 
@@ -235,7 +237,7 @@ public class NetworkManager {
                         errorResponse.put("error", "No user found!");
                         System.out.println(errorResponse);
                     }
-                    System.out.println(response);
+                    setPlayer(response);
                 }
             });
 
@@ -243,8 +245,15 @@ public class NetworkManager {
         }
 
     }
+    public JSONObject getPlayerWithNickname(String nickname) {
+        if (fetch) {
+            this.fetchPlayerWithNickname(nickname);
+            return this.player;
+        }
+        return null;
+    }
 
-    public void getPlayerWithID(final String id) {
+    private void fetchPlayerWithID(final String id) {
         if (fetch) {
             System.out.println("Get player with ID is called!");
 
@@ -261,20 +270,19 @@ public class NetworkManager {
             fetch = false;
         }
     }
+    public JSONObject getPlayerWithID(String id) {
+        if (fetch) {
+            this.fetchPlayerWithID(id);
+            return this.player;
+        }
+        return null;
+    }
 
     public void changeNickname(final String id, final String nickname) {
         if (fetch) {
             System.out.println("Change nickname is called!");
 
             getSocket().emit(Constants.CHANGE_NICKNAME, socketID, id, nickname);
-
-            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONObject response = (JSONObject)args[0];
-                    System.out.println(response);
-                }
-            });
 
             fetch = false;
         }
@@ -286,18 +294,11 @@ public class NetworkManager {
 
            getSocket().emit(Constants.CHANGE_SKINTYPE, socketID, id, skinType);
 
-           getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
-               @Override
-               public void call(Object... args) {
-                   JSONObject response = (JSONObject)args[0];
-                   System.out.println(response);
-               }
-           });
-
            fetch = false;
        }
     }
 
+    // Score sockets
     public void updateSingleplayerScore(Object ...args) {
         // args: id, spScore
         if (fetch) {
