@@ -27,6 +27,7 @@ public class PillSystem extends IteratingSystem {
 
         if (pillComponent.isCollected()) {
             getEngine().removeEntity(entity);
+            pillComponent.body.getWorld().destroyBody(pillComponent.body);
             pillCount--;
             System.out.println("Pills remaining: " + pillCount);
         }

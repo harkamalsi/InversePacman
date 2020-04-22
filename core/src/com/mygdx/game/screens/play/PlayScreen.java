@@ -2,6 +2,7 @@ package com.mygdx.game.screens.play;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
@@ -73,6 +75,7 @@ public final class PlayScreen extends AbstractScreen {
     //Box2d
     public OrthogonalTiledMapRenderer tmr;
     public TiledMap map;
+    public boolean destroyAllBodies;
 
     private Engine engine;
 
@@ -107,8 +110,14 @@ public final class PlayScreen extends AbstractScreen {
             //Important to call both if you want to remove the music from the previous screen
             musicSystem.dispose();
             engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
+            for(EntitySystem system: engine.getSystems()){
+                engine.removeSystem(system);
+            }
 
+            destroyAllBodies = true;
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
+
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             pause = true;
@@ -277,6 +286,16 @@ public final class PlayScreen extends AbstractScreen {
                 resume = false;
             }
             engine.update(delta);
+
+            if (destroyAllBodies){
+                Array<Body> bodies = new Array<Body>();
+                world.getBodies(bodies);
+                for (Body body: bodies){
+                    world.destroyBody(body);
+                }
+                destroyAllBodies = false;
+            }
+
             world.step(1/60f,6,2);
 
         }
@@ -318,5 +337,8 @@ public final class PlayScreen extends AbstractScreen {
     public void dispose(){
         super.dispose();
         engine.removeAllEntities();
+        tmr.dispose();
+        b2dr.dispose();
+
     }
 }
