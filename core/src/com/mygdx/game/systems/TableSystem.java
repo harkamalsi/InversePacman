@@ -23,6 +23,8 @@ import com.mygdx.game.managers.NetworkManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
+
 public class TableSystem extends IteratingSystem {
     private SpriteBatch batch;
     private TableComponent cc;
@@ -47,6 +49,7 @@ public class TableSystem extends IteratingSystem {
 
     private void handleLobbyButtonClicked(String lobbyName) {
         this.networkManager.joinLobby(lobbyName, "Pepsi", "pacman");
+        MULTIPLAYER = true;
         app.gsm.setScreen(GameScreenManager.STATE.PLAY);
 
     }

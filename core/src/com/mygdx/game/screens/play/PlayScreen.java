@@ -70,7 +70,7 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
-    static boolean MULTIPLAYER;
+    public static boolean MULTIPLAYER;
 
     //World building
     public World world;

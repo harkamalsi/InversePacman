@@ -77,8 +77,21 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         float x = 0f;
         float y = 0f;
 
-        if (multiplayer) {
-            //System.out.println(getServerInput());
+        if (multiplayer && LobbyScreen.LOBBY_JOINED != null) {
+            System.out.println("*****************");
+            //System.out.println(getServerInput(LobbyScreen.LOBBY_JOINED));
+            JSONArray response = getServerInput(LobbyScreen.LOBBY_JOINED);
+            if (response != null) {
+                System.out.println(response);
+                JSONArray directions = response.getJSONObject(0).getJSONArray("directions");
+
+                if (directions.length() > 0) {
+                    isUpDragged = directions.getBoolean(0);
+                    isRightDragged = directions.getBoolean(1);
+                    isDownDragged = directions.getBoolean(2);
+                    isLeftDragged = directions.getBoolean(3);
+                }
+            }
         }
 
         if (pc.id == "PACMAN") {
@@ -127,12 +140,14 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         }
     }
 
-    private JSONArray getServerInput() {
-        return networkManager.getUpdate();
+    private JSONArray getServerInput(String lobbyName) {
+        return networkManager.getUpdate(lobbyName);
     }
 
     private void sendServerInput(){
         // TODO: Dont need to call this everytime!
+
+        System.out.println(LobbyScreen.LOBBY_JOINED);
 
         if (LobbyScreen.LOBBY_JOINED != null) {
             System.out.println(LobbyScreen.LOBBY_JOINED);
@@ -141,6 +156,9 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             directionBooleans.put(isRightDragged);
             directionBooleans.put(isDownDragged);
             directionBooleans.put(isLeftDragged);
+
+            System.out.println(directionBooleans);
+
             networkManager.sendInput(LobbyScreen.LOBBY_JOINED, directionBooleans);
         } else {
             LobbyScreen.LOBBY_JOINED = networkManager.getLobby();
@@ -151,6 +169,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private void toggleDirection(int locationStartTouchedX, int locationStartTouchedY, int screenX, int screenY) {
         // This is great code!
         boolean yIsGreater = ((Math.abs(locationStartTouchedY - screenY)) - (Math.abs(locationStartTouchedX - screenX)) > 0);
+
+
         if (multiplayer){
             sendServerInput();
         }
@@ -164,7 +184,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             }
 
             if ((locationStartTouchedY - screenY) < 0){
-
                 isUpDragged = false;
                 isDownDragged = true;
                 isLeftDragged = false;

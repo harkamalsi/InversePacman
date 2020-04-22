@@ -154,11 +154,11 @@ public class NetworkManager {
     private void setUpdate(JSONArray input) {
         this.serverInput = input;
     }
-    private void fetchUpdate() {
+    private void fetchUpdate(String lobbyName) {
 
         System.out.println("Fetch update is called!");
 
-        getSocket().on(Constants.GAME_UPDATE, new Emitter.Listener() {
+        getSocket().on(Constants.GAME_UPDATE + "_" + lobbyName, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject response = (JSONObject)args[0];
@@ -167,8 +167,8 @@ public class NetworkManager {
             }
         });
     }
-    public JSONArray getUpdate() {
-        fetchUpdate();
+    public JSONArray getUpdate(String lobbyName) {
+        fetchUpdate(lobbyName);
         return serverInput;
     }
 
