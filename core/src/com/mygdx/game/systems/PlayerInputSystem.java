@@ -51,14 +51,13 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     public PlayerInputSystem(boolean multiplayer, NetworkManager networkManager){
 
-        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class, TableComponent.class).get());
+        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
         pacmanM = ComponentMapper.getFor(PacmanComponent.class);
-        tableM = ComponentMapper.getFor(TableComponent.class);
 
         this.multiplayer = multiplayer;
         this.networkManager = networkManager;
@@ -76,79 +75,87 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-        TableComponent tablec = tableM.get(entity);
 
 
-        float x = 0f;
-        float y = 0f;
+        if (multiplayer){
+            networkManager.fetchLobby();
+            String lobbyName = networkManager.getLobby();
+            JSONArray directionBooleans = new JSONArray();
+            directionBooleans.put(isUpDragged);
+            directionBooleans.put(isRightDragged);
+            directionBooleans.put(isDownDragged);
+            directionBooleans.put(isLeftDragged);
+            networkManager.sendInput(lobbyName, directionBooleans);
 
 
-        if (pc.id == "PACMAN"){
-            if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
-                x = 0f;
-                y = vc.velocity.y;
 
-                sc.setState(1);
-            }
+        }
 
-            if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
-                x = 0f;
-                y = -vc.velocity.y;
-
-                sc.setState(2);
-            }
+        else{
+            float x = 0f;
+            float y = 0f;
 
 
-            if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){
-                x = -vc.velocity.x;
-                y = 0f;
+            if (pc.id == "PACMAN"){
+                if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)){
+                    x = 0f;
+                    y = vc.velocity.y;
 
-                sc.setState(3);
-
-                //flips texture
-                if (texc.region != null && texc.region.isFlipX()){
-                    texc.region.flip(true,false);
+                    sc.setState(1);
                 }
-            }
 
-            if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
-                x = vc.velocity.x;
-                y = 0f;
+                if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)){
+                    x = 0f;
+                    y = -vc.velocity.y;
 
-                sc.setState(4);
-
-                //flips texture
-                if (texc.region != null && !texc.region.isFlipX()){
-                    texc.region.flip(true,false);
+                    sc.setState(2);
                 }
-            }
 
 
-            pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
-            pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
-            if (multiplayer){
-                networkManager.fetchLobby();
-                String lobbyName = networkManager.getLobby();
-                JSONArray directionBooleans = new JSONArray();
-                directionBooleans.put(isLeftDragged);
-                directionBooleans.put(isRightDragged);
-                directionBooleans.put(isUpDragged);
-                directionBooleans.put(isDownDragged);
-                networkManager.sendInput(lobbyName, directionBooleans);
+                if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)){
+                    x = -vc.velocity.x;
+                    y = 0f;
 
-            }
-            //sets velocity direction dictated by x and y
+                    sc.setState(3);
+
+                    //flips texture
+                    if (texc.region != null && texc.region.isFlipX()){
+                        texc.region.flip(true,false);
+                    }
+                }
+
+                if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)){
+                    x = vc.velocity.x;
+                    y = 0f;
+
+                    sc.setState(4);
+
+                    //flips texture
+                    if (texc.region != null && !texc.region.isFlipX()){
+                        texc.region.flip(true,false);
+                    }
+                }
+
+
+                pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
+                pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+
+                //sets velocity direction dictated by x and y
 //        vc.setVelocity(x,y);
 //        vc.setAcceleration(x,y);
+
+            }
 
         }
 
 
 
+
     }
 
-    private void serverInput(){
-        networkManager.receiveInput();
+    private void getServerInput(){
+//        JSONArray array = networkManager.getUpdate();
+
     }
 
     //function for deciding drag direction

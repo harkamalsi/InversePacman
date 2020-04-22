@@ -47,7 +47,7 @@ public class TableSystem extends IteratingSystem {
 
     private void handleLobbyButtonClicked(String lobbyName) {
         this.networkManager.joinLobby(lobbyName, "Pepsi", "pacman");
-        app.gsm.setScreen(GameScreenManager.STATE.PLAY, true);
+        app.gsm.setScreen(GameScreenManager.STATE.PLAY, true, networkManager);
 
     }
 

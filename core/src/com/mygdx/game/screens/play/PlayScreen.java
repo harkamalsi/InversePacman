@@ -70,8 +70,8 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
-    boolean multiplayer;
-    NetworkManager networkManager;
+    private boolean multiplayer = false;
+    private NetworkManager networkManager = null;
 
     //World building
     public World world;
