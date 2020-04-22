@@ -20,6 +20,7 @@ public class Constants {
     public static final String GET_ALL_PLAYERS = "get_all_players";
     public static final String ADD_PLAYER = "add_player";
     public static final String UPDATE_PLAYER = "update_player";
+    public static final String UPDATE_HIGHSCORE = "update_highscore";
     public static final String GET_PLAYER_WITH_NICKNAME = "get_player_with_nickname";
     public static final String GET_PLAYER_WITH_ID = "get_player_with_id";
     public static final String CHANGE_NICKNAME = "change_nickname";
