@@ -129,6 +129,9 @@ public final class PlayScreen extends AbstractScreen {
         handleInput();
         // Chooses the next song to play if the song has finished
         // Had to add the second condition since it chose to play a new song as I switched screens
+        if (pillSystem.allPillsCollected()) {
+            app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
+        }
     }
 
 
@@ -138,6 +141,8 @@ public final class PlayScreen extends AbstractScreen {
         //this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // We should probably change the above to below
+        //this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
 
         //world
         world = new World(new Vector2(0f, 0), false);

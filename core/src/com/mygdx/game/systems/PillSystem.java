@@ -31,4 +31,8 @@ public class PillSystem extends IteratingSystem {
             System.out.println("Pills remaining: " + pillCount);
         }
     }
+
+    public boolean allPillsCollected() {
+        return pillCount == 0;
+    }
 }
