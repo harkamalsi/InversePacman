@@ -80,6 +80,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
 
+
         //batch.setProjectionMatrix(this.camera.combined);
 
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.1f, 1.0f);
@@ -90,13 +91,19 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         batch.draw(this.bg, 0, 0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
         font.getData().setScale(scaleX / (32f * 1.2f), scaleY / (32f * 1.2f));
 
-        drawNames(batch, font, players);
-        drawScores(batch, font, players);
-
         batch.end();
 
         engine.update(delta);
+        batch.begin();
+        font.getData().setScale(scaleX / (32f * 1.2f), scaleY / (32f * 1.2f));
+
+        drawNames(batch, font, players);
+        drawScores(batch, font, players);
+        layout.setText(font,"hello");
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+        batch.end();
     }
+
 
     @Override
     public void update(float delta) {

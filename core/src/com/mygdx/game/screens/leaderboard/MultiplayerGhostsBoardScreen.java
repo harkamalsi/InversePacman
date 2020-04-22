@@ -54,7 +54,7 @@ public class MultiplayerGhostsBoardScreen extends AbstractBoardScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        engine.update(delta);
+        //engine.update(delta);
 
     }
 

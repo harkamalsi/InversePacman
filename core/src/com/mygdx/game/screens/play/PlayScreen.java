@@ -137,17 +137,44 @@ public final class PlayScreen extends AbstractScreen {
         // Chooses the next song to play if the song has finished
         // Had to add the second condition since it chose to play a new song as I switched screens
         if (pillSystem.allPillsCollected()) {
+            engine.removeAllEntities();
+
+            musicSystem.dispose();
+            engine.removeSystem(musicSystem);
+            engine.removeSystem(collisionSystem);
+            //engine.removeSystem(renderingSystem);
+            //engine.removeSystem(pillSystem);
+            engine.removeSystem(animationSystem);
+            ghostsheet.dispose();
+            System.out.println("pill list: " + WorldBuilder.getPillList());
+            System.out.println("pill size list  " + WorldBuilder.getPillList().size());
+            /*int count = 0;
+            for(int i = 0; i <= WorldBuilder.getPillList().size(); i++ ) {
+                count += 1;
+                WorldBuilder.getPillList().remove(i);
+            }
+            for(int i = 0; i <= WorldBuilder.getPlayerList().size(); i++ ) {
+                count += 1;
+                WorldBuilder.getPlayerList().remove(i);
+            }
+            System.out.println(count);
+            System.out.println("my medication gone: " + WorldBuilder.getPillList());*/
+
+            //WorldBuilder.getPillList().remove(0);
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
+
+
+
         }
     }
 
 
     @Override
     public void show() {
-        this.camera = new OrthographicCamera();
+        //this.camera = new OrthographicCamera();
         //this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // We should probably change the above to below
         //this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
 
