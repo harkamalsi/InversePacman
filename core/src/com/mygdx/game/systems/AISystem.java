@@ -159,8 +159,8 @@ class BoardDummy {
     private int currentPlayer = 0;
     private ArrayList<DummyPlayer> players = new ArrayList<>();
     private ArrayList<ArrayList<Node>> board = WorldBuilder.getNodeCostMatrix();
-    private double xTileRatio = 1/16;
-    private double yTileRatio = 1/16;
+    private final float xTileRatio = 0.0625f;
+    private final float yTileRatio = 0.0625f;
     private ArrayList<Vector2> directions = new ArrayList(Arrays.asList(
             new Vector2(1, 0),
             new Vector2(0, 1),
@@ -180,14 +180,20 @@ class BoardDummy {
     }
 
     public Vector2 getTiledPosition(Vector2 position) {
-        return new Vector2((int)xTileRatio*position.x,(int)yTileRatio*position.y);
+        int newX = (int) (xTileRatio*position.x);
+        int newY = (int) (yTileRatio*position.y);
+
+        Vector2 newPosition = new Vector2(newX, newY);
+        return newPosition;
     }
 
     public ArrayList<DummyPlayer> playersFromComponent(ArrayList<PlayerComponent> comPlayers) {
         ArrayList<DummyPlayer> dummyPlayers = new ArrayList<>();
         for (PlayerComponent comPlayer: comPlayers) {
-            DummyPlayer dummyPlayer = new DummyPlayer(getTiledPosition(comPlayer.body.getLocalCenter()));//.getPosition()));
+            Vector2 a = getTiledPosition(comPlayer.body.getPosition());
+            DummyPlayer dummyPlayer = new DummyPlayer(getTiledPosition(comPlayer.body.getPosition()));
             dummyPlayers.add(dummyPlayer);
+            System.out.println(comPlayer.getBody().getPosition());
         }
         return dummyPlayers;
      }
@@ -237,6 +243,7 @@ class BoardDummy {
     }
 
     public boolean legalState() {
+            float test = this.currentPlayer().getPosition().x;
             int xPos = (int)this.currentPlayer().getPosition().x;
             int yPos = (int)this.currentPlayer().getPosition().y;
             if(xPos > this.board.get(0).size()-1 || xPos < 0 || yPos > this.board.size()-1 || yPos < 0) {
