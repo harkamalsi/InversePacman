@@ -37,6 +37,7 @@ import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
+import com.mygdx.game.systems.PillSystem;
 import com.mygdx.game.systems.PlayerContactListener;
 import com.mygdx.game.systems.PlayerInputSystem;
 import com.mygdx.game.systems.RenderingSystem;
@@ -89,7 +90,7 @@ public final class PlayScreen extends AbstractScreen {
     private AnimationSystem animationSystem;
     private MusicSystem musicSystem;
     private ButtonSystem buttonSystem;
-
+    private PillSystem pillSystem;
 
 
     public PlayScreen(final InversePacman app, Engine engine) {
@@ -128,6 +129,9 @@ public final class PlayScreen extends AbstractScreen {
         handleInput();
         // Chooses the next song to play if the song has finished
         // Had to add the second condition since it chose to play a new song as I switched screens
+        if (pillSystem.allPillsCollected()) {
+            app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
+        }
     }
 
 
@@ -137,6 +141,8 @@ public final class PlayScreen extends AbstractScreen {
         //this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // We should probably change the above to below
+        //this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
 
         //world
         world = new World(new Vector2(0f, 0), false);
@@ -166,6 +172,7 @@ public final class PlayScreen extends AbstractScreen {
         stateSystem = new StateSystem();
         animationSystem = new AnimationSystem();
         musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
+        pillSystem = new PillSystem();
 
         engine.addSystem(playerInputSystem);
         engine.addSystem(aiSystem);
@@ -176,6 +183,7 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(animationSystem);
         engine.addSystem(musicSystem);
         engine.addSystem(buttonSystem);
+        engine.addSystem(pillSystem);
 
         //splitting up the different frames in the ghost sheet and adding them to an animation
         ghostsheet = new Texture("ghosts.png");

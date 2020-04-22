@@ -25,7 +25,7 @@ public class PlayerComponent implements Component {
     public float invincibleTimer;
 
     public Body body;
-    private String id;
+    public String id;
     private boolean ai;
     private String type;
 
