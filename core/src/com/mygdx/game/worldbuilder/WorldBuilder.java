@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
         private static ArrayList<RectangleMapObject> playersPostionList = new ArrayList<>();
         private static ArrayList<RectangleMapObject> pillsPostionList = new ArrayList<>();
-        private static ArrayList<ArrayList<Node>> nodeCostMatrix = new ArrayList<>();;
+        private static ArrayList<ArrayList<Node>> nodeCostMatrix = new ArrayList<>();
         private static ArrayList<PlayerComponent> playerList = new ArrayList<>();
         private static ArrayList<PillComponent> pillList = new ArrayList<>();
 
@@ -134,14 +134,14 @@ import java.util.ArrayList;
 
 
         public static void createPlayers(World world) {
-           for (int i=0; i < getPlayerPositionList().size(); i++) {
+           for (Integer i=0; i < getPlayerPositionList().size(); i++) {
                PlayerComponent player = new PlayerComponent();
                Vector2 vector = new Vector2();
                getPlayerPositionList().get(i).getRectangle().getCenter(vector);
 
 
                if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
-                   player.createPlayerBody(world, "GHOST_NUMBER_" + i, vector.x, vector.y, "GHOST");
+                   player.createPlayerBody(world, "GHOST_NUMBER_" + i.toString(), vector.x, vector.y, "GHOST");
                    playerList.add(player);
                }
                else if (getPlayerPositionList().get(i).getName().equals("Pacman")) {

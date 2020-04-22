@@ -26,7 +26,7 @@ public class PlayerComponent implements Component {
 
     public Body body;
     public String id;
-    private boolean ai;
+    public boolean ai;
     private String type;
 
     public PlayerComponent() {
@@ -43,7 +43,7 @@ public class PlayerComponent implements Component {
         bdef.position.set(x,y);
         bdef.fixedRotation = true;
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(30/2,30/2);
+        shape.setAsBox(16/2,16/2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

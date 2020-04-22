@@ -20,6 +20,7 @@ import com.mygdx.game.worldbuilder.WorldBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 //må gjøres:
 //få riktig tile-koordinater på player/legge inn tile ratio
@@ -40,7 +41,7 @@ public class AISystem extends IteratingSystem{
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<StateComponent> stateM;
     private ComponentMapper<TextureComponent> texM;
-    WorldBuilder world = new WorldBuilder(); //must get the actual world builder!!!
+    WorldBuilder worldBuilderObject = new WorldBuilder(); //must get the actual worldBuilderObject builder!!!
 
     public AISystem(){
         super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
@@ -64,62 +65,100 @@ public class AISystem extends IteratingSystem{
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-        BoardDummy board = new BoardDummy();
-        board.createFromWorld(this.world);
-        miniMax(board, 5);
-        Vector2 bestMove = board.bestMove;
+        BoardDummy board = new BoardDummy(pc);
+        board.createFromWorld(this.worldBuilderObject, pc);
+        DummyPlayer player = board.currentPlayer();
+        Vector2 bestMove = miniMax(board, 2).getDirection();
 
-        
+//Gdx.input.isKeyPressed(Input.Keys.T)) {
 
         float x = 0f;
         float y = 0f;
-        if(pc.id == "GHOST_NUMBER_0") {
-            if (Gdx.input.isKeyPressed(Input.Keys.T)) {//bestMove.equals(new Vector2(0, 1))) {
-                x = 0f;
-                y = Y_VELOCITY;
+        if (bestMove != new Vector2(0, 1)) {
+            int a = 0;
+        }
+        for(Integer i = 0; i<4; i++) {
+            if (pc.id.equals("GHOST_NUMBER_" + i.toString())) {
+                if (bestMove.equals(new Vector2(0, 1))) {
+                    x = 0f;
+                    y = Y_VELOCITY;
 
-                sc.setState(1);
-            }
-
-            if (bestMove.equals(new Vector2(0, -1))) {
-                x = 0f;
-                y = -Y_VELOCITY;
-
-                sc.setState(2);
-            }
-
-
-            if (bestMove.equals(new Vector2(-1, 0))) {
-                x = -X_VELOCITY;
-                y = 0f;
-
-                sc.setState(3);
-
-                //flips texture
-                if (texc.region != null && texc.region.isFlipX()) {
-                    texc.region.flip(true, false);
+                    sc.setState(1);
                 }
-            }
 
-            if (bestMove.equals(new Vector2(0, 1))) {
-                x = X_VELOCITY;
-                y = 0f;
+                if (bestMove.equals(new Vector2(0, -1))) {
+                    x = 0f;
+                    y = -Y_VELOCITY;
 
-                sc.setState(4);
-                //flips texture
-                if (texc.region != null && !texc.region.isFlipX()) {
-                    texc.region.flip(true, false);
+                    sc.setState(2);
+                }
+
+
+                if (bestMove.equals(new Vector2(-1, 0))) {
+                    x = -X_VELOCITY;
+                    y = 0f;
+
+                    sc.setState(3);
+
+                    //flips texture
+                    if (texc.region != null && texc.region.isFlipX()) {
+                        texc.region.flip(true, false);
+                    }
+                }
+
+                if (bestMove.equals(new Vector2(1, 0))) {
+                    x = X_VELOCITY;
+                    y = 0f;
+
+                    sc.setState(4);
+                    //flips texture
+                    if (texc.region != null && !texc.region.isFlipX()) {
+                        texc.region.flip(true, false);
+                    }
                 }
             }
         }
-
 //        vc.setVelocity(x,y);
 //        vc.setAcceleration(x,y);
         pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
         pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
     }
 
-    public BoardDummy miniMax(BoardDummy board, int depth) {
+    private Move miniMax(BoardDummy board, int depth) {
+        Move utilMove = new Move(0, new Vector2(0,0));
+        if(depth == 0 || board.isTerminal()) {
+            utilMove.setUtil(board.utility());
+            utilMove.setDirection(board.movedDirection);
+            return utilMove;
+        }
+        ArrayList<BoardDummy> legalBoardMoves = board.getLegalMoves();
+        if(board.currentPlayer().isMaxPlayer()) {
+            utilMove.setUtil(-1000);
+            for(BoardDummy boardMove: legalBoardMoves) {
+                Move minmax = miniMax(boardMove, depth-1 );
+                if(utilMove.getUtil() < minmax.getUtil()) {
+                    utilMove = minmax;
+                    utilMove.setDirection(boardMove.movedDirection);
+                }
+            }
+            return utilMove;
+        }
+        else {
+            utilMove.setUtil(1000);
+            for(BoardDummy boardMove: legalBoardMoves) {
+
+                Move minmax = miniMax(boardMove, depth-1 );
+                if(utilMove.getUtil() > minmax.getUtil()) {
+                    utilMove = minmax;
+                    utilMove.setDirection(boardMove.movedDirection);
+                }
+            }
+            return utilMove;
+        }
+
+    }
+    /*
+    private BoardDummy miniMax(BoardDummy board, int depth) {
         if (depth == 0 || board.isTerminal()) {
             board.setPredictedUtility(board.utility());
             return board;
@@ -127,64 +166,83 @@ public class AISystem extends IteratingSystem{
         if(board.currentPlayer().isMaxPlayer()) {
             ArrayList<BoardDummy> legalMoves = board.getLegalMoves();
             BoardDummy bestBoard = legalMoves.get(0);
-            bestBoard.setPredictedUtility(-1000000);
-            for (BoardDummy nextBoard : legalMoves) {
-                BoardDummy max = miniMax(nextBoard, depth-1);
-                if(max.getPredictedUtility() > bestBoard.getPredictedUtility()) {
-                    board.setPredictedUtility(nextBoard.getPredictedUtility());
+            for (BoardDummy child : legalMoves) {
+                child = miniMax(child, depth-1);
+                if(child.getPredictedUtility() > bestBoard.getPredictedUtility()) {
+                    bestBoard.setPredictedUtility(child.getPredictedUtility());
                 }
             }
-            board.bestMove = bestBoard.movedDirection;
+            board.setBestMove(bestBoard.movedDirection);
             return bestBoard;
         }
         else {
             ArrayList<BoardDummy> legalMoves = board.getLegalMoves();
             BoardDummy bestBoard = legalMoves.get(0);
             bestBoard.setPredictedUtility(1000000);
-            for (BoardDummy nextBoard : legalMoves) {
-                BoardDummy min = miniMax(nextBoard, depth-1);
+            for (BoardDummy child : legalMoves) {
+                BoardDummy min = miniMax(child, depth-1);
                 if(min.getPredictedUtility() < bestBoard.getPredictedUtility()) {
-                    board.setPredictedUtility(nextBoard.getPredictedUtility());
+                    board.setPredictedUtility(child.getPredictedUtility());
                 }
             }
-            board.bestMove = bestBoard.movedDirection;
+            board.setBestMove(bestBoard.movedDirection);
             return bestBoard;
         }
     }
+     */
 
 }
 
 class BoardDummy {
-    private float predictedUtility;
+    private int predictedUtility = -1000000;
     public Vector2 movedDirection;
-    public Vector2 bestMove;
+    private Vector2 bestMove = new Vector2(0,0);
     private int currentPlayer = 0;
     private ArrayList<DummyPlayer> players = new ArrayList<>();
     private ArrayList<ArrayList<Node>> board = WorldBuilder.getNodeCostMatrix();
     private final float xTileRatio = 0.0625f;
     private final float yTileRatio = 0.0625f;
+    PlayerComponent pc;
     private ArrayList<Vector2> directions = new ArrayList(Arrays.asList(
             new Vector2(1, 0),
             new Vector2(0, 1),
             new Vector2(-1, 0),
             new Vector2(0, -1)));
 
-    public BoardDummy() {
+    public BoardDummy(PlayerComponent pc) {
+        this.pc = pc;
         /*
         this.players.add(pacMan);
         this.players.add(ghost);
          */
     }
 
-    public void createFromWorld(WorldBuilder world) {
-        this.board = world.getNodeCostMatrix();
-        this.players = playersFromComponent(world.getPlayerList());
+    public void createFromWorld(WorldBuilder worldBuilderObject, PlayerComponent pc) {
+        this.board = worldBuilderObject.getNodeCostMatrix();
+        this.players = playersFromComponent(worldBuilderObject.getPlayerList());
+        for(int i = 0; i<this.players.size(); i++) {
+            if(worldBuilderObject.getPlayerList().get(i).id.equals(pc.id)) {
+                String fromWorldID = worldBuilderObject.getPlayerList().get(i).id;
+                this.currentPlayer = i;
+            }
+        }
+
+    }
+
+    public void setBestMove(Vector2 bestMove) {
+        if(!(this.bestMove==null)) {
+            this.bestMove.x = bestMove.x;
+            this.bestMove.y = bestMove.y;
+        }
+    }
+
+    public Vector2 getBestMove() {
+        return  this.bestMove;
     }
 
     public Vector2 getTiledPosition(Vector2 position) {
         int newX = (int) (xTileRatio*position.x);
         int newY = (int) (yTileRatio*position.y);
-
         Vector2 newPosition = new Vector2(newX, newY);
         return newPosition;
     }
@@ -192,10 +250,19 @@ class BoardDummy {
     public ArrayList<DummyPlayer> playersFromComponent(ArrayList<PlayerComponent> comPlayers) {
         ArrayList<DummyPlayer> dummyPlayers = new ArrayList<>();
         for (PlayerComponent comPlayer: comPlayers) {
-            Vector2 a = getTiledPosition(comPlayer.body.getPosition());
             DummyPlayer dummyPlayer = new DummyPlayer(getTiledPosition(comPlayer.body.getPosition()));
+            dummyPlayer.setId(comPlayer.getId());
+            if(comPlayer.getType().equals("GHOST")) {
+                dummyPlayer.setMaxPlayer(false);
+            }
+            else if (comPlayer.getType().equals("PACMAN")) {
+                dummyPlayer.setMaxPlayer(true);
+            }
+            else {
+                throw new IllegalStateException("Neither pacman nor ghost");
+            }
             dummyPlayers.add(dummyPlayer);
-            System.out.println(comPlayer.getBody().getPosition());
+
         }
         return dummyPlayers;
      }
@@ -209,11 +276,11 @@ class BoardDummy {
     }
       */
 
-    public float getPredictedUtility() {
+    public int getPredictedUtility() {
         return this.predictedUtility;
     }
 
-    public void setPredictedUtility(float utility) {
+    public void setPredictedUtility(int utility) {
         this.predictedUtility = utility;
     }
 
@@ -236,7 +303,7 @@ class BoardDummy {
         return this.players.get(nextPlayer);
     }
 
-    public DummyPlayer currentPlayer() {
+    protected DummyPlayer currentPlayer() {
         return this.players.get(this.currentPlayer);
     }
 
@@ -245,12 +312,12 @@ class BoardDummy {
     }
 
     public boolean legalState() {
-            float test = this.currentPlayer().getPosition().x;
             int xPos = (int)this.currentPlayer().getPosition().x;
             int yPos = (int)this.currentPlayer().getPosition().y;
             if(xPos > this.board.get(0).size()-1 || xPos < 0 || yPos > this.board.size()-1 || yPos < 0) {
                 return false;
             }
+            System.out.println(board.get(yPos).get(xPos).isWalkThrough());
             if(!board.get(yPos).get(xPos).isWalkThrough()) {
                 return false;
             }
@@ -263,8 +330,8 @@ class BoardDummy {
     }
 
     public int distance(DummyPlayer player1, DummyPlayer player2) {
-        int xDist = (int) Math.abs(player1.getPosition().x-player2.getPosition().x);
-        int yDist = (int) Math.abs(player1.getPosition().y-player2.getPosition().y);
+        int xDist = (int) (Math.abs(player1.getPosition().x-player2.getPosition().x));
+        int yDist = (int) (Math.abs(player1.getPosition().y-player2.getPosition().y));
         return yDist+xDist;
     }
 
@@ -277,11 +344,11 @@ class BoardDummy {
         return false;
     }
 
-    public float utility() {
+    public int utility() {
         int distance = 100000000;
         for(DummyPlayer player1: this.players) {
             for (DummyPlayer player2: this.players) {
-                if (player1.isMaxPlayer() & !player2.isMaxPlayer()) {
+                if (player1.isMaxPlayer() ^ player2.isMaxPlayer()) {
                     distance = Math.min(distance, distance(player1, player2));
                 }
             }
@@ -299,7 +366,7 @@ class BoardDummy {
     public ArrayList<BoardDummy> getLegalMoves() {
         ArrayList<BoardDummy> legalMoves = new ArrayList<BoardDummy>();
         for(Vector2 direction: this.directions) {
-            BoardDummy board = new BoardDummy();
+            BoardDummy board = new BoardDummy(this.pc);
             board.movedDirection = direction;
             board.setCurrentPlayer(this.currentPlayer);
             for(int i = 0; i<this.players.size(); i++) {
@@ -307,6 +374,7 @@ class BoardDummy {
                 board.addPlayer(newPlayer);
                 //board.getPlayers().get(i).setPosition(this.getPlayers().get(i).getPosition());
             }
+            Vector2 position = board.currentPlayer().getPosition();
             board.currentPlayer().getPosition().add(direction);
             if(board.legalState()) {
                 legalMoves.add(board);
@@ -324,9 +392,18 @@ class DummyPlayer {
     private boolean maxPlayer;
     private Vector2 position;
     private String playerRep;
+    private String id;
 
     public DummyPlayer(Vector2 position) {
         this.position = position;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setMaxPlayer(boolean maxPlayer) {
@@ -349,6 +426,7 @@ class DummyPlayer {
     public DummyPlayer makeCopy() {
         DummyPlayer player = new DummyPlayer(new Vector2(this.position.x, this.position.y));
         player.setMaxPlayer(this.isMaxPlayer());
+        player.setId(this.getId());
         return player;
     }
 
@@ -359,27 +437,32 @@ class DummyPlayer {
     public String getPlayerRep() {
         return playerRep;
     }
-
-
-
-
 }
 
-class PackMan extends DummyPlayer {
+class Move {
+    private int util;
+    private Vector2 direction;
+    public Move(int util, Vector2 direction) {
+        this.direction = direction;
+        this.util = util;
+    }
 
-    public PackMan(Vector2 position) {
-        super(position);
-        super.setMaxPlayer(true);
-        super.setPlayerRep("P");
+    public int getUtil() {
+        return util;
+    }
+
+    public void setUtil(int util) {
+        this.util = util;
+    }
+
+    public Vector2 getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Vector2 direction) {
+        this.direction = direction;
     }
 }
 
-class Ghost extends DummyPlayer {
 
-    public Ghost(Vector2 position) {
-        super(position);
-        super.setMaxPlayer(false);
-        super.setPlayerRep("G");
-    }
-}
 
