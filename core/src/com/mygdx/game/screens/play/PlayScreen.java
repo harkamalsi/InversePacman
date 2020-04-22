@@ -32,6 +32,7 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.AISystem;
 import com.mygdx.game.systems.AnimationSystem;
@@ -69,6 +70,9 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
+    boolean multiplayer;
+    NetworkManager networkManager;
+
     //World building
     public World world;
     public Body player;
@@ -96,9 +100,11 @@ public final class PlayScreen extends AbstractScreen {
     private PillSystem pillSystem;
 
 
-    public PlayScreen(final InversePacman app, Engine engine) {
+    public PlayScreen(final InversePacman app, Engine engine, boolean multiplayer, NetworkManager networkManager) {
         super(app, engine);
         this.engine = engine;
+        this.multiplayer = multiplayer;
+        this.networkManager = networkManager;
         back = new TextureRegion(new Texture("back.png"));
 //        this.engine = engine;
 //         Sets the camera; width and height.
@@ -172,7 +178,7 @@ public final class PlayScreen extends AbstractScreen {
         // To add a new songs, place the file under the folder assets/music/play
 
         batch = new SpriteBatch();
-        playerInputSystem = new PlayerInputSystem();
+        playerInputSystem = new PlayerInputSystem(multiplayer, networkManager);
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();

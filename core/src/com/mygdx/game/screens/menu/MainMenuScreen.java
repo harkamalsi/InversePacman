@@ -114,7 +114,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         if(singleplayerButton.flags == 1 || Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
-            app.gsm.setScreen(GameScreenManager.STATE.PLAY);
+            app.gsm.setScreen(GameScreenManager.STATE.PLAY,false);
         }
         if(multiplayerButton.flags == 1) {
             engine.removeSystem(musicSystem);

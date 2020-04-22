@@ -4,6 +4,7 @@ import com.mygdx.game.shared.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONString;
 
 import java.net.URISyntaxException;
 
@@ -28,6 +29,7 @@ public class NetworkManager {
     private JSONArray lobbies = new JSONArray();
     private JSONObject response;
     public Boolean connected = false;
+    private String lobby;
 
     public NetworkManager() {
         //socket = new SocketIOManager().getSocketInstance();
@@ -81,6 +83,34 @@ public class NetworkManager {
         this.lobbies = lobbies;
     }
 
+    private void setLobby(String lobby) {
+        //System.out.println(lobbies);
+        this.lobby = lobby;
+    }
+
+    public void fetchLobby() {
+        if (fetch) {
+            //System.out.println("Get lobbies is called!");
+
+            getSocket().emit(Constants.GET_LOBBY, socketID);
+
+            getSocket().on(Constants.GET_LOBBY, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONString response = (JSONString) args[0];
+                    setLobby(response.toString());
+                    //System.out.println(response);
+                }
+            });
+
+            //fetch = false;
+        }
+    }
+
+    public String getLobby() {
+        return this.lobby;
+    }
+
     public JSONArray getLobbies() {
         if (fetch) {
             //System.out.println("Get lobbies is called!");
@@ -124,6 +154,10 @@ public class NetworkManager {
 
         getSocket().emit(Constants.JOIN_LOBBY, socketID, inputs);
 
+    }
+
+    public void getLobbyName(){
+        getSocket().emit(Constants.GET_GAME_LOBBIES, socketID);
     }
 
     public void leaveLobby(String lobbyName) {
