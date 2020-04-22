@@ -70,8 +70,7 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
-    boolean multiplayer;
-    NetworkManager networkManager;
+    static boolean MULTIPLAYER;
 
     //World building
     public World world;
@@ -100,11 +99,9 @@ public final class PlayScreen extends AbstractScreen {
     private PillSystem pillSystem;
 
 
-    public PlayScreen(final InversePacman app, Engine engine, boolean multiplayer, NetworkManager networkManager) {
+    public PlayScreen(final InversePacman app, Engine engine) {
         super(app, engine);
         this.engine = engine;
-        this.multiplayer = multiplayer;
-        this.networkManager = networkManager;
         back = new TextureRegion(new Texture("back.png"));
 //        this.engine = engine;
 //         Sets the camera; width and height.
@@ -178,7 +175,7 @@ public final class PlayScreen extends AbstractScreen {
         // To add a new songs, place the file under the folder assets/music/play
 
         batch = new SpriteBatch();
-        playerInputSystem = new PlayerInputSystem(multiplayer, networkManager);
+        playerInputSystem = new PlayerInputSystem(MULTIPLAYER);
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();

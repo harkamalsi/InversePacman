@@ -25,8 +25,6 @@ public class GameScreenManager {
     public final InversePacman app;
     private HashMap<STATE, AbstractScreen> gameScreens;
     private Array<STATE> prevScreens;
-    private boolean multiplayer = false;
-    private NetworkManager networkManager;
     private Engine engine;
     public enum STATE {
         PLAY,
@@ -62,7 +60,7 @@ public class GameScreenManager {
 
     private void initGameScreens() {
         this.gameScreens = new HashMap<>();
-        this.gameScreens.put(STATE.PLAY, new PlayScreen(app, engine, multiplayer,networkManager));
+        this.gameScreens.put(STATE.PLAY, new PlayScreen(app, engine));
         this.gameScreens.put(STATE.PAUSE, new PauseScreen(app, engine));
         this.gameScreens.put(STATE.LOBBY_SCREEN, new LobbyScreen(app, engine));
         this.gameScreens.put(STATE.GAME_OVER_SCREEN, new GameOverScreen(app, engine));
@@ -80,18 +78,6 @@ public class GameScreenManager {
     public void setScreen(STATE nextScreen, boolean multiplayer) {
         //System.out.println("prevscreens" + prevScreens);
         this.prevScreens.add(nextScreen);
-        this.multiplayer = multiplayer;
-        app.setScreen(gameScreens.get(nextScreen));
-        //System.out.println("prevscreens" + prevScreens);
-        currentState = nextScreen;
-        System.out.println(nextScreen);
-    }
-
-    public void setScreen(STATE nextScreen, boolean multiplayer, NetworkManager networkManager) {
-        //System.out.println("prevscreens" + prevScreens);
-        this.prevScreens.add(nextScreen);
-        this.multiplayer = multiplayer;
-        this.networkManager = networkManager;
         app.setScreen(gameScreens.get(nextScreen));
         //System.out.println("prevscreens" + prevScreens);
         currentState = nextScreen;

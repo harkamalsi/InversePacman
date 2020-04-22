@@ -35,12 +35,14 @@ import com.mygdx.game.systems.TableSystem;
 
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
+
 public class LobbyScreen extends AbstractScreen {
     private OrthographicCamera camera;
     private FitViewport viewport;
 
     private EntityManager entityManager;
-    private NetworkManager networkManager;
+    private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
 
     private SpriteBatch batch;
     private SpriteBatch bgBatch;
@@ -97,7 +99,7 @@ public class LobbyScreen extends AbstractScreen {
 
         /*this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
-        networkManager = new NetworkManager();
+        //networkManager = new NetworkManager();
         table = new TableComponent(networkManager);
 
         bg = new TextureRegion(new Texture("lobbyscreen/lobbyScreen.png"));
@@ -114,8 +116,6 @@ public class LobbyScreen extends AbstractScreen {
 
         scaleX = (Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE) * 0.8f;
         scaleY = (Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE) * 0.8f;
-
-
     }
 
     @Override
@@ -147,7 +147,8 @@ public class LobbyScreen extends AbstractScreen {
             if (table.createLobby) {
                 System.out.println("Create Lobby Called!");
                 networkManager.createLobby(nickname, playerType);
-                app.gsm.setScreen(GameScreenManager.STATE.PLAY,true,networkManager);
+                MULTIPLAYER = true;
+                app.gsm.setScreen(GameScreenManager.STATE.PLAY);
             } 
             createLobbyButton.flags = 0;
         }

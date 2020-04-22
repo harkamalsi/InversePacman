@@ -28,7 +28,7 @@ public class TableSystem extends IteratingSystem {
     private TableComponent cc;
     private ComponentMapper<TableComponent> tableM;
     private ComponentMapper<TransformComponent> tc;
-    private NetworkManager networkManager;
+    private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
     private InversePacman app;
 
 
@@ -55,7 +55,6 @@ public class TableSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
-        this.networkManager = cc.networkManager;
         cc.reset();
         JSONArray lobbies = this.networkManager.getLobbies();
 

@@ -8,13 +8,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.StateComponent;
-import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
+import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
 
 import org.json.JSONArray;
@@ -29,8 +30,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private boolean isUpDragged = false;
     private boolean isDownDragged = false;
 
-    private NetworkManager networkManager;
-    private boolean multiplayer;
+    private boolean multiplayer = false;
+    private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
 
     private static final float X_VELOCITY = 2.5f;
     private static final float Y_VELOCITY = 2.5f;
@@ -47,25 +48,19 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private ComponentMapper<TextureComponent> texM;
     private ComponentMapper<PlayerComponent> playerM;
 
-    private ComponentMapper<TableComponent> tableM;
+    public PlayerInputSystem(boolean multiplayer){
 
-    public PlayerInputSystem(boolean multiplayer, NetworkManager networkManager){
-
-        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class, TableComponent.class).get());
+        super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
         pacmanM = ComponentMapper.getFor(PacmanComponent.class);
-        tableM = ComponentMapper.getFor(TableComponent.class);
 
         this.multiplayer = multiplayer;
-        this.networkManager = networkManager;
-
 
         Gdx.input.setInputProcessor(this);
-
     }
 
     @Override
@@ -76,7 +71,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-        TableComponent tablec = tableM.get(entity);
 
 
         float x = 0f;
@@ -126,16 +120,19 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
             pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
             pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+
             if (multiplayer){
-                networkManager.fetchLobby();
+                // TODO: Dont need to call this everytime!
                 String lobbyName = networkManager.getLobby();
+
+                System.out.println("LobbyName: " + lobbyName);
                 JSONArray directionBooleans = new JSONArray();
                 directionBooleans.put(isLeftDragged);
                 directionBooleans.put(isRightDragged);
                 directionBooleans.put(isUpDragged);
                 directionBooleans.put(isDownDragged);
                 networkManager.sendInput(lobbyName, directionBooleans);
-
+                getServerInput();
             }
             //sets velocity direction dictated by x and y
 //        vc.setVelocity(x,y);
@@ -143,12 +140,10 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
         }
 
-
-
     }
 
-    private void serverInput(){
-        networkManager.receiveInput();
+    private void getServerInput(){
+        System.out.println(networkManager.getUpdate());
     }
 
     //function for deciding drag direction

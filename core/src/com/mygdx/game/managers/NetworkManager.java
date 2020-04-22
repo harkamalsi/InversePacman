@@ -30,6 +30,7 @@ public class NetworkManager {
     private JSONObject response;
     public Boolean connected = false;
     private String lobby;
+    private JSONArray serverInput;
 
     public NetworkManager() {
         //socket = new SocketIOManager().getSocketInstance();
@@ -88,9 +89,9 @@ public class NetworkManager {
         this.lobby = lobby;
     }
 
-    public void fetchLobby() {
+    private void fetchLobby() {
         if (fetch) {
-            //System.out.println("Get lobbies is called!");
+            System.out.println("Fetch lobby is called!");
 
             getSocket().emit(Constants.GET_LOBBY, socketID);
 
@@ -98,8 +99,8 @@ public class NetworkManager {
                 @Override
                 public void call(Object... args) {
                     JSONString response = (JSONString) args[0];
+                    System.out.println("LOBBYYYYYYYYYYYY " + response);
                     setLobby(response.toString());
-                    //System.out.println(response);
                 }
             });
 
@@ -108,6 +109,7 @@ public class NetworkManager {
     }
 
     public String getLobby() {
+        this.fetchLobby();
         return this.lobby;
     }
 
@@ -156,10 +158,6 @@ public class NetworkManager {
 
     }
 
-    public void getLobbyName(){
-        getSocket().emit(Constants.GET_GAME_LOBBIES, socketID);
-    }
-
     public void leaveLobby(String lobbyName) {
         // args: lobbyName
         System.out.println("Leave Lobby is called!");
@@ -183,6 +181,14 @@ public class NetworkManager {
 
     }
 
+    public JSONArray getUpdate() {
+        return serverInput;
+    }
+
+    private void setUpdate(JSONArray input) {
+        this.serverInput = input;
+    }
+
     public void receiveUpdate() {
 
         System.out.println("Receive update is called!");
@@ -191,7 +197,9 @@ public class NetworkManager {
             @Override
             public void call(Object... args) {
                 JSONObject response = (JSONObject)args[0];
-                System.out.println(response);
+                JSONArray otherPlayers = response.getJSONArray("others");
+                setUpdate(otherPlayers);
+                //System.out.println(otherPlayers);
             }
         });
     }
