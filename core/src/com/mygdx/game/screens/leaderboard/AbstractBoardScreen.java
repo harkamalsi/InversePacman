@@ -107,6 +107,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     @Override
     public void update(float delta) {
         players = retrieveSortedPlayerScores();
+        handleInput();
     }
 
     @Override
