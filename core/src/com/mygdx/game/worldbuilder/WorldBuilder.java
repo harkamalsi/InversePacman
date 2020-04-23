@@ -99,19 +99,25 @@ import java.util.ArrayList;
             TiledMapTileLayer mapLayer = (TiledMapTileLayer) backgroundLayer;
             int height = mapLayer.getHeight();
             int width = mapLayer.getWidth();
-            System.out.println(height);
-            System.out.println(width);
 
-            for (int y=0; y < height; y++) {
+            for (int y = 0; y < height; y++) {
                 nodeCostMatrix.add(y, new ArrayList<Node>());
-                System.out.println("\n");
                 for (int x = 0; x < width; x++){
                     try {
-                        mapLayer.getCell(x,height-y-1).getTile().getId();
-                        System.out.print(" . ");
+                        mapLayer.getCell(x,y).getTile().getId();
                         nodeCostMatrix.get(y).add(x, new Node(1, "ground", true));
                     } catch (Exception e) {
                         nodeCostMatrix.get(y).add(x, new Node(-1, "wall", false));
+                    }
+                }
+            }
+            for ( int y=49; y > -1; y--) {
+                System.out.println("\n");
+                for ( int x=50; x > -1; x--) {
+                    if (nodeCostMatrix.get(y).get(x).getType() == "ground") {
+                        System.out.print(" . ");
+                    }
+                    else {
                         System.out.print(" X ");
                     }
                 }
