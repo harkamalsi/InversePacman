@@ -58,13 +58,13 @@ public class AISystem extends IteratingSystem{
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
 //        GhostComponent gc = ghostM.get(entity);
-        Vector2 ghostPosition = WorldBuilder.getPlayerList().get(4).body.getPosition();
         PlayerComponent pc = playerM.get(entity);
+        Vector2 ghostPosition = getTiledPosition(pc.getBody().getPosition());
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-        aStar(pc.body.getPosition()); //er denne position riktig i forhold til y/x aksen?
+        aStar(ghostPosition); //er denne position riktig i forhold til y/x aksen?
         Vector2 firstPos = shortestPath.get(shortestPath.size()-1);
         Vector2 nextPos = shortestPath.get(shortestPath.size()-2);
         Vector2 move = new Vector2(nextPos.x - firstPos.x, nextPos.y-firstPos.y);
@@ -210,6 +210,13 @@ public class AISystem extends IteratingSystem{
             }
         }
         return true;
+    }
+
+    public Vector2 getTiledPosition(Vector2 position) {
+        int newX = (int) (0.0625 * position.x);
+        int newY = (int) (0.0625 * position.y);
+        Vector2 newPosition = new Vector2(newX, newY);
+        return newPosition;
     }
 }
 
