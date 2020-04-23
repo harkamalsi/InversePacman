@@ -273,7 +273,7 @@ public final class PlayScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.setView(camera);
         tmr.render();
-        //b2dr.render(world, camera.combined.scl(1f));
+        b2dr.render(world, camera.combined.scl(1f));
 //        engine.update(delta);
 
 
