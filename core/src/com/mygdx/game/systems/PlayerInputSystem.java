@@ -17,6 +17,7 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
+import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.play.LobbyScreen;
 
 import org.json.JSONArray;
@@ -32,6 +33,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private boolean isDownDragged = false;
 
     private boolean multiplayer = false;
+    private MultiplayerMessage connection = new MultiplayerMessage();
     private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
 
     private static final float X_VELOCITY = 2.5f;
@@ -77,10 +79,13 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         float x = 0f;
         float y = 0f;
 
+        System.out.println(LobbyScreen.LOBBY_JOINED);
+
         if (multiplayer && LobbyScreen.LOBBY_JOINED != null) {
             System.out.println("*****************");
             //System.out.println(getServerInput(LobbyScreen.LOBBY_JOINED));
-            JSONArray response = getServerInput(LobbyScreen.LOBBY_JOINED);
+            JSONArray response = getServerInput();
+            System.out.println(response);
             if (response != null) {
                 System.out.println(response);
                 JSONArray directions = response.getJSONObject(0).getJSONArray("directions");
@@ -140,14 +145,12 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         }
     }
 
-    private JSONArray getServerInput(String lobbyName) {
-        return networkManager.getUpdate(lobbyName);
+    private JSONArray getServerInput() {
+        return connection.getInput();
     }
 
     private void sendServerInput(){
-        // TODO: Dont need to call this everytime!
-
-        System.out.println(LobbyScreen.LOBBY_JOINED);
+        /*System.out.println(LobbyScreen.LOBBY_JOINED);
 
         if (LobbyScreen.LOBBY_JOINED != null) {
             System.out.println(LobbyScreen.LOBBY_JOINED);
@@ -162,7 +165,16 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             networkManager.sendInput(LobbyScreen.LOBBY_JOINED, directionBooleans);
         } else {
             LobbyScreen.LOBBY_JOINED = networkManager.getLobby();
-        }
+        }*/
+
+        JSONArray directions = new JSONArray();
+
+        directions.put(isUpDragged);
+        directions.put(isRightDragged);
+        directions.put(isDownDragged);
+        directions.put(isLeftDragged);
+
+        connection.sendInput(directions);
     }
 
     //function for deciding drag direction

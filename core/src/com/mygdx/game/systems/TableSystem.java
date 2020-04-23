@@ -19,6 +19,7 @@ import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
+import com.mygdx.game.screens.play.LobbyScreen;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,6 +51,12 @@ public class TableSystem extends IteratingSystem {
     private void handleLobbyButtonClicked(String lobbyName) {
         this.networkManager.joinLobby(lobbyName, "Pepsi", "pacman");
         MULTIPLAYER = true;
+
+        String lobby = networkManager.getLobby();
+        while (lobby == null) {
+            lobby = networkManager.getLobby();
+        }
+        LobbyScreen.LOBBY_JOINED = lobby;
         app.gsm.setScreen(GameScreenManager.STATE.PLAY);
 
     }

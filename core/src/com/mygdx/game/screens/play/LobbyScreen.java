@@ -139,7 +139,7 @@ public class LobbyScreen extends AbstractScreen {
 
     public void handleInput() {
         String nickname = "PepsiCoke";
-        String playerType = "pacman";
+        String playerType = "PACMAN";
         String joinLobbyName = "Lobby1";
 
         if(createLobbyButton.flags == 1) {
@@ -149,6 +149,12 @@ public class LobbyScreen extends AbstractScreen {
                 System.out.println("Create Lobby Called!");
                 networkManager.createLobby(nickname, playerType);
                 MULTIPLAYER = true;
+
+                String lobby = networkManager.getLobby();
+                while (lobby == null) {
+                    lobby = networkManager.getLobby();
+                }
+                LobbyScreen.LOBBY_JOINED = lobby;
                 app.gsm.setScreen(GameScreenManager.STATE.PLAY);
             } 
             createLobbyButton.flags = 0;

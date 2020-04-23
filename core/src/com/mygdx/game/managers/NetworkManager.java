@@ -221,7 +221,6 @@ public class NetworkManager {
     private void setPlayer(JSONObject player) {
         this.player = player;
     }
-
     private void fetchPlayerWithNickname(final String nickname) {
         if (fetch) {
             System.out.println("Get player with nickname is called!");
