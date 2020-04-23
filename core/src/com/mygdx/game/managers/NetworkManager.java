@@ -26,6 +26,7 @@ public class NetworkManager {
     private boolean fetch = false;
 
     private JSONArray lobbies = new JSONArray();
+    private JSONArray players = new JSONArray();
     private JSONObject response;
     public Boolean connected = false;
 
@@ -306,4 +307,28 @@ public class NetworkManager {
         }
     }
 
+    public void setPlayers(JSONArray players) {
+        this.players = players;
+    }
+
+    public JSONArray getPlayers() {
+        return players;
+    }
+
+    public void fetchAllPlayers() {
+        if (fetch) {
+            getSocket().emit(Constants.GET_ALL_PLAYERS, socketID);
+
+            getSocket().on(Constants.GET_ALL_PLAYERS, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONArray response = (JSONArray) args[0];
+                    System.out.println("Players response: " + response);
+                    setPlayers(response);
+                }
+            });
+
+            //fetch = false;
+        }
+    }
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.shared.Constants;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
@@ -27,13 +28,6 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
     }
 
     @Override
-    public Array<PlayerScore> retrievePlayerScores() {
-        Array<PlayerScore> scores = app.saveManager.loadDataValue("namcap", Array.class);
-
-        return scores;
-    }
-
-    @Override
     public void show() {
         super.show();
     }
@@ -43,17 +37,6 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
         app.addSpriteEntity(ellipseSprite, ellipseEntity, engine, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), false, true, true, true, 253f, 181f, 97f);
     }
 
-    @Override
-    public String formatName(String name) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy");
-            LocalDateTime dateTime = LocalDateTime.parse(name);
-
-            return dateTime.format(formatter);
-        } catch (DateTimeParseException exception) {
-            return "UNKNOWN DATE";
-        }
-    }
 
     @Override
     public String formatScore(int score) {
@@ -65,10 +48,14 @@ public class SinglePlayerNamcapBoardScreen extends AbstractBoardScreen {
         this.bg = new TextureRegion(new Texture(AbstractBoardScreen.LEADERBOARD_DIRECTORY + "namcap.png"));
     }
 
+    @Override
+    public String getScoreKey() {
+        return Constants.SINGLE_PLAYER_SCORE_KEY;
+    }
 
     @Override
-    public void update(float delta) {
-        handleInput();
+    public int getScoresIndex() {
+        return 0;
     }
 
     @Override

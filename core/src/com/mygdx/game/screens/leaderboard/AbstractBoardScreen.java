@@ -17,9 +17,13 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.RenderingSystem;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Collections;
 
@@ -53,6 +57,8 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     protected TextureRegion front_ellipse;
     protected TextureRegion back;
 
+    protected Array<PlayerScore> players;
+
 
     public AbstractBoardScreen(InversePacman app, Engine engine) {
         super(app,engine);
@@ -74,6 +80,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
 
+
         //batch.setProjectionMatrix(this.camera.combined);
 
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.1f, 1.0f);
@@ -84,19 +91,22 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         batch.draw(this.bg, 0, 0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
         font.getData().setScale(scaleX / (32f * 1.2f), scaleY / (32f * 1.2f));
 
-        Array<PlayerScore> players = retrieveSortedPlayerScores();
-
-        drawNames(batch, font, players);
-        drawScores(batch, font, players);
-
         batch.end();
 
         engine.update(delta);
+        batch.begin();
+        font.getData().setScale(scaleX / (32f * 1.2f), scaleY / (32f * 1.2f));
+
+        drawNames(batch, font, players);
+        drawScores(batch, font, players);
+        layout.setText(font,"hello");
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+        batch.end();
     }
 
     @Override
     public void update(float delta) {
-
+        players = retrieveSortedPlayerScores();
     }
 
     @Override
@@ -125,6 +135,8 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         backSprite = new Sprite(back);
         backButton = new Entity();
         app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
+
+        app.networkManager.fetchAllPlayers();
     }
 
     @Override
@@ -142,24 +154,47 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
     }
 
-    public  Array<PlayerScore> retrieveSortedPlayerScores() {
-        Array<PlayerScore> players = retrievePlayerScores();
-
-        if (players != null && players.size > 0) {
-            players.sort(Collections.<PlayerScore>reverseOrder());
-        } else {
-            players = null;
-        }
-
-        return players;
+    public void sortPlayerScores(Array<PlayerScore> playerScores) {
+        playerScores.sort(Collections.<PlayerScore>reverseOrder());
     }
 
-    public abstract Array<PlayerScore> retrievePlayerScores();
+    public  Array<PlayerScore> retrieveSortedPlayerScores() {
+        JSONArray players = app.networkManager.getPlayers();
+
+        Array<PlayerScore> playerScores = retrievePlayerScores(players);
+        if (playerScores != null && playerScores.size > 0) {
+            sortPlayerScores(playerScores);
+        } else {
+            playerScores = null;
+        }
+
+        return playerScores;
+    }
+
+    // We really should consider having a business object to represent a player
+    // This way we could use fields instead of hardcoded strings for key, e.g., "nickname"
+    // In order for this this (de)serialization to work, we probably should use a library like Json
+    // instead
+    public Array<PlayerScore> retrievePlayerScores(JSONArray players) {
+        Array<PlayerScore> playerScores = new Array<PlayerScore>();
+        for (int i = 0; i < players.length(); i++) {
+            PlayerScore playerScore = new PlayerScore();
+            JSONObject playerJsonObject = players.getJSONObject(i);
+            playerScore.setName(playerJsonObject.getString("nickname"));
+            JSONArray scoresJsonArray = playerJsonObject.getJSONArray(getScoreKey());
+            playerScore.setScore(scoresJsonArray.getInt(getScoresIndex()));
+            playerScores.add(playerScore);
+        }
+        return playerScores;
+    }
     public abstract String formatScore(int score);
     public abstract void addEllipseSpriteEntity();
     public abstract void setBackground();
+    public abstract String getScoreKey();
+    public abstract int getScoresIndex();
 
-    // Some classes will override this
+    // I was assuming some classes will override this
+    // it's obviously useless right now
     public String formatName(String name) {
         return name;
     }
@@ -208,7 +243,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         }
     }
 
-    static public class PlayerScore implements Json.Serializable, Comparable<PlayerScore> {
+    static public class PlayerScore implements Comparable<PlayerScore> {
         private String name;
         private int score;
 
@@ -218,15 +253,6 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         public PlayerScore(String name, int score) {
             this.name = name;
             this.score = score;
-        }
-
-        public void write (Json json) {
-            json.writeValue(name, score);
-        }
-
-        public void read (Json json, JsonValue jsonMap) {
-            name = jsonMap.child().next().name();
-            score = jsonMap.child().next().asInt();
         }
 
         public String getName() {
