@@ -26,6 +26,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
@@ -37,6 +39,7 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.AISystem;
 import com.mygdx.game.systems.AnimationSystem;
@@ -57,12 +60,15 @@ import sun.security.jgss.GSSCaller;
 
 public final class PlayScreen extends AbstractScreen {
 
-    public static float scaleX;
+
     private OrthographicCamera camera;
     private OrthographicCamera camera2;
 
 
-    private SpriteBatch batch;
+    private Hud hud;
+
+
+    //private SpriteBatch batch;
     private EntityManager entityManager;
 
     private Texture pacmansprite;
@@ -73,8 +79,10 @@ public final class PlayScreen extends AbstractScreen {
     private TextureRegion pausetexture;
 
     private Sprite pauseSprite;
+
     private Sprite pauseButtonSprite;
     private Sprite pacmanSpritus;
+
 
     private Entity pacman;
     private Entity pauseEntity;
@@ -108,12 +116,11 @@ public final class PlayScreen extends AbstractScreen {
     private ButtonSystem buttonSystem;
     private PillSystem pillSystem;
 
-    private float scaleY;
-    //I/System.out: scale x, 1.6666666 scaleY 1.36
-    //I/System.out: scale x, 1.0 scaleY 0.99666667
 
-    private GlyphLayout layout;
-    private BitmapFont font;
+    public static float scaleX;
+    private float scaleY;
+
+
 
     public PlayScreen(final InversePacman app, Engine engine) {
         super(app, engine);
@@ -124,6 +131,7 @@ public final class PlayScreen extends AbstractScreen {
 //        this.engine = engine;
 //         Sets the camera; width and height.
         this.camera = new OrthographicCamera();
+
         this.camera2 = new OrthographicCamera();
 
         //I/System.out: camera  (415.38464,690.0,0.0)
@@ -136,12 +144,12 @@ public final class PlayScreen extends AbstractScreen {
 
         //camera.translate(415.38464f,690.0f,0);
 
-        System.out.println("scale x, " + scaleX + " scaleY " + scaleY);
-        font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
-        layout = new GlyphLayout(); //dont do this every frame! Store it as member
+        scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
+        scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth() / (scaleX *1.32f), Gdx.graphics.getHeight() / (scaleX*1.32f));
 
 
-
+        hud = new Hud(app.batch);
     }
 
     public void handleInput(){
@@ -173,8 +181,9 @@ public final class PlayScreen extends AbstractScreen {
         handleInput();
         // Chooses the next song to play if the song has finished
         // Had to add the second condition since it chose to play a new song as I switched screens
-        //System.out.println("Pill where are you " + WorldBuilder.getPillList().get(0).body.getPosition());
-        //System.out.println("Pacman where are you " + WorldBuilder.getPlayerList().get(4).body.getPosition());
+
+
+
         if (pillSystem.allPillsCollected()) {
             engine.removeAllEntities();
 
@@ -201,10 +210,8 @@ public final class PlayScreen extends AbstractScreen {
 
             //WorldBuilder.getPillList().remove(0);
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
-
-
-
         }
+        hud.update(delta);
     }
 
 
@@ -248,13 +255,14 @@ public final class PlayScreen extends AbstractScreen {
 
         // To add a new songs, place the file under the folder assets/music/play
 
-        batch = new SpriteBatch();
+        //batch = new SpriteBatch();
         playerInputSystem = new PlayerInputSystem();
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();
-        renderingSystem = new RenderingSystem(batch);
-        buttonSystem = new ButtonSystem(camera2);
+
+        renderingSystem = new RenderingSystem(app.batch);
+        buttonSystem = new ButtonSystem(camera);
         stateSystem = new StateSystem();
         animationSystem = new AnimationSystem();
         musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
@@ -350,6 +358,7 @@ public final class PlayScreen extends AbstractScreen {
                 .add(new CollisionComponent());
         engine.addEntity(pacman);
 
+
         pausescreen = new TextureRegion(new Texture("playscreen/pausescreen.png"));
         pauseSprite = new Sprite(pausescreen);
         pauseEntity = new Entity();
@@ -374,9 +383,11 @@ public final class PlayScreen extends AbstractScreen {
         //System.out.println("camera  " + camera.position);
         tmr.setView(camera);
         tmr.render();
-        b2dr.render(world, camera.combined.scl(1f));
-//        engine.update(delta);
 
+        //rendering the box debugger lags the game
+        //b2dr.render(world, camera.combined.scl(1f));
+
+//        engine.update(delta);
 
         // when paused engine stops updating, and textures "disappear"
         if(!pause) {
@@ -401,9 +412,9 @@ public final class PlayScreen extends AbstractScreen {
 
         }
         if(pause){
-            batch.begin();
-            batch.draw(pausescreen, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight()/ 32f);
-            batch.end();
+            app.batch.begin();
+            app.batch.draw(pausescreen, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight()/ 32f);
+            app.batch.end();
             //engine.addEntity(pauseEntity);
             //engine.removeEntity(pacman);
             musicSystem.pause();
@@ -413,15 +424,9 @@ public final class PlayScreen extends AbstractScreen {
             }
         }
         //engine.update(delta);
-        batch.begin();
-        //font.setColor(font.getColor().r, font.getColor().g, font.getColor().b, 0.5f);
-        font.setUseIntegerPositions(false);
-        font.getData().setScale(scaleX / 32f, scaleY / 32f);
-        layout.setText(font,"Options");
-        //font.setColor(0,78, 59,a);
-        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
-        batch.end();
 
+        hud.stage.getViewport().apply();
+        hud.stage.draw();
 
     }
 
@@ -441,6 +446,10 @@ public final class PlayScreen extends AbstractScreen {
 
     }
 
+    @Override
+    public void resize(int width, int height) {
+        hud.stage.getViewport().update(width, height);
+    }
 
     @Override
     public void dispose(){
@@ -448,6 +457,6 @@ public final class PlayScreen extends AbstractScreen {
         engine.removeAllEntities();
         tmr.dispose();
         b2dr.dispose();
-
+        hud.dispose();
     }
 }
