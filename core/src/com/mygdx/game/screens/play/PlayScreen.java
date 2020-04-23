@@ -26,6 +26,7 @@ import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
 import com.mygdx.game.components.PillComponent;
+import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -64,6 +65,8 @@ public final class PlayScreen extends AbstractScreen {
 
     private Sprite pauseSprite;
     private Sprite backSprite;
+    private Sprite pacmanSpritus;
+
 
     private Entity pacman;
     private Entity pauseEntity;
@@ -97,6 +100,10 @@ public final class PlayScreen extends AbstractScreen {
     private ButtonSystem buttonSystem;
     private PillSystem pillSystem;
 
+    public static float scaleX;
+    private float scaleY;
+
+
     public PlayScreen(final InversePacman app, Engine engine) {
         super(app, engine);
         this.engine = engine;
@@ -104,7 +111,9 @@ public final class PlayScreen extends AbstractScreen {
 //        this.engine = engine;
 //         Sets the camera; width and height.
         this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
+        scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth() / (scaleX *1.32f), Gdx.graphics.getHeight() / (scaleX*1.32f));
 
         hud = new Hud(app.batch);
     }
@@ -140,6 +149,7 @@ public final class PlayScreen extends AbstractScreen {
         handleInput();
         // Chooses the next song to play if the song has finished
         // Had to add the second condition since it chose to play a new song as I switched screens
+
         if (pillSystem.allPillsCollected()) {
             engine.removeAllEntities();
 
@@ -240,6 +250,13 @@ public final class PlayScreen extends AbstractScreen {
         animcomponent.animations.put(4,walkAnimation);
 
         for (int i = 0; i<4; i++){
+
+            PlayerComponent playerComponent = WorldBuilder.getPlayerList().get(i);
+            Vector2 vector = playerComponent.body.getPosition();
+
+
+            Vector2 scale = new Vector2(0.9f*(scaleX *1.32f), 0.9f*(scaleX *1.32f));
+
             ghost = new Entity();
             ghost.add(new VelocityComponent())
                     .add(WorldBuilder.getPlayerList().get(i))
@@ -247,13 +264,16 @@ public final class PlayScreen extends AbstractScreen {
                     .add(new TextureComponent())
                     .add(animcomponent)
                     .add(new StateComponent(0))
-                    .add(new TransformComponent(20,20))
+                    .add(new TransformComponent(20,20, scale.x, scale.y,0))
+
                     .add(new CollisionComponent());
             engine.addEntity(ghost);
         }
 
         pillSprite = new Texture("white_pill.png");
-        Vector2 scale = new Vector2(0.05f, 0.05f);
+
+        Vector2 scale = new Vector2(0.05f*(scaleX *1.32f), 0.05f*(scaleX *1.32f));
+
         for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
             PillComponent pillComponent = WorldBuilder.getPillList().get(i);
             Vector2 vector = pillComponent.body.getPosition();
@@ -261,24 +281,33 @@ public final class PlayScreen extends AbstractScreen {
             pill = new Entity();
             pill.add(WorldBuilder.getPillList().get(i))
                     .add(new TextureComponent(new TextureRegion(pillSprite)))
-                    .add(new TransformComponent(vector.x / RenderingSystem.PPM,
-                            vector.y / RenderingSystem.PPM, scale.x, scale.y, 0f));
+                    .add(new TransformComponent((scaleX *1.32f)*vector.x / RenderingSystem.PPM,
+                            (scaleX *1.32f)*vector.y / RenderingSystem.PPM, scale.x, scale.y, 0f));
+
 
             engine.addEntity(pill);
         }
-
+        PlayerComponent playerComponent = WorldBuilder.getPlayerList().get(4);
+        Vector2 vector = playerComponent.body.getPosition();
+        System.out.println("pacman is here: " + playerComponent.body.getPosition());
         pacmansprite = new Texture("pacman.png");
+
+
+
+        pacmanSpritus = new Sprite(pacmansprite);
         Vector2 position = new Vector2(20,20);
+
         scale = new Vector2(0.15f,0.15f);
         pacman = new Entity();
         pacman.add(new VelocityComponent())
-//                .add(new PacmanComponent())
+//               .add(new PacmanComponent())
                 .add(WorldBuilder.getPlayerList().get(4))
                 .add(new TextureComponent(new TextureRegion(pacmansprite)))
                 .add(new StateComponent(0))
-                .add(new TransformComponent(position,scale,0f))
+                .add(new TransformComponent(2*vector.x / RenderingSystem.PPM, 2* vector.y / RenderingSystem.PPM, (scaleX *1.32f)*scale.x, (scaleX *1.32f)*scale.y, 0))
                 .add(new CollisionComponent());
         engine.addEntity(pacman);
+
 
         pausescreen = new TextureRegion(new Texture("playscreen/pausescreen.png"));
         pauseSprite = new Sprite(pausescreen);
@@ -302,6 +331,7 @@ public final class PlayScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.setView(camera);
         tmr.render();
+        //rendering the box debugger lags the game
         //b2dr.render(world, camera.combined.scl(1f));
 //        engine.update(delta);
 

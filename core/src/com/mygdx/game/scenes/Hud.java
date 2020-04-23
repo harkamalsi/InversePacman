@@ -7,12 +7,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.screens.play.PlayScreen;
 
 public class Hud implements Disposable {
+    // Skin for the table, that uses our font
+    private Skin skin;
+
     // Stage and viewport for HUD
     public Stage stage;
     private Viewport viewport;
@@ -29,6 +34,8 @@ public class Hud implements Disposable {
     private Label timerLabel;
     private Label scoreLabel;
     private Label remainingLivesLabel;
+    private BitmapFont font;
+
 
     private static final int DEFAULT_LIVES = 3;
 
@@ -36,20 +43,24 @@ public class Hud implements Disposable {
         timer = 0f;
         score = 0;
         remainingLives = DEFAULT_LIVES;
+        font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
+        font.getData().setScale(PlayScreen.scaleX);
 
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         stage = new Stage(viewport, sb);
+        skin = new Skin(Gdx.files.internal("font/uiskin.json"));
+        skin.getFont("default-font").getData().setScale(0.5f, 0.5f);
 
-        Table table = new Table();
+        Table table = new Table(skin);
         table.top();
         table.setFillParent(true);
 
-        timerText = new Label(String.format("%03d", (int) timer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        remainingLivesText = new Label(String.format("%d", remainingLives), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreText = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        timerLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreLabel = new Label("SCORE", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        remainingLivesLabel = new Label("LIVES", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        timerText = new Label(String.format("%03d", (int) timer), new Label.LabelStyle(font, Color.WHITE));
+        remainingLivesText = new Label(String.format("%d", remainingLives), new Label.LabelStyle(font, Color.WHITE));
+        scoreText = new Label(String.format("%06d", score), new Label.LabelStyle(font, Color.WHITE));
+        timerLabel = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
+        scoreLabel = new Label("SCORE", new Label.LabelStyle(font, Color.WHITE));
+        remainingLivesLabel = new Label("LIVES", new Label.LabelStyle(font, Color.WHITE));
 
         table.add(timerLabel).expandX().padTop(10);
         table.add(remainingLivesLabel).expandX().padTop(10);
