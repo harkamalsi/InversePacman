@@ -85,16 +85,58 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             //System.out.println(getServerInput(LobbyScreen.LOBBY_JOINED));
             JSONArray response = getServerInput();
             if (response != null) {
-                //JSONObject myDirections = response.getJSONObject(0);
+                for (int i = 0; i < response.length(); i++) {
+                    String otherType = response.getJSONObject(i).getString("type");
+                    System.out.println(otherType);
 
-                /*JSONArray directions = response.getJSONObject(1).getJSONArray("directions");
+                    JSONArray directions = response.getJSONArray(i);
 
-                if (directions.length() > 0) {
-                    isUpDragged = directions.getBoolean(0);
-                    isRightDragged = directions.getBoolean(1);
-                    isDownDragged = directions.getBoolean(2);
-                    isLeftDragged = directions.getBoolean(3);
-                }*/
+                    if (pc.id.equals(otherType)) {
+
+                        if (directions.getBoolean(0) || Gdx.input.isKeyPressed(Input.Keys.I)) {
+                            x = 0f;
+                            y = vc.velocity.y;
+
+                            sc.setState(1);
+                        }
+
+                        if (directions.getBoolean(1) || Gdx.input.isKeyPressed(Input.Keys.L)) {
+                            x = vc.velocity.x;
+                            y = 0f;
+
+                            sc.setState(4);
+
+                            //flips texture
+                            if (texc.region != null && !texc.region.isFlipX()){
+                                texc.region.flip(true,false);
+                            }
+
+                        }
+
+                        if (directions.getBoolean(2) || Gdx.input.isKeyPressed(Input.Keys.K)) {
+                            x = 0f;
+                            y = -vc.velocity.y;
+
+                            sc.setState(2);
+                        }
+
+                        if (directions.getBoolean(3) || Gdx.input.isKeyPressed(Input.Keys.J)) {
+                            x = -vc.velocity.x;
+                            y = 0f;
+
+                            sc.setState(3);
+
+                            //flips texture
+                            if (texc.region != null && texc.region.isFlipX()) {
+                                texc.region.flip(true, false);
+                            }
+                        }
+
+                        pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
+                        pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+
+                    }
+                }
             }
         }
 

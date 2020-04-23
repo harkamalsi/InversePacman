@@ -24,15 +24,19 @@ public class MultiplayerMessage {
     }
 
     public JSONArray getInput() {
-        JSONArray response = null;
+        JSONArray tempResponse = null;
+        JSONArray response = new JSONArray();
         if (LobbyScreen.LOBBY_JOINED != null) {
-            response = networkManager.getUpdate(LobbyScreen.LOBBY_JOINED);
-            if (response != null) {
-                METYPE = response.getJSONObject(0).getString("me");
+            tempResponse = networkManager.getUpdate(LobbyScreen.LOBBY_JOINED);
+            if (tempResponse != null) {
+                METYPE = tempResponse.getJSONObject(0).getString("me");
+                for (int i = 1; i < tempResponse.length(); i++) {
+                    response.put(tempResponse.get(i));
+                }
                 return response;
             }
         }
-        return response;
+        return tempResponse;
     }
 
 }
