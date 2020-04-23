@@ -3,11 +3,13 @@ package com.mygdx.game.managers;
 import com.mygdx.game.shared.Constants;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONString;
 
 import java.net.URISyntaxException;
 
+import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -30,7 +32,7 @@ public class NetworkManager {
     private JSONArray lobbies = new JSONArray();
     private JSONObject player = new JSONObject();
     private JSONArray serverInput;
-    private String lobby;
+    private String lobby = null;
 
     public NetworkManager() {
         setSocket();
@@ -72,6 +74,32 @@ public class NetworkManager {
         });
 
         socket.connect();
+
+        //socket.on("ping", sendPong);
+
+        /*Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while(true) {
+                        sleep(0);
+                        socket.on("ping", sendPong);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();*/
+
+
+        /*socket.on(Socket.EVENT_RECONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                socket.emit("joinSocket", socketID);
+            }
+        });*/
     }
 
     // Single lobby
@@ -81,7 +109,7 @@ public class NetworkManager {
         this.lobby = lobby;
     }
     private void fetchLobby() {
-        System.out.println("Fetch lobby is called!");
+        //System.out.println("Fetch lobby is called!");
 
         getSocket().emit(Constants.GET_LOBBY, socketID);
 
@@ -94,16 +122,13 @@ public class NetworkManager {
         });
     }
     public String getLobby() {
-        if (fetch) {
-            this.fetchLobby();
-            return this.lobby;
-        }
-        return null;
+        this.fetchLobby();
+        return this.lobby;
     }
 
     // Creating, joining and leaving a lobby
     public void createLobby(Object ...args) {
-        // args: getNickname(), getPlayerType()
+        // args: nickname, type
         System.out.println("Create Lobby is called!");
 
         final JSONObject inputs = new JSONObject();
@@ -116,14 +141,18 @@ public class NetworkManager {
 
     public void joinLobby(Object ...args) {
         // args: lobbyName, getNickname(), getPlayerType()
-        System.out.println("Join Lobby is called!");
+        if (fetch) {
+            System.out.println("Join Lobby is called!");
 
-        final JSONObject inputs = new JSONObject();
-        inputs.put("lobbyName", args[0]);
-        inputs.put("nickname", args[1]);
-        inputs.put("type", args[2]);
+            final JSONObject inputs = new JSONObject();
+            inputs.put("lobbyName", args[0]);
+            inputs.put("nickname", args[1]);
+            inputs.put("type", args[2]);
 
-        getSocket().emit(Constants.JOIN_LOBBY, socketID, inputs);
+            getSocket().emit(Constants.JOIN_LOBBY, socketID, inputs);
+
+            fetch = false;
+        }
 
     }
 
@@ -144,11 +173,9 @@ public class NetworkManager {
 
         final JSONObject inputs = new JSONObject();
         inputs.put("lobbyName", args[0]);
-        inputs.put("direction", args[1]);
+        inputs.put("directions", args[1]);
 
         getSocket().emit(Constants.INPUT, socketID, inputs);
-
-
     }
 
     private void setUpdate(JSONObject me, JSONArray others) {
@@ -358,4 +385,20 @@ public class NetworkManager {
         }
     }
 
+    private Emitter.Listener sendPong = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            JSONObject data = (JSONObject) args[0];
+            String ping;
+            try {
+                ping = data.getString("ping");
+            } catch (JSONException e) {
+                return;
+            }
+            if(ping.equals("1")){
+                getSocket().emit("pong", "pong");
+            }
+            System.out.println("SOCKETPING" + " RECEIVED PING! ");
+        }
+    };
 }

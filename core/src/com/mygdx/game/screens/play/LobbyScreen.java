@@ -146,10 +146,12 @@ public class LobbyScreen extends AbstractScreen {
             System.out.println("CreateLobbyButton pressed but lobby not created!");
 
             if (table.createLobby) {
-                System.out.println("Create Lobby Called!");
                 networkManager.createLobby(nickname, playerType);
                 MULTIPLAYER = true;
 
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {}
                 String lobby = networkManager.getLobby();
                 while (lobby == null) {
                     lobby = networkManager.getLobby();

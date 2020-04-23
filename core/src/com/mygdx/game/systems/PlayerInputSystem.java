@@ -81,17 +81,20 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         float x = 0f;
         float y = 0f;
 
+
         if (multiplayer && LobbyScreen.LOBBY_JOINED != null) {
-            //System.out.println(getServerInput(LobbyScreen.LOBBY_JOINED));
+
             JSONArray response = getServerInput();
+            System.out.println(response);
             if (response != null) {
                 for (int i = 0; i < response.length(); i++) {
                     String otherType = response.getJSONObject(i).getString("type");
-                    System.out.println(otherType);
 
-                    JSONArray directions = response.getJSONArray(i);
+                    //System.out.println(response.getJSONObject(i));
+                    JSONArray directions = response.getJSONObject(i).getJSONArray("directions");
+                    System.out.println(directions);
 
-                    if (pc.id.equals(otherType)) {
+                    if (pc.id.equals(otherType) && directions.length() > 0) {
 
                         if (directions.getBoolean(0) || Gdx.input.isKeyPressed(Input.Keys.I)) {
                             x = 0f;
@@ -192,42 +195,21 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     }
 
     private void sendServerInput(){
-        /*System.out.println(LobbyScreen.LOBBY_JOINED);
 
-        if (LobbyScreen.LOBBY_JOINED != null) {
-            System.out.println(LobbyScreen.LOBBY_JOINED);
-            JSONArray directionBooleans = new JSONArray();
-            directionBooleans.put(isUpDragged);
-            directionBooleans.put(isRightDragged);
-            directionBooleans.put(isDownDragged);
-            directionBooleans.put(isLeftDragged);
+        connection.DIRECTIONS = new JSONArray();
 
-            System.out.println(directionBooleans);
+        connection.DIRECTIONS.put(isUpDragged);
+        connection.DIRECTIONS.put(isRightDragged);
+        connection.DIRECTIONS.put(isDownDragged);
+        connection.DIRECTIONS.put(isLeftDragged);
 
-            networkManager.sendInput(LobbyScreen.LOBBY_JOINED, directionBooleans);
-        } else {
-            LobbyScreen.LOBBY_JOINED = networkManager.getLobby();
-        }*/
-
-        JSONArray directions = new JSONArray();
-
-        directions.put(isUpDragged);
-        directions.put(isRightDragged);
-        directions.put(isDownDragged);
-        directions.put(isLeftDragged);
-
-        connection.sendInput(directions);
+        connection.sendInput(connection.DIRECTIONS);
     }
 
     //function for deciding drag direction
     private void toggleDirection(int locationStartTouchedX, int locationStartTouchedY, int screenX, int screenY) {
         // This is great code!
         boolean yIsGreater = ((Math.abs(locationStartTouchedY - screenY)) - (Math.abs(locationStartTouchedX - screenX)) > 0);
-
-
-        if (multiplayer){
-            sendServerInput();
-        }
 
         if (yIsGreater){
             if ((locationStartTouchedY - screenY) > 0){
@@ -262,6 +244,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             }
 
         }
+
+        sendServerInput();
 
     }
 

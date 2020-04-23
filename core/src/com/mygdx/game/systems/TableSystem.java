@@ -53,6 +53,9 @@ public class TableSystem extends IteratingSystem {
         MULTIPLAYER = true;
 
         String lobby = networkManager.getLobby();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {}
         while (lobby == null) {
             lobby = networkManager.getLobby();
         }
