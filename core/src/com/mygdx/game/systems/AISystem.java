@@ -30,7 +30,15 @@ public class AISystem extends IteratingSystem{
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<StateComponent> stateM;
     private ComponentMapper<TextureComponent> texM;
+
     private boolean kalt = false;
+    private AiNode currentNode = new AiNode();
+    private ArrayList<AiNode> openNodeList = new ArrayList<>();
+    private ArrayList<AiNode> closedNodeList = new ArrayList<>();
+    private ArrayList<Vector2> shortestPath = new ArrayList<>();
+
+    private int[] nav_x = new int[]{-1, 1, 0, 0};
+    private int[] nav_y = new int[]{0, 0, -1, 1};
 
     public AISystem(){
         super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
@@ -50,28 +58,29 @@ public class AISystem extends IteratingSystem{
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
 //        GhostComponent gc = ghostM.get(entity);
+        Vector2 ghostPosition = WorldBuilder.getPlayerList().get(4).body.getPosition();
         PlayerComponent pc = playerM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-
-        if (!kalt) {
-            engine();
-        }
+        aStar(pc.body.getPosition()); //er denne position riktig i forhold til y/x aksen?
+        Vector2 firstPos = shortestPath.get(shortestPath.size()-1);
+        Vector2 nextPos = shortestPath.get(shortestPath.size()-2);
+        Vector2 move = new Vector2(nextPos.x - firstPos.x, nextPos.y-firstPos.y);
 
         float x = 0f;
         float y = 0f;
 
         if (pc.id != "PACMAN"){
-            if (Gdx.input.isKeyPressed(Input.Keys.T)){
+            if (move.equals(new Vector2(0, 1))){
                 x = 0f;
                 y = Y_VELOCITY;
 
                 sc.setState(1);
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.G)){
+            if (move.equals(new Vector2(0, -1))){
                 x = 0f;
                 y = -Y_VELOCITY;
 
@@ -79,7 +88,7 @@ public class AISystem extends IteratingSystem{
             }
 
 
-            if (Gdx.input.isKeyPressed(Input.Keys.F)){
+            if (move.equals(new Vector2(-1, 0))){
                 x = -X_VELOCITY;
                 y = 0f;
 
@@ -91,7 +100,7 @@ public class AISystem extends IteratingSystem{
                 }
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.H)){
+            if (move.equals(new Vector2(1, 0))){
                 x = X_VELOCITY;
                 y = 0f;
 
@@ -112,21 +121,15 @@ public class AISystem extends IteratingSystem{
 
     }
 
-    private AiNode currentNode = new AiNode();
-    private ArrayList<AiNode> openNodeList = new ArrayList<>();
-    private ArrayList<AiNode> closedNodeList = new ArrayList<>();
-    private ArrayList<Vector2> shortestPath = new ArrayList<>();
 
-    public void engine() {
-        int[] nav_x = new int[]{-1, 1, 0, 0};
-        int[] nav_y = new int[]{0, 0, -1, 1};
+    public void aStar(Vector2 position) {
 
         int t = 0;
 
         currentNode.setTypeOf("Ghost");
-        //Trenger posisjon til ghost
-        currentNode.setPosition(new Vector2(46,2));
-        currentNode.setaStarDistance(calculateAStarDistance(new Vector2(46,2),currentNode));
+        //Trenger posisjon til ghost _____ligger som parameter i kallet______(hvis ghost er entity regner jeg med?)
+        currentNode.setPosition(position);
+        currentNode.setaStarDistance(calculateAStarDistance(position,currentNode));
         currentNode.setPreviousNode(currentNode);
         openNodeList.add(currentNode);
 
@@ -163,11 +166,12 @@ public class AISystem extends IteratingSystem{
             closedNodeList.add(currentNode);
             openNodeList.remove(currentNode);
         }
+        int a = 0;
         while ( currentNode.getTypeOf() != "Ghost") {
             currentNode = currentNode.getPreviousNode();
             shortestPath.add(currentNode.getPosition());
         }
-
+        a = 1;
         for (Vector2 pos : shortestPath) {
             System.out.print("X: "+ pos.x);
             System.out.println("Y: "+ pos.y);
@@ -175,6 +179,7 @@ public class AISystem extends IteratingSystem{
 
 
     }
+
     private AiNode generateNode(Vector2 nodePos) {
         AiNode aiNode = new AiNode();
         aiNode.setPosition(nodePos);
