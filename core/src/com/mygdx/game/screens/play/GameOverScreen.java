@@ -104,7 +104,9 @@ public class GameOverScreen extends AbstractScreen {
         if(!engine.getSystem(PillSystem.class).allPillsCollected()) {
             musicSystem = new MusicSystem(Gdx.files.internal("music/gameover/lost"), sound);
         }
+
         engine.addSystem(musicSystem);
+
 
 
         musicSystem.pause();
