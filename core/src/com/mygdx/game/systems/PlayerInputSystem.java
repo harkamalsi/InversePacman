@@ -21,6 +21,7 @@ import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.play.LobbyScreen;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.lang.Math;
 
@@ -34,6 +35,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     private boolean multiplayer = false;
     private MultiplayerMessage connection = new MultiplayerMessage();
+    private String meType = connection.METYPE;
     private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
 
     private static final float X_VELOCITY = 2.5f;
@@ -79,27 +81,25 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         float x = 0f;
         float y = 0f;
 
-        System.out.println(LobbyScreen.LOBBY_JOINED);
-
         if (multiplayer && LobbyScreen.LOBBY_JOINED != null) {
-            System.out.println("*****************");
             //System.out.println(getServerInput(LobbyScreen.LOBBY_JOINED));
             JSONArray response = getServerInput();
-            System.out.println(response);
             if (response != null) {
-                System.out.println(response);
-                JSONArray directions = response.getJSONObject(0).getJSONArray("directions");
+                //JSONObject myDirections = response.getJSONObject(0);
+
+                /*JSONArray directions = response.getJSONObject(1).getJSONArray("directions");
 
                 if (directions.length() > 0) {
                     isUpDragged = directions.getBoolean(0);
                     isRightDragged = directions.getBoolean(1);
                     isDownDragged = directions.getBoolean(2);
                     isLeftDragged = directions.getBoolean(3);
-                }
+                }*/
             }
         }
 
-        if (pc.id == "PACMAN") {
+        if (pc.id.equals(connection.METYPE)) {
+
             if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
                 x = 0f;
                 y = vc.velocity.y;

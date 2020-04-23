@@ -151,19 +151,31 @@ public class NetworkManager {
 
     }
 
-    private void setUpdate(JSONArray input) {
+    private void setUpdate(JSONObject me, JSONArray others) {
+        JSONArray input = new JSONArray();
+
+        JSONObject myObject = new JSONObject();
+        myObject.put("me", me.getString("type"));
+        input.put(myObject);
+
+        for(int i = 0; i < others.length(); i++) {
+            input.put(others.get(i));
+        }
+
         this.serverInput = input;
     }
     private void fetchUpdate(String lobbyName) {
 
-        System.out.println("Fetch update is called!");
+        //System.out.println("Fetch update is called!");
 
         getSocket().on(Constants.GAME_UPDATE + "_" + lobbyName, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject response = (JSONObject)args[0];
-                JSONArray otherPlayers = response.getJSONArray("others");
-                setUpdate(otherPlayers);
+                JSONObject me = response.getJSONObject("me");
+                JSONArray others = response.getJSONArray("others");
+
+                setUpdate(me, others);
             }
         });
     }

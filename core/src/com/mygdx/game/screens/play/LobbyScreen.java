@@ -139,7 +139,7 @@ public class LobbyScreen extends AbstractScreen {
 
     public void handleInput() {
         String nickname = "PepsiCoke";
-        String playerType = "PACMAN";
+        String playerType = "GHOST";
         String joinLobbyName = "Lobby1";
 
         if(createLobbyButton.flags == 1) {

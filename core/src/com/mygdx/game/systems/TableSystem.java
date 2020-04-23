@@ -49,7 +49,7 @@ public class TableSystem extends IteratingSystem {
     }
 
     private void handleLobbyButtonClicked(String lobbyName) {
-        this.networkManager.joinLobby(lobbyName, "Pepsi", "pacman");
+        this.networkManager.joinLobby(lobbyName, "Pepsi", "GHOST");
         MULTIPLAYER = true;
 
         String lobby = networkManager.getLobby();
