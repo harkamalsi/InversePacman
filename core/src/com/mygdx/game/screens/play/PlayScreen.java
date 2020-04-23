@@ -20,6 +20,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
@@ -30,6 +32,7 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.AISystem;
 import com.mygdx.game.systems.AnimationSystem;
@@ -47,8 +50,9 @@ import com.mygdx.game.worldbuilder.WorldBuilder;
 public final class PlayScreen extends AbstractScreen {
 
     private OrthographicCamera camera;
+    private Hud hud;
 
-    private SpriteBatch batch;
+    //private SpriteBatch batch;
     private EntityManager entityManager;
 
     private Texture pacmansprite;
@@ -93,7 +97,6 @@ public final class PlayScreen extends AbstractScreen {
     private ButtonSystem buttonSystem;
     private PillSystem pillSystem;
 
-
     public PlayScreen(final InversePacman app, Engine engine) {
         super(app, engine);
         this.engine = engine;
@@ -103,6 +106,7 @@ public final class PlayScreen extends AbstractScreen {
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        hud = new Hud(app.batch);
     }
 
     public void handleInput(){
@@ -162,10 +166,8 @@ public final class PlayScreen extends AbstractScreen {
 
             //WorldBuilder.getPillList().remove(0);
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
-
-
-
         }
+        hud.update(delta);
     }
 
 
@@ -196,12 +198,12 @@ public final class PlayScreen extends AbstractScreen {
 
         // To add a new songs, place the file under the folder assets/music/play
 
-        batch = new SpriteBatch();
+        //batch = new SpriteBatch();
         playerInputSystem = new PlayerInputSystem();
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();
-        renderingSystem = new RenderingSystem(batch);
+        renderingSystem = new RenderingSystem(app.batch);
         buttonSystem = new ButtonSystem(camera);
         stateSystem = new StateSystem();
         animationSystem = new AnimationSystem();
@@ -303,7 +305,6 @@ public final class PlayScreen extends AbstractScreen {
         //b2dr.render(world, camera.combined.scl(1f));
 //        engine.update(delta);
 
-
         // when paused engine stops updating, and textures "disappear"
         if(!pause) {
             if(resume) {
@@ -327,9 +328,9 @@ public final class PlayScreen extends AbstractScreen {
 
         }
         if(pause){
-            batch.begin();
-            batch.draw(pausescreen, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight()/ 32f);
-            batch.end();
+            app.batch.begin();
+            app.batch.draw(pausescreen, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight()/ 32f);
+            app.batch.end();
             //engine.addEntity(pauseEntity);
             //engine.removeEntity(pacman);
             musicSystem.pause();
@@ -339,8 +340,8 @@ public final class PlayScreen extends AbstractScreen {
             }
         }
         //engine.update(delta);
-
-
+        hud.stage.getViewport().apply();
+        hud.stage.draw();
     }
 
     @Override
@@ -359,6 +360,10 @@ public final class PlayScreen extends AbstractScreen {
 
     }
 
+    @Override
+    public void resize(int width, int height) {
+        hud.stage.getViewport().update(width, height);
+    }
 
     @Override
     public void dispose(){
@@ -366,6 +371,6 @@ public final class PlayScreen extends AbstractScreen {
         engine.removeAllEntities();
         tmr.dispose();
         b2dr.dispose();
-
+        hud.dispose();
     }
 }
