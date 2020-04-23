@@ -47,7 +47,6 @@ public class PlayerComponent implements Component {
 
         shape.setAsBox((PlayScreen.scaleX *1.3f)*16/2,(PlayScreen.scaleX *1.3f)*16/2);
 
-
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0f;
