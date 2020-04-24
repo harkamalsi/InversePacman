@@ -59,7 +59,7 @@ public class AISystem extends IteratingSystem{
 //        GhostComponent gc = ghostM.get(entity);
         PlayerComponent pc = playerM.get(entity);
         Vector2 ghostPosition = getTiledPosition(pc.getBody().getPosition());
-        this.pacmanPosition = getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
+        this.pacmanPosition = getAiPacmanPosition();
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
@@ -121,8 +121,33 @@ public class AISystem extends IteratingSystem{
 
     }
 
+    public Vector2 getAiPacmanPosition() {
+        Vector2 position= getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
+        Vector2 newPosition = position;
+        int new_x = (int) position.x;
+        int new_y = (int) position.y;
+            while(WorldBuilder.getNodeCostMatrix().get((int) newPosition.y).get((int) newPosition.x).getType() == "wall") {
+                for (int i = 0; i < 4; i++) {
+                    new_x = (int) newPosition.x + nav_x[i];
+                    new_y = (int) newPosition.y + nav_y[i];
+                    //newPosition = new Vector2(new_x, new_y);
+                    if (WorldBuilder.getNodeCostMatrix().get(new_y).get(new_x).getType() == "ground"){
+                        newPosition = new Vector2(new_x, new_y);
+                        System.out.println(newPosition);
+                        return newPosition;
+                    }
+                }
+                newPosition = new Vector2(new_x, new_y);
+
+            }
+        return newPosition;
+    }
+
+
+
 
     public void aStar(Vector2 ghostPosition) {
+        long startTime = System.nanoTime();
 
         int t = 0;
         closedNodeList.clear();
@@ -191,7 +216,14 @@ public class AISystem extends IteratingSystem{
         }
         */
 
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+        //System.out.println(duration);
+
     }
+
+
 
     private AiNode generateNode(Vector2 nodePos) {
         AiNode aiNode = new AiNode();
