@@ -48,7 +48,7 @@ public class PlayerComponent implements Component {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0f;
-        fixtureDef.isSensor = false;
+        fixtureDef.isSensor = isSensor;
 
         this.body = world.createBody(bdef);
         this.body.createFixture(fixtureDef).setUserData(this);

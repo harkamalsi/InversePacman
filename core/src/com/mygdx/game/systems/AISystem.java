@@ -133,7 +133,6 @@ public class AISystem extends IteratingSystem{
                     //newPosition = new Vector2(new_x, new_y);
                     if (WorldBuilder.getNodeCostMatrix().get(new_y).get(new_x).getType() == "ground"){
                         newPosition = new Vector2(new_x, new_y);
-                        System.out.println(newPosition);
                         return newPosition;
                     }
                 }
@@ -219,7 +218,7 @@ public class AISystem extends IteratingSystem{
         long endTime = System.nanoTime();
 
         long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
-        //System.out.println(duration);
+        System.out.println(duration);
 
     }
 
