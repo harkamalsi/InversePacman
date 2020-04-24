@@ -27,6 +27,7 @@ public class PillSystem extends IteratingSystem {
         PillComponent pillComponent = pillM.get(entity);
 
         if (pillComponent.isCollected()) {
+            // change this to Hud.getscore where get score gets the current score of the game
             Hud.addPointsToScore(500);
             getEngine().removeEntity(entity);
             pillComponent.body.getWorld().destroyBody(pillComponent.body);

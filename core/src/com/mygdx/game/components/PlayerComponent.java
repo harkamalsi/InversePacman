@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.play.PlayScreen;
 
 public class PlayerComponent implements Component {
@@ -25,6 +26,7 @@ public class PlayerComponent implements Component {
 
     public float invincibleTimer;
 
+
     public Body body;
     public String id;
     private boolean ai;
@@ -32,7 +34,7 @@ public class PlayerComponent implements Component {
 
     public PlayerComponent() {
         currentState = IDLE;
-        hp = 1;
+        hp = 3;
         invincibleTimer = 0;
     }
 
@@ -56,6 +58,7 @@ public class PlayerComponent implements Component {
 
 //        body.createFixture(shape, 1.0f);
         shape.dispose();
+        Hud.setLives(hp);
     }
 
     public String getType() {
@@ -71,6 +74,8 @@ public class PlayerComponent implements Component {
     }
 
     public void hit(PlayerComponent playerHit) {
+        this.hp -= 1;
+        Hud.setLives(hp);
         System.out.println(id + " have been hit by " + playerHit.getId());
     }
 

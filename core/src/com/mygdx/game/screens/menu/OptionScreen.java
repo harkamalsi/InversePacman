@@ -102,7 +102,7 @@ public class OptionScreen extends AbstractScreen {
         super(app, engine);
         this.engine = engine;
         bg = new TextureRegion(new Texture("optionscreen/option_bg.png"));
-        back = new TextureRegion(new Texture("back.png"));
+        back = new TextureRegion(new Texture("back3x.png"));
         settings = new TextureRegion(new Texture("optionscreen/options_button.png"));
         increase_music = new TextureRegion(new Texture("optionscreen/music_louder.png"));
         decrease_music = new TextureRegion(new Texture("optionscreen/music_lower.png"));
@@ -345,7 +345,7 @@ public class OptionScreen extends AbstractScreen {
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
 
         // ***** Back button END *****
 
@@ -406,7 +406,7 @@ public class OptionScreen extends AbstractScreen {
         font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
 
         layout.setText(font, "music");
-        font.draw(batch,layout, Gdx.graphics.getWidth() / (2 *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.625f * 32f) + layout.height / 2);
+        font.draw(batch,layout, Gdx.graphics.getWidth() / (2 *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.5f * 32f) + layout.height / 2);
         layout.setText(font, df.format(app.music_volume * 100) + "%");
         font.draw(batch,layout, Gdx.graphics.getWidth() / (6 * 32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.90f * 32f));
         layout.setText(font, "sound");

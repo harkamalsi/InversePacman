@@ -60,8 +60,10 @@ import sun.security.jgss.GSSCaller;
 
 public final class PlayScreen extends AbstractScreen {
 
-
+    public static boolean pause;
+    //camera for the view
     private OrthographicCamera camera;
+    //camera for the buttonsystem
     private OrthographicCamera camera2;
 
 
@@ -77,16 +79,19 @@ public final class PlayScreen extends AbstractScreen {
 
     private TextureRegion pausescreen;
     private TextureRegion pausetexture;
+    private TextureRegion back;
 
     private Sprite pauseSprite;
 
     private Sprite pauseButtonSprite;
     private Sprite pacmanSpritus;
+    private Sprite backSprite;
 
 
     private Entity pacman;
     private Entity pauseEntity;
     private Entity pauseButton;
+    private Entity backButton;
     private Entity ghost;
     private Entity pill;
 
@@ -102,7 +107,7 @@ public final class PlayScreen extends AbstractScreen {
 
     private Engine engine;
 
-    private boolean pause = false;
+    //public boolean pause = false;
     private boolean resume = false;
 
     private CollisionSystem collisionSystem;
@@ -117,6 +122,7 @@ public final class PlayScreen extends AbstractScreen {
     private PillSystem pillSystem;
 
 
+
     public static float scaleX;
     private float scaleY;
 
@@ -125,8 +131,8 @@ public final class PlayScreen extends AbstractScreen {
     public PlayScreen(final InversePacman app, Engine engine) {
         super(app, engine);
         this.engine = engine;
-        pausetexture = new TextureRegion(new Texture("playscreen/pause.png"));
-
+        pausetexture = new TextureRegion(new Texture("playscreen/pause3x.png"));
+        back = new TextureRegion(new Texture("back3x.png"));
 
 //        this.engine = engine;
 //         Sets the camera; width and height.
@@ -174,11 +180,22 @@ public final class PlayScreen extends AbstractScreen {
             pause = true;
             pauseButton.flags = 0;
         }
+
+        if(backButton.flags == 1) {
+            musicSystem.dispose();
+            engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
+
+            destroyAllBodies = true;
+            app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
+        }
+
     }
 
     @Override
     public void update(float delta) {
         handleInput();
+
         // Chooses the next song to play if the song has finished
         // Had to add the second condition since it chose to play a new song as I switched screens
 
@@ -194,8 +211,6 @@ public final class PlayScreen extends AbstractScreen {
             //engine.removeSystem(pillSystem);
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
-            System.out.println("pill list: " + WorldBuilder.getPillList());
-            System.out.println("pill size list  " + WorldBuilder.getPillList().size());
             /*int count = 0;
             for(int i = 0; i <= WorldBuilder.getPillList().size(); i++ ) {
                 count += 1;
@@ -243,9 +258,6 @@ public final class PlayScreen extends AbstractScreen {
         WorldBuilder.createPlayers(world);
         WorldBuilder.createPills(world);
         //this.camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-        MapLayer layer = map.getLayers().get("Pills");
-        MapObjects objects = layer.getObjects();
-        System.out.println("object pills: " + objects.get(100).getName());
 
 
 
@@ -262,7 +274,7 @@ public final class PlayScreen extends AbstractScreen {
         collisionSystem = new CollisionSystem();
 
         renderingSystem = new RenderingSystem(app.batch);
-        buttonSystem = new ButtonSystem(camera);
+        buttonSystem = new ButtonSystem(camera2);
         stateSystem = new StateSystem();
         animationSystem = new AnimationSystem();
         musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
@@ -368,7 +380,12 @@ public final class PlayScreen extends AbstractScreen {
 
         pauseButtonSprite = new Sprite(pausetexture);
         pauseButton = new Entity();
-        app.addSpriteEntity(pauseButtonSprite, pauseButton, engine,  Gdx.graphics.getWidth() / (2 * scaleX), Gdx.graphics.getHeight() / (1.5f * scaleX ), pauseButtonSprite.getRegionWidth(), pauseButtonSprite.getRegionHeight(), true,false, false, false);
+        app.addSpriteEntity(pauseButtonSprite, pauseButton, engine,  Gdx.graphics.getWidth() / 1.5f, 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
+
+        backSprite = new Sprite(back);
+        backButton = new Entity();
+        app.addSpriteEntity(backSprite, backButton, engine,  Gdx.graphics.getWidth() / 10, 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
+
 
     }
 
@@ -377,7 +394,8 @@ public final class PlayScreen extends AbstractScreen {
     @Override
     public void render(float delta) {
 
-        super.render(delta);//33, 32, 49
+        super.render(delta);
+        // draws the background to our style
         Gdx.gl.glClearColor(33/255f, 32/255f, 49/255f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //System.out.println("camera  " + camera.position);
@@ -385,7 +403,7 @@ public final class PlayScreen extends AbstractScreen {
         tmr.render();
 
         //rendering the box debugger lags the game
-        //b2dr.render(world, camera.combined.scl(1f));
+        b2dr.render(world, camera.combined.scl(1f));
 
 //        engine.update(delta);
 
@@ -395,6 +413,7 @@ public final class PlayScreen extends AbstractScreen {
                 //engine.removeEntity(pauseEntity);
                 //engine.addEntity(pacman);
                 musicSystem.resume();
+                engine.removeEntity(pauseEntity);
                 resume = false;
             }
             engine.update(delta);
@@ -412,12 +431,15 @@ public final class PlayScreen extends AbstractScreen {
 
         }
         if(pause){
-            app.batch.begin();
-            app.batch.draw(pausescreen, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight()/ 32f);
-            app.batch.end();
+
             //engine.addEntity(pauseEntity);
             //engine.removeEntity(pacman);
             musicSystem.pause();
+            engine.getSystem(RenderingSystem.class).update(delta);
+            //engine.getSystem(ButtonSystem.class).update(delta);
+            if(!resume) {
+                engine.addEntity(pauseEntity);
+            }
             resume = true;
             if(Gdx.input.justTouched()) {
                 pause = false;

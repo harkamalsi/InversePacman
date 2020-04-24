@@ -12,11 +12,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.screens.play.PlayScreen;
 
 public class Hud implements Disposable {
     // Skin for the table, that uses our font
     private Skin skin;
+
+    // Table
+    private  Table table;
 
     // Stage and viewport for HUD
     public Stage stage;
@@ -25,12 +29,12 @@ public class Hud implements Disposable {
     // Player score/time tracking
     private float timer;
     private static Integer score;
-    private Integer remainingLives;
+    private static Integer remainingLives;
 
     // Scene2D widgets
     private Label timerText;
     private static Label scoreText;
-    private Label remainingLivesText;
+    private static Label remainingLivesText;
     private Label timerLabel;
     private Label scoreLabel;
     private Label remainingLivesLabel;
@@ -42,7 +46,7 @@ public class Hud implements Disposable {
     public Hud(SpriteBatch sb) {
         timer = 0f;
         score = 0;
-        remainingLives = DEFAULT_LIVES;
+        
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
         font.getData().setScale(PlayScreen.scaleX);
 
@@ -51,7 +55,7 @@ public class Hud implements Disposable {
         skin = new Skin(Gdx.files.internal("font/uiskin.json"));
         skin.getFont("default-font").getData().setScale(0.5f, 0.5f);
 
-        Table table = new Table(skin);
+        table = new Table(skin);
         table.top();
         table.setFillParent(true);
 
@@ -63,19 +67,27 @@ public class Hud implements Disposable {
         remainingLivesLabel = new Label("LIVES", new Label.LabelStyle(font, Color.WHITE));
 
         table.add(timerLabel).expandX().padTop(10);
-        table.add(remainingLivesLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
+        table.add(remainingLivesLabel).expandX().padTop(10);
+
 
         table.row();
         table.add(timerText).expandX();
-        table.add(remainingLivesText).expandX();
         table.add(scoreText).expandX();
+        table.add(remainingLivesText).expandX();
+
 
         stage.addActor(table);
     }
 
     public void update(float dt) {
-        timer += dt;
+        if(PlayScreen.pause) {
+            table.setVisible(false);
+        }
+        if(!PlayScreen.pause) {
+            table.setVisible(true);
+            timer += dt;
+        }
         timerText.setText(String.format("%03d", (int)timer));
     }
 
@@ -83,6 +95,12 @@ public class Hud implements Disposable {
         score += points;
         scoreText.setText(String.format("%06d", score));
     }
+
+    public static void setLives(int lives) {
+        remainingLives = lives;
+        remainingLivesText.setText(String.format("%d", remainingLives));
+    }
+
 
     @Override
     public void dispose() {

@@ -69,7 +69,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
         ellipse = new TextureRegion(new Texture("menuscreen/Ellipse 11.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
-        back = new TextureRegion(new Texture("back.png"));
+        back = new TextureRegion(new Texture("back3x.png"));
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
 
@@ -83,7 +83,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
         //batch.setProjectionMatrix(this.camera.combined);
 
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.1f, 1.0f);
+        Gdx.gl.glClearColor(33/255f, 32/255f, 49/255f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
@@ -99,7 +99,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
         drawNames(batch, font, players);
         drawScores(batch, font, players);
-        layout.setText(font,"hello");
+        layout.setText(font,"highscore");
         font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
         batch.end();
     }
@@ -135,7 +135,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
 
         app.networkManager.fetchAllPlayers();
     }
