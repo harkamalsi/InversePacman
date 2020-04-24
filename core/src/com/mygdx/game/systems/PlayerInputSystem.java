@@ -86,53 +86,15 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                     String otherType = response.getJSONObject(i).getString("type");
 
                     //System.out.println(response.getJSONObject(i));
-                    JSONArray directions = response.getJSONObject(i).getJSONArray("directions");
-                    System.out.println(directions);
+                    JSONArray xy = response.getJSONObject(i).getJSONArray("directions");
+                    System.out.println(xy);
 
-                    if (pc.id.equals(otherType) && directions.length() > 0) {
+                    float X = xy.getFloat(0);
+                    float Y = xy.getFloat(1);
 
-                        if (directions.getBoolean(0) || Gdx.input.isKeyPressed(Input.Keys.I)) {
-                            x = 0f;
-                            y = vc.velocity.y;
 
-                            sc.setState(1);
-                        }
-
-                        if (directions.getBoolean(1) || Gdx.input.isKeyPressed(Input.Keys.L)) {
-                            x = vc.velocity.x;
-                            y = 0f;
-
-                            sc.setState(4);
-
-                            //flips texture
-                            if (texc.region != null && !texc.region.isFlipX()){
-                                texc.region.flip(true,false);
-                            }
-
-                        }
-
-                        if (directions.getBoolean(2) || Gdx.input.isKeyPressed(Input.Keys.K)) {
-                            x = 0f;
-                            y = -vc.velocity.y;
-
-                            sc.setState(2);
-                        }
-
-                        if (directions.getBoolean(3) || Gdx.input.isKeyPressed(Input.Keys.J)) {
-                            x = -vc.velocity.x;
-                            y = 0f;
-
-                            sc.setState(3);
-
-                            //flips texture
-                            if (texc.region != null && texc.region.isFlipX()) {
-                                texc.region.flip(true, false);
-                            }
-                        }
-
-                        pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
-                        pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
-
+                    if (pc.id.equals(otherType) && xy.length() > 0) {
+                        pc.body.setTransform(X,Y,0);
                     }
                 }
             }
@@ -182,6 +144,9 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
             pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
 
+            sendServerInput(pc.body.getPosition().x,pc.body.getPosition().y);
+
+
         }
     }
 
@@ -189,14 +154,11 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         return connection.getInput();
     }
 
-    private void sendServerInput(){
+    private void sendServerInput(float x, float y){
 
         connection.DIRECTIONS = new JSONArray();
-
-        connection.DIRECTIONS.put(isUpDragged);
-        connection.DIRECTIONS.put(isRightDragged);
-        connection.DIRECTIONS.put(isDownDragged);
-        connection.DIRECTIONS.put(isLeftDragged);
+        connection.DIRECTIONS.put(x);
+        connection.DIRECTIONS.put(y);
 
         connection.sendInput(connection.DIRECTIONS);
     }
@@ -239,8 +201,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             }
 
         }
-
-        sendServerInput();
 
     }
 
