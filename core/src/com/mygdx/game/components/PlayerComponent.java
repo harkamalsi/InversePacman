@@ -1,6 +1,7 @@
 package com.mygdx.game.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -28,6 +29,7 @@ public class PlayerComponent implements Component {
     public String id;
     public boolean ai;
     private String type;
+    private Vector2 randomPos = null;
 
     public PlayerComponent() {
         currentState = IDLE;
@@ -77,5 +79,13 @@ public class PlayerComponent implements Component {
 
     public Body getBody() {
         return body;
+    }
+
+    public Vector2 getRandomPos() {
+        return randomPos;
+    }
+
+    public void setRandomPos(Vector2 randomPos) {
+        this.randomPos = randomPos;
     }
 }

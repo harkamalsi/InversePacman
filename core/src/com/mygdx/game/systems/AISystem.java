@@ -11,9 +11,13 @@ import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
+import com.mygdx.game.worldbuilder.Node;
 import com.mygdx.game.worldbuilder.WorldBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class AISystem extends IteratingSystem{
 
@@ -34,10 +38,12 @@ public class AISystem extends IteratingSystem{
     private ArrayList<AiNode> openNodeList = new ArrayList<>();
     private ArrayList<AiNode> closedNodeList = new ArrayList<>();
     private ArrayList<Vector2> shortestPath = new ArrayList<>();
+    private Vector2 pacmanPosition;
+    private String difficulty = "ALWAYS_RANDOM";
 
     private int[] nav_x = new int[]{-1, 1, 0, 0};
     private int[] nav_y = new int[]{0, 0, -1, 1};
-    private Vector2 pacmanPosition;
+    private HashMap<String, Integer> difficultyMap = new HashMap<>();
 
     public AISystem(){
         super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
@@ -47,6 +53,12 @@ public class AISystem extends IteratingSystem{
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
+        difficultyMap.put("ALWAYS_RANDOM", 0);
+        difficultyMap.put("DRAGVOLL", 30);
+        difficultyMap.put("EASY", 50);
+        difficultyMap.put("MEDIUM", 100);
+        difficultyMap.put("HARD", 450);
+        difficultyMap.put("MURDEROUS", 30000);
 
         //Gdx.input.setInputProcessor(this);
 
@@ -59,7 +71,25 @@ public class AISystem extends IteratingSystem{
 //        GhostComponent gc = ghostM.get(entity);
         PlayerComponent pc = playerM.get(entity);
         Vector2 ghostPosition = getTiledPosition(pc.getBody().getPosition());
-        this.pacmanPosition = getAiPacmanPosition();
+        if(pc.getRandomPos() != null) {
+            pacmanPosition = pc.getRandomPos();
+            if(Math.abs(pc.getRandomPos().x - getTiledPosition(pc.getBody().getPosition()).x) < 2 && (Math.abs(pc.getRandomPos().y - getTiledPosition(pc.getBody().getPosition()).y) < 2)) {
+                pc.setRandomPos(null);
+            }
+
+        }
+        if(pc.getRandomPos() == null) {
+            int diffNmber = difficultyMap.get(difficulty);
+            if((int)(Math.random()*diffNmber) == 0) {
+                ArrayList<ArrayList<Node>> nodeMatrix = WorldBuilder.getNodeCostMatrix();
+                Vector2 randomPos = new Vector2((int) (Math.random()*(nodeMatrix.get(0).size()-1)),(int) (Math.random()*(nodeMatrix.size()-1)));
+                if (nodeMatrix.get((int) randomPos.y).get((int)randomPos.x).isWalkThrough()) {
+                    pc.setRandomPos(randomPos);
+                }
+            }
+            //this.pacmanPosition = getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
+            this.pacmanPosition = getAiPacmanPosition();
+        }
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
@@ -130,6 +160,7 @@ public class AISystem extends IteratingSystem{
                 for (int i = 0; i < 4; i++) {
                     new_x = (int) newPosition.x + nav_x[i];
                     new_y = (int) newPosition.y + nav_y[i];
+                    System.out.println("X:" + new_x + " y:" + new_y);
                     //newPosition = new Vector2(new_x, new_y);
                     if (WorldBuilder.getNodeCostMatrix().get(new_y).get(new_x).getType() == "ground"){
                         newPosition = new Vector2(new_x, new_y);
@@ -228,7 +259,7 @@ public class AISystem extends IteratingSystem{
         AiNode aiNode = new AiNode();
         aiNode.setPosition(nodePos);
         //skal her få posisjonen til pacman og sjekke om det er den
-        if (nodePos.x == (int) pacmanPosition.x && nodePos.y == (int) pacmanPosition.y) {
+        if (nodePos.x == (int) pacmanPosition.x && nodePos.y == (int) pacmanPosition.y) { //og endre her
             aiNode.setTypeOf("PACMAN");
         }
         else {
@@ -241,7 +272,7 @@ public class AISystem extends IteratingSystem{
 
     private int calculateAStarDistance(Vector2 nodePosition, AiNode aiNode) {
         //skal her få posisjonen til pacman og sjekke om det er den
-        Vector2 endPostion = pacmanPosition;
+        Vector2 endPostion = pacmanPosition; //endre her
         int h = (int )Math.abs(nodePosition.y - endPostion.y + Math.abs(nodePosition.x-endPostion.x));
         aiNode.setHeuristic(h);
         return h;
@@ -261,6 +292,10 @@ public class AISystem extends IteratingSystem{
         int newY = (int) (0.0625 * position.y);
         Vector2 newPosition = new Vector2(newX, newY);
         return newPosition;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
     }
 }
 
