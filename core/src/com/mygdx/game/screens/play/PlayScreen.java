@@ -403,7 +403,7 @@ public final class PlayScreen extends AbstractScreen {
         tmr.render();
 
         //rendering the box debugger lags the game
-        b2dr.render(world, camera.combined.scl(1f));
+        //b2dr.render(world, camera.combined.scl(1f));
 
 //        engine.update(delta);
 
