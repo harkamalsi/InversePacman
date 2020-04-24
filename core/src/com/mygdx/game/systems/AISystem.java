@@ -4,8 +4,6 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.GhostComponent;
 import com.mygdx.game.components.PlayerComponent;
@@ -39,6 +37,7 @@ public class AISystem extends IteratingSystem{
 
     private int[] nav_x = new int[]{-1, 1, 0, 0};
     private int[] nav_y = new int[]{0, 0, -1, 1};
+    private Vector2 pacmanPosition;
 
     public AISystem(){
         super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
@@ -60,11 +59,12 @@ public class AISystem extends IteratingSystem{
 //        GhostComponent gc = ghostM.get(entity);
         PlayerComponent pc = playerM.get(entity);
         Vector2 ghostPosition = getTiledPosition(pc.getBody().getPosition());
+        this.pacmanPosition = getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-        aStar(ghostPosition); //er denne position riktig i forhold til y/x aksen?
+        aStar(ghostPosition);
         Vector2 firstPos = shortestPath.get(shortestPath.size()-1);
         Vector2 nextPos = shortestPath.get(shortestPath.size()-2);
         Vector2 move = new Vector2(nextPos.x - firstPos.x, nextPos.y-firstPos.y);
@@ -122,19 +122,32 @@ public class AISystem extends IteratingSystem{
     }
 
 
-    public void aStar(Vector2 position) {
+    public void aStar(Vector2 ghostPosition) {
 
         int t = 0;
+        closedNodeList.clear();
+        openNodeList.clear();
+        shortestPath.clear();
 
         currentNode.setTypeOf("Ghost");
         //Trenger posisjon til ghost _____ligger som parameter i kallet______(hvis ghost er entity regner jeg med?)
-        currentNode.setPosition(position);
-        currentNode.setaStarDistance(calculateAStarDistance(position,currentNode));
+        currentNode.setPosition(ghostPosition);
+        currentNode.setaStarDistance(calculateAStarDistance(ghostPosition,currentNode));
         currentNode.setPreviousNode(currentNode);
         openNodeList.add(currentNode);
 
+        if (currentNode.getTypeOf() != "PACMAN") {
+            shortestPath.add(new Vector2(0,0));
+        }
+
+
         while (currentNode.getTypeOf() != "PACMAN") {
+
             t += 1;
+            if (openNodeList.size() == 0) {
+                shortestPath.add(new Vector2(0,0));
+                break;
+            }
             currentNode = openNodeList.get(0);
 
             //Legger til og generer(maks 4) nye noder til "open" listen
@@ -166,17 +179,17 @@ public class AISystem extends IteratingSystem{
             closedNodeList.add(currentNode);
             openNodeList.remove(currentNode);
         }
-        int a = 0;
+
         while ( currentNode.getTypeOf() != "Ghost") {
             currentNode = currentNode.getPreviousNode();
             shortestPath.add(currentNode.getPosition());
         }
-        a = 1;
+        /*
         for (Vector2 pos : shortestPath) {
             System.out.print("X: "+ pos.x);
             System.out.println("Y: "+ pos.y);
         }
-
+        */
 
     }
 
@@ -184,7 +197,7 @@ public class AISystem extends IteratingSystem{
         AiNode aiNode = new AiNode();
         aiNode.setPosition(nodePos);
         //skal her få posisjonen til pacman og sjekke om det er den
-        if (nodePos.x == 25 && nodePos.y == 26) {
+        if (nodePos.x == (int) pacmanPosition.x && nodePos.y == (int) pacmanPosition.y) {
             aiNode.setTypeOf("PACMAN");
         }
         else {
@@ -197,7 +210,7 @@ public class AISystem extends IteratingSystem{
 
     private int calculateAStarDistance(Vector2 nodePosition, AiNode aiNode) {
         //skal her få posisjonen til pacman og sjekke om det er den
-        Vector2 endPostion = new Vector2(25,26);
+        Vector2 endPostion = pacmanPosition;
         int h = (int )Math.abs(nodePosition.y - endPostion.y + Math.abs(nodePosition.x-endPostion.x));
         aiNode.setHeuristic(h);
         return h;

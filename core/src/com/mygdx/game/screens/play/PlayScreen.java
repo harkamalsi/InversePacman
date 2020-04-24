@@ -21,8 +21,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
-import com.mygdx.game.components.GhostComponent;
-import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
@@ -155,7 +153,8 @@ public final class PlayScreen extends AbstractScreen {
         WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects()
                 ,map.getLayers().get("BackgroundLayer")
                 ,map.getLayers().get("Players").getObjects()
-                ,map.getLayers().get("Pills").getObjects());
+                ,map.getLayers().get("Pills").getObjects()
+                , map.getLayers().get("AiRoute"));
         WorldBuilder.createPlayers(world);
         WorldBuilder.createPills(world);
 

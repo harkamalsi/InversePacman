@@ -35,7 +35,7 @@ public class PlayerComponent implements Component {
         invincibleTimer = 0;
     }
 
-    public void createPlayerBody(World world, String id, float x, float y, String type){
+    public void createPlayerBody(World world, String id, float x, float y, String type, boolean isSensor){
         this.id = id;
         this.type = type;
         BodyDef bdef = new BodyDef();
@@ -48,11 +48,10 @@ public class PlayerComponent implements Component {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0f;
+        fixtureDef.isSensor = isSensor;
 
         this.body = world.createBody(bdef);
         this.body.createFixture(fixtureDef).setUserData(this);
-
-        body.createFixture(shape, 1.0f);
         shape.dispose();
     }
 

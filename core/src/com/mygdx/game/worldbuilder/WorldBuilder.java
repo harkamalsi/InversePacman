@@ -30,10 +30,11 @@ import java.util.ArrayList;
                 ,MapObjects wallObjects
                 ,MapLayer backgroundLayer
                 ,MapObjects playerObjects
-                ,MapObjects pillObjects ) {
+                ,MapObjects pillObjects
+                ,MapLayer aiRouteLayer ) {
 
             parseWallObjectLayer(wallObjects, world);
-            parseMapToNode(backgroundLayer);
+            parseMapToNode(aiRouteLayer);
             parsePillObjectLayer(pillObjects);
             parsePlayerObjectLayer(playerObjects);
 
@@ -147,11 +148,11 @@ import java.util.ArrayList;
 
 
                if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
-                   player.createPlayerBody(world, "GHOST_NUMBER_" + i.toString(), vector.x, vector.y, "GHOST");
+                   player.createPlayerBody(world, "GHOST_NUMBER_" + i.toString(), vector.x, vector.y, "GHOST", true);
                    playerList.add(player);
                }
                else if (getPlayerPositionList().get(i).getName().equals("Pacman")) {
-                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN");
+                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN", false);
                    playerList.add(player);
                }
 
