@@ -1,12 +1,18 @@
 package com.mygdx.game.systems;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.managers.GameScreenManager;
 
 import java.util.ArrayList;
@@ -14,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class MusicSystem extends EntitySystem {
+public class MusicSystem extends IteratingSystem {
 
     private ArrayList tracks;
     private Music song;
@@ -24,6 +30,7 @@ public class MusicSystem extends EntitySystem {
     private FileHandle trackdir;
     private FileHandle store;
     private FileHandle settings;
+    private boolean start;
 
     private int tracknr;
 
@@ -35,11 +42,20 @@ public class MusicSystem extends EntitySystem {
     private float music_volume;
     private float sound_volume;
     private ArrayList<Sound> sounds;
+    private Array<Entity> entityArray;
+    private MusicComponent mc;
+
+    private ComponentMapper<MusicComponent> musicM;
+
 
     public MusicSystem(FileHandle trackdir, Sound ...sounds) {
-        this.trackdir = trackdir;
-        this.sounds = new ArrayList<Sound>();
-        this.sounds.addAll(Arrays.asList(sounds));
+        super(Family.all(MusicComponent.class).get());
+        musicM = ComponentMapper.getFor(MusicComponent.class);
+
+        entityArray = new Array<Entity>();
+
+
+        tracks = new ArrayList<FileHandle>();
 
         settings = Gdx.files.local("settings.txt");
         String text = settings.readString();
@@ -54,12 +70,7 @@ public class MusicSystem extends EntitySystem {
         if(soundon) {
             sound_volume = stored_sound_volume;
         }
-        tracks = new ArrayList<FileHandle>();
-        for(FileHandle track : trackdir.list()) {
-            tracks.add(track);
-        }
-        System.out.println("music volume: " + music_volume);
-        playMusic(tracks, -1);
+
 
     }
 
@@ -68,7 +79,7 @@ public class MusicSystem extends EntitySystem {
     }
 
     public void dispose() {
-        song.dispose();
+        //song.dispose();
     }
 
     public void pause() {
@@ -147,14 +158,42 @@ public class MusicSystem extends EntitySystem {
 
     @Override
     public void update(float dt) {
-        getMusic();
-        if(!song.isPlaying() && !pause){
-            System.out.println("updating music");
-            System.out.println("song changed");
-            // Song needs to be disposed before it is changed
-            song.dispose();
-            playMusic(tracks, tracknr);
-        }
+        super.update(dt);
 
+        for (Entity entity : entityArray) {
+            mc = musicM.get(entity);
+            this.trackdir = mc.trackdir;
+            this.sounds = new ArrayList<Sound>();
+            this.sounds = mc.sounds;
+
+            if(tracks.isEmpty()) {
+                for (FileHandle track : mc.trackdir.list()) {
+                    tracks.add(track);
+                }
+            }
+            //System.out.println("music volume: " + music_volume);
+
+            if(!start) {
+                playMusic(tracks, -1);
+                start = true;
+            }
+
+            getMusic();
+            if(!song.isPlaying() && !pause){
+                System.out.println("updating music");
+                System.out.println("song changed");
+                // Song needs to be disposed before it is changed
+                song.dispose();
+                playMusic(tracks, tracknr);
+            }
+        }
+        entityArray.clear();
+
+
+    }
+
+    @Override
+    protected void processEntity(Entity entity, float deltaTime) {
+        entityArray.add(entity);
     }
 }

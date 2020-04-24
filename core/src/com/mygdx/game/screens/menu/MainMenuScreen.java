@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.EntityManager;
@@ -57,6 +58,7 @@ public class MainMenuScreen extends AbstractScreen {
     private Entity ellipseEntity;
     private Entity front_ellipseEntity;
     private Entity bgEntity;
+    private Entity musicEntity;
 
 
     private Sprite playsprite;
@@ -267,6 +269,10 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         optionsprite = new Sprite(option);
         optionButton = new Entity();
         app.addSpriteEntity(optionsprite, optionButton, engine, Gdx.graphics.getWidth() / 2 - (optionsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)5.6, optionsprite.getRegionWidth() * scaleX, optionsprite.getRegionHeight() * scaleY, true, false, false, false);
+
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/menu")));
+        engine.addEntity(musicEntity);
 
         // ***** Option button END *****
 
