@@ -87,13 +87,13 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
                     //System.out.println(response.getJSONObject(i));
                     JSONArray xy = response.getJSONObject(i).getJSONArray("directions");
-                    System.out.println(xy);
-
-                    float X = xy.getFloat(0);
-                    float Y = xy.getFloat(1);
+                    //System.out.println(xy);
 
 
                     if (pc.id.equals(otherType) && xy.length() > 0) {
+                        float X = Float.parseFloat(xy.getString(0));
+                        float Y = Float.parseFloat(xy.getString(1));
+
                         pc.body.setTransform(X,Y,0);
                     }
                 }
@@ -157,8 +157,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private void sendServerInput(float x, float y){
 
         connection.DIRECTIONS = new JSONArray();
-        connection.DIRECTIONS.put(x);
-        connection.DIRECTIONS.put(y);
+        connection.DIRECTIONS.put(String.valueOf(x));
+        connection.DIRECTIONS.put(String.valueOf(y));
 
         connection.sendInput(connection.DIRECTIONS);
     }

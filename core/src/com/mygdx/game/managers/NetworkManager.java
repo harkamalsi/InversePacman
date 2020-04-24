@@ -133,7 +133,7 @@ public class NetworkManager {
     // Creating, joining and leaving a lobby
     public void createLobby(Object ...args) {
         // args: nickname, type
-        System.out.println("Create Lobby is called!");
+        //System.out.println("Create Lobby is called!");
 
         final JSONObject inputs = new JSONObject();
         inputs.put("nickname", args[0]);
@@ -146,7 +146,7 @@ public class NetworkManager {
     public void joinLobby(Object ...args) {
         // args: lobbyName, getNickname(), getPlayerType()
         if (fetch) {
-            System.out.println("Join Lobby is called!");
+            //System.out.println("Join Lobby is called!");
 
             final JSONObject inputs = new JSONObject();
             inputs.put("lobbyName", args[0]);
@@ -162,7 +162,7 @@ public class NetworkManager {
 
     public void leaveLobby(String lobbyName) {
         // args: lobbyName
-        System.out.println("Leave Lobby is called!");
+        //System.out.println("Leave Lobby is called!");
         getSocket().emit(Constants.LEAVE_LOBBY, socketID, lobbyName);
     }
 
@@ -173,7 +173,7 @@ public class NetworkManager {
          float direction = Math.random() * 2 * Math.PI;
         */
 
-        System.out.println("Send Input is called!");
+        //System.out.println("Send Input is called!");
 
         final JSONObject inputs = new JSONObject();
         inputs.put("lobbyName", args[0]);
@@ -245,7 +245,7 @@ public class NetworkManager {
     // Player sockets
     public void addPlayer(final String nickname) {
         if (fetch) {
-            System.out.println("Add player is called!");
+            //System.out.println("Add player is called!");
 
             getSocket().emit(Constants.ADD_PLAYER, socketID, nickname);
 
@@ -266,7 +266,7 @@ public class NetworkManager {
     }
     private void fetchPlayerWithNickname(final String nickname) {
         if (fetch) {
-            System.out.println("Get player with nickname is called!");
+            //System.out.println("Get player with nickname is called!");
 
             getSocket().emit(Constants.GET_PLAYER_WITH_NICKNAME, socketID, nickname);
 
@@ -297,7 +297,7 @@ public class NetworkManager {
 
     private void fetchPlayerWithID(final String id) {
         if (fetch) {
-            System.out.println("Get player with ID is called!");
+            //System.out.println("Get player with ID is called!");
 
             getSocket().emit(Constants.GET_PLAYER_WITH_ID, socketID, id);
 
@@ -322,7 +322,7 @@ public class NetworkManager {
 
     public void changeNickname(final String id, final String nickname) {
         if (fetch) {
-            System.out.println("Change nickname is called!");
+            //System.out.println("Change nickname is called!");
 
             getSocket().emit(Constants.CHANGE_NICKNAME, socketID, id, nickname);
 
@@ -332,7 +332,7 @@ public class NetworkManager {
 
     public void changeSkinType(final String id, final int skinType) {
        if (fetch) {
-           System.out.println("Change skin type is called!");
+           //System.out.println("Change skin type is called!");
 
            getSocket().emit(Constants.CHANGE_SKINTYPE, socketID, id, skinType);
 
@@ -344,7 +344,7 @@ public class NetworkManager {
     public void updateSingleplayerScore(Object ...args) {
         // args: id, spScore
         if (fetch) {
-            System.out.println("Update single player score is called!");
+            //System.out.println("Update single player score is called!");
 
             final JSONObject inputs = new JSONObject();
             inputs.put("id", args[0]);
@@ -368,7 +368,7 @@ public class NetworkManager {
     public void updateMultiplayerScore(Object ...args) {
         // args: id, mpScore
         if (fetch) {
-            System.out.println("Update single player score is called!");
+            //System.out.println("Update single player score is called!");
 
             final JSONObject inputs = new JSONObject();
             inputs.put("id", args[0]);
@@ -402,7 +402,7 @@ public class NetworkManager {
             if(ping.equals("1")){
                 getSocket().emit("pong", "pong");
             }
-            System.out.println("SOCKETPING" + " RECEIVED PING! ");
+            //System.out.println("SOCKETPING" + " RECEIVED PING! ");
         }
     };
 }
