@@ -161,7 +161,7 @@ public final class PlayScreen extends AbstractScreen {
             engine.removeSystem(collisionSystem);
             //engine.removeSystem(renderingSystem);
             //engine.removeSystem(pillSystem);
-            engine.removeSystem(animationSystem);
+//            engine.removeSystem(animationSystem);
             ghostsheet.dispose();
             System.out.println("pill list: " + WorldBuilder.getPillList());
             System.out.println("pill size list  " + WorldBuilder.getPillList().size());

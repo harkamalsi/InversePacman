@@ -173,7 +173,7 @@ public class LobbyScreen extends AbstractScreen {
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
 
-        engine = new Engine();
+//        engine = new Engine();
         engine.addSystem(buttonSystem);
         engine.addSystem(tableSystem);
         engine.addSystem(musicSystem);

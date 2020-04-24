@@ -223,7 +223,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
 
-//        engine = new Engine();
+        engine = new Engine();
         engine.addSystem(buttonSystem);
         engine.addSystem(musicSystem);
         engine.addSystem(renderingSystem);
