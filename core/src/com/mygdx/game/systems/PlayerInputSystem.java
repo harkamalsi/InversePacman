@@ -8,15 +8,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
-import com.mygdx.game.managers.GameScreenManager;
-import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.play.LobbyScreen;
 
@@ -34,9 +31,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private boolean isDownDragged = false;
 
     private boolean multiplayer = false;
-    private MultiplayerMessage connection = new MultiplayerMessage();
-    private String meType = connection.METYPE;
-    private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
+    private MultiplayerMessage connection = MultiplayerMessage.getInstance();
 
     private static final float X_VELOCITY = 2.5f;
     private static final float Y_VELOCITY = 2.5f;
@@ -85,7 +80,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (multiplayer && LobbyScreen.LOBBY_JOINED != null) {
 
             JSONArray response = getServerInput();
-            System.out.println(response);
+            //System.out.println(response);
             if (response != null) {
                 for (int i = 0; i < response.length(); i++) {
                     String otherType = response.getJSONObject(i).getString("type");

@@ -11,21 +11,23 @@ import org.json.JSONObject;
 
 public class MultiplayerMessage {
 
+    private static final MultiplayerMessage instance = new MultiplayerMessage();
+
     private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
     public static String METYPE;
     public static JSONArray DIRECTIONS = new JSONArray();
     JSONArray tempResponse = new JSONArray();
     JSONArray response = new JSONArray();
 
-    public MultiplayerMessage() {
+    private MultiplayerMessage() {}
 
+    public static MultiplayerMessage getInstance(){
+        return instance;
     }
 
     public void sendInput(JSONArray directions) {
-        System.out.println("LOL11111111111");
         if (LobbyScreen.LOBBY_JOINED != null) {
             networkManager.sendInput(LobbyScreen.LOBBY_JOINED, directions);
-            System.out.println("LOL22222222222");
         }
     }
 
@@ -42,6 +44,22 @@ public class MultiplayerMessage {
             return response;
         }
         return tempResponse;
+    }
+
+    public void createLobby(String nickname, String playerType) {
+        networkManager.createLobby(nickname, playerType);
+    }
+
+    public String getLobby() {
+        return networkManager.getLobby();
+    }
+
+    public void joinLobby(String lobbyName, String nickname, String type) {
+        networkManager.joinLobby(lobbyName, nickname, type);
+    }
+
+    public JSONArray getLobbies() {
+        return networkManager.getLobbies();
     }
 
 }

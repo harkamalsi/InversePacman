@@ -27,6 +27,7 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
+import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -43,6 +44,7 @@ public class LobbyScreen extends AbstractScreen {
 
     private EntityManager entityManager;
     private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
+    private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     public static String LOBBY_JOINED;
 
     private SpriteBatch batch;
@@ -101,7 +103,7 @@ public class LobbyScreen extends AbstractScreen {
         /*this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
         //networkManager = new NetworkManager();
-        table = new TableComponent(networkManager);
+        table = new TableComponent();
 
         bg = new TextureRegion(new Texture("lobbyscreen/lobbyScreen.png"));
         createLobby = new TextureRegion(new Texture("lobbyscreen/createLobbyButton.png"));
@@ -146,18 +148,17 @@ public class LobbyScreen extends AbstractScreen {
             System.out.println("CreateLobbyButton pressed but lobby not created!");
 
             if (table.createLobby) {
-                networkManager.createLobby(nickname, playerType);
-                MULTIPLAYER = true;
-
+                connection.createLobby(nickname, playerType);
+                /*MULTIPLAYER = true;
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {}
-                String lobby = networkManager.getLobby();
+                String lobby = connection.getLobby();
                 while (lobby == null) {
-                    lobby = networkManager.getLobby();
+                    lobby = connection.getLobby();
                 }
-                LobbyScreen.LOBBY_JOINED = lobby;
-                app.gsm.setScreen(GameScreenManager.STATE.PLAY);
+                LobbyScreen.LOBBY_JOINED = lobby;*/
+                //app.gsm.setScreen(GameScreenManager.STATE.PLAY);
             } 
             createLobbyButton.flags = 0;
         }

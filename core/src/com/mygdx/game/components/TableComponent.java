@@ -23,7 +23,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.game.managers.NetworkManager;
 
 import javax.swing.event.ChangeEvent;
 
@@ -37,9 +36,8 @@ public class TableComponent implements Component {
     public boolean joinLobby = false;
     public boolean createLobby = false;
     private Container<Table> tableContainer;
-    public NetworkManager networkManager;
 
-    public TableComponent(NetworkManager networkManager) {
+    public TableComponent() {
         stage = new Stage(new ScreenViewport());
         tableContainer = new Container<Table>();
         float sw = Gdx.graphics.getWidth();
@@ -49,7 +47,6 @@ public class TableComponent implements Component {
         this.draw = true;
         this.getLobbies = true;
 
-        this.networkManager = networkManager;
 
         tableContainer.setSize(cw, ch);
         tableContainer.setPosition((sw - cw) / 2.0f, (sh - ch) / 2.0f);

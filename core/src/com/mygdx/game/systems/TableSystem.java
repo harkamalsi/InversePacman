@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -19,6 +20,7 @@ import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
+import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.play.LobbyScreen;
 
 import org.json.JSONArray;
@@ -31,7 +33,7 @@ public class TableSystem extends IteratingSystem {
     private TableComponent cc;
     private ComponentMapper<TableComponent> tableM;
     private ComponentMapper<TransformComponent> tc;
-    private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
+    private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private InversePacman app;
 
 
@@ -49,17 +51,18 @@ public class TableSystem extends IteratingSystem {
     }
 
     private void handleLobbyButtonClicked(String lobbyName) {
-        this.networkManager.joinLobby(lobbyName, "Pepsi", "GHOST");
+        this.connection.joinLobby(lobbyName, "Cokey", "GHOST");
         MULTIPLAYER = true;
-
-        String lobby = networkManager.getLobby();
-        try {
-            Thread.sleep(3000);
+        /*try {
+            Thread.sleep(1000);
         } catch (InterruptedException e) {}
+        String lobby = connection.getLobby();
         while (lobby == null) {
-            lobby = networkManager.getLobby();
+            System.out.println(lobby);
+            lobby = connection.getLobby();
         }
-        LobbyScreen.LOBBY_JOINED = lobby;
+        System.out.println(lobby);*/
+        LobbyScreen.LOBBY_JOINED = lobbyName;
         app.gsm.setScreen(GameScreenManager.STATE.PLAY);
 
     }
@@ -69,9 +72,9 @@ public class TableSystem extends IteratingSystem {
         //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
         cc.reset();
-        JSONArray lobbies = this.networkManager.getLobbies();
+        JSONArray lobbies = connection.getLobbies();
 
-        if (networkManager.connected) {
+        if (NetworkManager.CONNECTED) {
             cc.createLobby = true;
         }
 

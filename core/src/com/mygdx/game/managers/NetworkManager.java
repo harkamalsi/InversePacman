@@ -26,7 +26,7 @@ public class NetworkManager {
 
     private Socket socket = null;
     private String socketID;
-    public Boolean connected = false;
+    public static Boolean CONNECTED = false;
     private boolean fetch = false;
 
     private JSONArray lobbies = new JSONArray();
@@ -57,7 +57,7 @@ public class NetworkManager {
             public void call(Object... args) {
                 socketID = socket.connect().id();
                 fetch = true;
-                connected = true;
+                CONNECTED = true;
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
             @Override
@@ -111,15 +111,19 @@ public class NetworkManager {
     private void fetchLobby() {
         //System.out.println("Fetch lobby is called!");
 
-        getSocket().emit(Constants.GET_LOBBY, socketID);
+        if (fetch) {
+            getSocket().emit(Constants.GET_LOBBY, socketID);
 
-        getSocket().on(Constants.GET_LOBBY, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject response = (JSONObject) args[0];
-                setLobby(response.getString("lobby"));
-            }
-        });
+            getSocket().on(Constants.GET_LOBBY, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject response = (JSONObject) args[0];
+                    setLobby(response.getString("lobby"));
+                }
+            });
+
+            fetch = false;
+        }
     }
     public String getLobby() {
         this.fetchLobby();

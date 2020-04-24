@@ -2,7 +2,7 @@ package com.mygdx.game.shared;
 
 public class Constants {
     public static final String HOST = "https://inverse-pacman-api.herokuapp.com";
-    //public static final String HOST = "http://l ocalhost:8080";
+    //public static final String HOST = "http://localhost:8080";
     //public static final String HOST = "http://10.0.2.2:8080";
     //public static final String HOST = "http://192.168.60.1:8080";
 
