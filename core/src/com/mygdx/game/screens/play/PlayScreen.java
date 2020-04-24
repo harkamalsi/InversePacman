@@ -254,7 +254,8 @@ public final class PlayScreen extends AbstractScreen {
         WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects()
                 ,map.getLayers().get("BackgroundLayer")
                 ,map.getLayers().get("Players").getObjects()
-                ,map.getLayers().get("Pills").getObjects());
+                ,map.getLayers().get("Pills").getObjects()
+                , map.getLayers().get("AiRoute"));
         WorldBuilder.createPlayers(world);
         WorldBuilder.createPills(world);
         //this.camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -308,6 +309,7 @@ public final class PlayScreen extends AbstractScreen {
         animcomponent.animations.put(2,walkAnimation);
         animcomponent.animations.put(3,walkAnimation);
         animcomponent.animations.put(4,walkAnimation);
+
 
         //Vector2 scale = new Vector2(1f, 1f);
 

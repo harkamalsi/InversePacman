@@ -30,7 +30,8 @@ import java.util.ArrayList;
                 ,MapObjects wallObjects
                 ,MapLayer backgroundLayer
                 ,MapObjects playerObjects
-                ,MapObjects pillObjects ) {
+                ,MapObjects pillObjects
+                ,MapLayer aiRouteLayer ) {
 
             playersPostionList.clear();
             pillsPostionList.clear();
@@ -39,7 +40,7 @@ import java.util.ArrayList;
             pillList.clear();
 
             parseWallObjectLayer(wallObjects, world);
-            parseMapToNode(backgroundLayer);
+            parseMapToNode(aiRouteLayer);
             parsePillObjectLayer(pillObjects);
             parsePlayerObjectLayer(playerObjects);
         }
@@ -138,19 +139,19 @@ import java.util.ArrayList;
 
 
         public static void createPlayers(World world) {
-           for (int i=0; i < getPlayerPositionList().size(); i++) {
+           for (Integer i=0; i < getPlayerPositionList().size(); i++) {
                PlayerComponent player = new PlayerComponent();
                Vector2 vector = new Vector2();
                getPlayerPositionList().get(i).getRectangle().getCenter(vector);
 
 
                if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
-                   player.createPlayerBody(world, "GHOST_NUMBER_" + i, vector.x, vector.y, "GHOST");
+                   player.createPlayerBody(world, "GHOST_NUMBER_" + i.toString(), vector.x, vector.y, "GHOST", true);
                    playerList.add(player);
 
                }
                else if (getPlayerPositionList().get(i).getName().equals("Pacman")) {
-                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN");
+                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN", false);
                    playerList.add(player);
                }
 
