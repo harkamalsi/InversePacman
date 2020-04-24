@@ -147,6 +147,9 @@ public class LobbyScreen extends AbstractScreen {
             if (table.createLobby) {
                 System.out.println("Create Lobby Called!");
                 networkManager.createLobby(nickname, playerType);
+                engine.removeAllEntities();
+                engine.removeSystem(musicSystem);
+                musicSystem.dispose();
                 app.gsm.setScreen(GameScreenManager.STATE.PLAY);
             } 
             createLobbyButton.flags = 0;
@@ -221,5 +224,6 @@ public class LobbyScreen extends AbstractScreen {
     @Override
     public void dispose(){
         super.dispose();
+//        engine.removeAllEntities();
     }
 }

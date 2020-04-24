@@ -114,11 +114,13 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         if(singleplayerButton.flags == 1 || Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
+            engine.removeAllEntities();
             app.gsm.setScreen(GameScreenManager.STATE.PLAY);
         }
         if(multiplayerButton.flags == 1) {
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
+            engine.removeAllEntities();
             app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
 
@@ -127,11 +129,13 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
             musicSystem.dispose();
             // I think it's okay if we keep ths music going here?
             //music.dispose();
+            engine.removeAllEntities();
             app.gsm.setScreen(GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN);
         }
         if(optionButton.flags == 1) {
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
+            engine.removeAllEntities();
             app.gsm.setScreen(GameScreenManager.STATE.OPTION_SCREEN);
         }
 
@@ -219,7 +223,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
 
-        engine = new Engine();
+//        engine = new Engine();
         engine.addSystem(buttonSystem);
         engine.addSystem(musicSystem);
         engine.addSystem(renderingSystem);
@@ -291,6 +295,5 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
     @Override
     public void dispose(){
         super.dispose();
-        engine.removeAllEntities();
     }
 }
