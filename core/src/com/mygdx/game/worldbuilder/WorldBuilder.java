@@ -33,11 +33,16 @@ import java.util.ArrayList;
                 ,MapObjects pillObjects
                 ,MapLayer aiRouteLayer ) {
 
+            playersPostionList.clear();
+            pillsPostionList.clear();
+            nodeCostMatrix.clear();
+            playerList.clear();
+            pillList.clear();
+
             parseWallObjectLayer(wallObjects, world);
             parseMapToNode(aiRouteLayer);
             parsePillObjectLayer(pillObjects);
             parsePlayerObjectLayer(playerObjects);
-
         }
 
         private static void parseWallObjectLayer(MapObjects collisionObjects, World world){
@@ -69,15 +74,12 @@ import java.util.ArrayList;
         }
 
         private static void parsePlayerObjectLayer(MapObjects playerObjects) {
+
             for (MapObject object : playerObjects) {
                 if (object instanceof RectangleMapObject) {
                     RectangleMapObject point =(RectangleMapObject) object;
                     playersPostionList.add(point);
 
-                }
-                else {
-                    System.out.println(object.getClass());
-                    continue;
                 }
             }
         }
@@ -88,10 +90,6 @@ import java.util.ArrayList;
                     RectangleMapObject point =(RectangleMapObject) object;
                     pillsPostionList.add(point);
 
-                }
-                else {
-                    System.out.println(object.getClass());
-                    continue;
                 }
             }
         }
@@ -150,6 +148,7 @@ import java.util.ArrayList;
                if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
                    player.createPlayerBody(world, "GHOST_NUMBER_" + i.toString(), vector.x, vector.y, "GHOST", true);
                    playerList.add(player);
+
                }
                else if (getPlayerPositionList().get(i).getName().equals("Pacman")) {
                    player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN", false);
@@ -157,6 +156,7 @@ import java.util.ArrayList;
                }
 
            }
+
 
         }
 
@@ -171,9 +171,6 @@ import java.util.ArrayList;
                 if (getPillsPostionList().get(i).getName().equals("Pill")) {
                     pill.createPillBody(world, "PILL_NUMBER_" + i, vector.x, vector.y);
                     pillList.add(pill);
-                }
-                else {
-                    continue;
                 }
 
             }

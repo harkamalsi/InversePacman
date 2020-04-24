@@ -26,6 +26,7 @@ public class NetworkManager {
     private boolean fetch = false;
 
     private JSONArray lobbies = new JSONArray();
+    private JSONArray players = new JSONArray();
     private JSONObject response;
     public Boolean connected = false;
 
@@ -258,4 +259,76 @@ public class NetworkManager {
        }
     }
 
+    public void updateSingleplayerScore(Object ...args) {
+        // args: id, spScore
+        if (fetch) {
+            System.out.println("Update single player score is called!");
+
+            final JSONObject inputs = new JSONObject();
+            inputs.put("id", args[0]);
+            inputs.put("spScore", args[1]);
+            inputs.put("mpScore", -1);
+
+            getSocket().emit(Constants.UPDATE_HIGHSCORE, socketID, inputs);
+
+            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject response = (JSONObject)args[0];
+                    System.out.println(response);
+                }
+            });
+
+            fetch = false;
+        }
+    }
+
+    public void updateMultiplayerScore(Object ...args) {
+        // args: id, mpScore
+        if (fetch) {
+            System.out.println("Update single player score is called!");
+
+            final JSONObject inputs = new JSONObject();
+            inputs.put("id", args[0]);
+            inputs.put("spScore", -1);
+            inputs.put("mpScore", args[1]);
+
+            getSocket().emit(Constants.UPDATE_HIGHSCORE, socketID, inputs);
+
+            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject response = (JSONObject)args[0];
+                    System.out.println(response);
+                }
+            });
+
+            fetch = false;
+        }
+    }
+
+    public void setPlayers(JSONArray players) {
+        this.players = players;
+    }
+
+    public JSONArray getPlayers() {
+        return players;
+    }
+
+    public void fetchAllPlayers() {
+        if (fetch) {
+            getSocket().emit(Constants.GET_ALL_PLAYERS, socketID);
+
+            getSocket().on(Constants.GET_ALL_PLAYERS, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONArray response = (JSONArray) args[0];
+                    System.out.println("Players response: " + response);
+                    setPlayers(response);
+                }
+            });
+
+            //fetch = false;
+        }
+    }
 }

@@ -76,7 +76,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
-        back = new TextureRegion(new Texture("back.png"));
+        back = new TextureRegion(new Texture("back3x.png"));
 
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
         layout = new GlyphLayout(); //dont do this every frame! Store it as member
@@ -123,6 +123,19 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
         batch.end();
         engine.update(delta);
+
+        batch.begin();
+        font.setUseIntegerPositions(false);
+        font.getData().setScale(scaleX / (32f * 1.2f), scaleY / (32f * 1.2f));
+        layout.setText(font,"highscore");
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
+
+        layout.setText(font, "offline");
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.35f * 32f) - (layout.height / 2f)));
+
+        layout.setText(font, "online");
+        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (2.4f * 32f) - (layout.height / 2f)));
+        batch.end();
     }
 
     @Override
@@ -188,7 +201,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth() *scaleX, backSprite.getRegionHeight()*scaleX, true,false, false, false);
     }
 
     @Override

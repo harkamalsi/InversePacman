@@ -4,17 +4,21 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.managers.GameScreenManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class MusicSystem extends EntitySystem {
 
     private ArrayList tracks;
     private Music song;
+    private Sound sound;
     private InversePacman app;
 
     private FileHandle trackdir;
@@ -26,24 +30,28 @@ public class MusicSystem extends EntitySystem {
     private float stored_music_volume;
     private float stored_sound_volume;
     private boolean music;
-    private boolean sound;
+    private boolean soundon;
     private  boolean pause;
     private float music_volume;
     private float sound_volume;
+    private ArrayList<Sound> sounds;
 
-    public MusicSystem(FileHandle trackdir) {
+    public MusicSystem(FileHandle trackdir, Sound ...sounds) {
         this.trackdir = trackdir;
+        this.sounds = new ArrayList<Sound>();
+        this.sounds.addAll(Arrays.asList(sounds));
+
         settings = Gdx.files.local("settings.txt");
         String text = settings.readString();
         String wordsArray[] = text.split("\\r?\\n|,");
         music = Boolean.parseBoolean(wordsArray[1]);
-        sound = Boolean.parseBoolean(wordsArray[3]);
+        soundon = Boolean.parseBoolean(wordsArray[3]);
         stored_music_volume = Float.parseFloat(wordsArray[0]);
         stored_sound_volume = Float.parseFloat(wordsArray[2]);
         if(music) {
             music_volume = stored_music_volume;
         }
-        if(sound) {
+        if(soundon) {
             sound_volume = stored_sound_volume;
         }
         tracks = new ArrayList<FileHandle>();
@@ -111,18 +119,24 @@ public class MusicSystem extends EntitySystem {
         */
     }
 
+    public void playSound(int soundfile) {
+        sounds.get(soundfile);
+        sound = sounds.get(soundfile);
+        sound.play(sound_volume);
+    }
+
     private void setSettings() {
         settings = Gdx.files.local("settings.txt");
         String text = settings.readString();
         String wordsArray[] = text.split("\\r?\\n|,");
         music = Boolean.parseBoolean(wordsArray[1]);
-        sound = Boolean.parseBoolean(wordsArray[3]);
+        soundon = Boolean.parseBoolean(wordsArray[3]);
         stored_music_volume = Float.parseFloat(wordsArray[0]);
         stored_sound_volume = Float.parseFloat(wordsArray[2]);
         if(music) {
             music_volume = stored_music_volume;
         }
-        if(sound) {
+        if(soundon) {
             sound_volume = stored_sound_volume;
         }
     }

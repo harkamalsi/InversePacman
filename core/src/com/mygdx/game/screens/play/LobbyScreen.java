@@ -147,6 +147,7 @@ public class LobbyScreen extends AbstractScreen {
             if (table.createLobby) {
                 System.out.println("Create Lobby Called!");
                 networkManager.createLobby(nickname, playerType);
+                app.gsm.setScreen(GameScreenManager.STATE.PLAY);
             } 
             createLobbyButton.flags = 0;
         }
@@ -165,7 +166,7 @@ public class LobbyScreen extends AbstractScreen {
         ellipseSprite = new Sprite(ellipse);
 
         buttonSystem = new ButtonSystem(camera);
-        tableSystem = new TableSystem();
+        tableSystem = new TableSystem(app);
         renderingSystem = new RenderingSystem(batch);
         musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
 
