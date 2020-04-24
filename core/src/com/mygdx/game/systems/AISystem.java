@@ -39,7 +39,7 @@ public class AISystem extends IteratingSystem{
     private ArrayList<AiNode> closedNodeList = new ArrayList<>();
     private ArrayList<Vector2> shortestPath = new ArrayList<>();
     private Vector2 pacmanPosition;
-    private String difficulty = "MEDIUM";
+    private String difficulty = "ALWAYS_RANDOM";
 
     private int[] nav_x = new int[]{-1, 1, 0, 0};
     private int[] nav_y = new int[]{0, 0, -1, 1};
@@ -53,6 +53,7 @@ public class AISystem extends IteratingSystem{
         transformM = ComponentMapper.getFor(TransformComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
+        difficultyMap.put("ALWAYS_RANDOM", 0);
         difficultyMap.put("DRAGVOLL", 30);
         difficultyMap.put("EASY", 50);
         difficultyMap.put("MEDIUM", 100);
@@ -79,14 +80,15 @@ public class AISystem extends IteratingSystem{
         }
         if(pc.getRandomPos() == null) {
             int diffNmber = difficultyMap.get(difficulty);
-            if((int)(Math.random()*diffNmber) == 9) {
+            if((int)(Math.random()*diffNmber) == 0) {
                 ArrayList<ArrayList<Node>> nodeMatrix = WorldBuilder.getNodeCostMatrix();
                 Vector2 randomPos = new Vector2((int) (Math.random()*(nodeMatrix.get(0).size()-1)),(int) (Math.random()*(nodeMatrix.size()-1)));
                 if (nodeMatrix.get((int) randomPos.y).get((int)randomPos.x).isWalkThrough()) {
                     pc.setRandomPos(randomPos);
                 }
             }
-            this.pacmanPosition = getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
+            //this.pacmanPosition = getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
+            this.pacmanPosition = getAiPacmanPosition();
         }
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
@@ -149,8 +151,34 @@ public class AISystem extends IteratingSystem{
 
     }
 
+    public Vector2 getAiPacmanPosition() {
+        Vector2 position= getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
+        Vector2 newPosition = position;
+        int new_x = (int) position.x;
+        int new_y = (int) position.y;
+            while(WorldBuilder.getNodeCostMatrix().get((int) newPosition.y).get((int) newPosition.x).getType() == "wall") {
+                for (int i = 0; i < 4; i++) {
+                    new_x = (int) newPosition.x + nav_x[i];
+                    new_y = (int) newPosition.y + nav_y[i];
+                    System.out.println("X:" + new_x + " y:" + new_y);
+                    //newPosition = new Vector2(new_x, new_y);
+                    if (WorldBuilder.getNodeCostMatrix().get(new_y).get(new_x).getType() == "ground"){
+                        newPosition = new Vector2(new_x, new_y);
+                        System.out.println(newPosition);
+                        return newPosition;
+                    }
+                }
+                newPosition = new Vector2(new_x, new_y);
+
+            }
+        return newPosition;
+    }
+
+
+
 
     public void aStar(Vector2 ghostPosition) {
+        long startTime = System.nanoTime();
 
         int t = 0;
         closedNodeList.clear();
@@ -219,7 +247,14 @@ public class AISystem extends IteratingSystem{
         }
         */
 
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+        //System.out.println(duration);
+
     }
+
+
 
     private AiNode generateNode(Vector2 nodePos) {
         AiNode aiNode = new AiNode();
