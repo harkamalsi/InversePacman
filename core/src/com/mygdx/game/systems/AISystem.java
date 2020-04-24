@@ -39,11 +39,12 @@ public class AISystem extends IteratingSystem{
     private ArrayList<AiNode> closedNodeList = new ArrayList<>();
     private ArrayList<Vector2> shortestPath = new ArrayList<>();
     private Vector2 pacmanPosition;
-    private String difficulty = "ALWAYS_RANDOM";
+    private String difficulty = "EASY";
 
     private int[] nav_x = new int[]{-1, 1, 0, 0};
     private int[] nav_y = new int[]{0, 0, -1, 1};
     private HashMap<String, Integer> difficultyMap = new HashMap<>();
+    private boolean changed = false;
 
     public AISystem(){
         super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
@@ -60,49 +61,56 @@ public class AISystem extends IteratingSystem{
         difficultyMap.put("HARD", 450);
         difficultyMap.put("MURDEROUS", 30000);
 
+
         //Gdx.input.setInputProcessor(this);
 
 
 
     }
 
-    @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-//        GhostComponent gc = ghostM.get(entity);
-        PlayerComponent pc = playerM.get(entity);
-        Vector2 ghostPosition = getTiledPosition(pc.getBody().getPosition());
-        if(pc.getRandomPos() != null) {
-            pacmanPosition = pc.getRandomPos();
-            if(Math.abs(pc.getRandomPos().x - getTiledPosition(pc.getBody().getPosition()).x) < 2 && (Math.abs(pc.getRandomPos().y - getTiledPosition(pc.getBody().getPosition()).y) < 2)) {
+    public void behaviourManager(PlayerComponent pc) {
+        if (pc.getRandomPos() != null) {
+            this.pacmanPosition = pc.getRandomPos();
+            if (Math.abs(pc.getRandomPos().x - getTiledPosition(pc.getBody().getPosition()).x) < 4
+                    && (Math.abs(pc.getRandomPos().y -
+                    getTiledPosition(pc.getBody().getPosition()).y) < 4)) {
                 pc.setRandomPos(null);
             }
 
         }
-        if(pc.getRandomPos() == null) {
-            int diffNmber = difficultyMap.get(difficulty);
-            if((int)(Math.random()*diffNmber) == 0) {
+        if (pc.getRandomPos() == null) {
+            int diffNmber = this.difficultyMap.get(this.difficulty);
+            if ((int) (Math.random() * diffNmber) == 0) {
                 ArrayList<ArrayList<Node>> nodeMatrix = WorldBuilder.getNodeCostMatrix();
-                Vector2 randomPos = new Vector2((int) (Math.random()*(nodeMatrix.get(0).size()-1)),(int) (Math.random()*(nodeMatrix.size()-1)));
-                if (nodeMatrix.get((int) randomPos.y).get((int)randomPos.x).isWalkThrough()) {
+                Vector2 randomPos = new Vector2((int) (Math.random() * (nodeMatrix.get(0).size() -
+                        1)), (int) (Math.random() * (nodeMatrix.size() - 1)));
+                if (nodeMatrix.get((int) randomPos.y).get((int) randomPos.x).isWalkThrough()) {
                     pc.setRandomPos(randomPos);
                 }
             }
-            //this.pacmanPosition = getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
-            this.pacmanPosition = getAiPacmanPosition();
+            this.pacmanPosition = getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
         }
-        VelocityComponent vc = velocityM.get(entity);
-        TransformComponent tc = transformM.get(entity);
+    }
+
+    @Override
+    protected void processEntity(Entity entity, float deltaTime) {
+        PlayerComponent pc = playerM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
-        aStar(ghostPosition);
-        Vector2 firstPos = shortestPath.get(shortestPath.size()-1);
-        Vector2 nextPos = shortestPath.get(shortestPath.size()-2);
-        Vector2 move = new Vector2(nextPos.x - firstPos.x, nextPos.y-firstPos.y);
+        Vector2 ghostPosition = getTiledPosition(pc.getBody().getPosition());
+        if(!pc.id.equals("PACMAN") || !ghostPosition.equals(getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition()))) {
+            behaviourManager(pc);
+            makeVisible();
+            aStar(ghostPosition);
+            finishVisible();
+            Vector2 firstPos = shortestPath.get(shortestPath.size() - 1);
+            Vector2 nextPos = shortestPath.get(shortestPath.size() - 2);
+            Vector2 move = new Vector2(nextPos.x - firstPos.x, nextPos.y - firstPos.y);
+
 
         float x = 0f;
         float y = 0f;
 
-        if (pc.id != "PACMAN"){
             if (move.equals(new Vector2(0, 1))){
                 x = 0f;
                 y = Y_VELOCITY;
@@ -140,9 +148,6 @@ public class AISystem extends IteratingSystem{
                     texc.region.flip(true,false);
                 }
             }
-
-//        vc.setVelocity(x,y);
-//        vc.setAcceleration(x,y);
             pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
             pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
 
@@ -151,26 +156,20 @@ public class AISystem extends IteratingSystem{
 
     }
 
-    public Vector2 getAiPacmanPosition() {
-        Vector2 position= getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition());
-        Vector2 newPosition = position;
-        int new_x = (int) position.x;
-        int new_y = (int) position.y;
-            while(WorldBuilder.getNodeCostMatrix().get((int) newPosition.y).get((int) newPosition.x).getType() == "wall") {
-                for (int i = 0; i < 4; i++) {
-                    new_x = (int) newPosition.x + nav_x[i];
-                    new_y = (int) newPosition.y + nav_y[i];
-                    System.out.println("X:" + new_x + " y:" + new_y);
-                    //newPosition = new Vector2(new_x, new_y);
-                    if (WorldBuilder.getNodeCostMatrix().get(new_y).get(new_x).getType() == "ground"){
-                        newPosition = new Vector2(new_x, new_y);
-                        return newPosition;
-                    }
-                }
-                newPosition = new Vector2(new_x, new_y);
+    public void makeVisible() {
+        Node packNode = WorldBuilder.getNodeCostMatrix().get((int) pacmanPosition.y).get((int) pacmanPosition.x);
+        if (packNode.getType().equals("wall")) {
+            WorldBuilder.getNodeCostMatrix().get((int) pacmanPosition.y).get((int) pacmanPosition.x).setType("ground");
+            this.changed = true;
+        }
+    }
 
-            }
-        return newPosition;
+    public void finishVisible() {
+        Node packNode = WorldBuilder.getNodeCostMatrix().get((int) pacmanPosition.y).get((int) pacmanPosition.x);
+        if (this.changed) {
+            packNode.setType("wall");
+            this.changed = false;
+        }
     }
 
 
@@ -185,7 +184,6 @@ public class AISystem extends IteratingSystem{
         shortestPath.clear();
 
         currentNode.setTypeOf("Ghost");
-        //Trenger posisjon til ghost _____ligger som parameter i kallet______(hvis ghost er entity regner jeg med?)
         currentNode.setPosition(ghostPosition);
         currentNode.setaStarDistance(calculateAStarDistance(ghostPosition,currentNode));
         currentNode.setPreviousNode(currentNode);
@@ -195,9 +193,9 @@ public class AISystem extends IteratingSystem{
             shortestPath.add(new Vector2(0,0));
         }
 
-
+        int b = 0;
         while (currentNode.getTypeOf() != "PACMAN") {
-
+            b++;
             t += 1;
             if (openNodeList.size() == 0) {
                 shortestPath.add(new Vector2(0,0));
@@ -235,9 +233,18 @@ public class AISystem extends IteratingSystem{
             openNodeList.remove(currentNode);
         }
 
+        if(b>3000) {
+            System.out.println("b:" + b);
+        }
+
+        int c = 0;
         while ( currentNode.getTypeOf() != "Ghost") {
+            c++;
             currentNode = currentNode.getPreviousNode();
             shortestPath.add(currentNode.getPosition());
+        }
+        if(c>20) {
+            System.out.println("cv:" + c);
         }
         /*
         for (Vector2 pos : shortestPath) {
@@ -249,7 +256,8 @@ public class AISystem extends IteratingSystem{
         long endTime = System.nanoTime();
 
         long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
-        System.out.println(duration);
+        //System.out.println(duration);
+        System.out.println(shortestPath.size() + "sp");
 
     }
 
