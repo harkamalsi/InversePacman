@@ -15,7 +15,8 @@ public class MultiplayerMessage {
 
     private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
     public static String METYPE;
-    public static JSONArray DIRECTIONS = new JSONArray();
+    public static String X = "10";
+    public static String Y = "10";
     JSONArray tempResponse = new JSONArray();
     JSONArray response = new JSONArray();
 
@@ -25,9 +26,9 @@ public class MultiplayerMessage {
         return instance;
     }
 
-    public void sendInput(JSONArray directions) {
+    public void sendInput() {
         if (LobbyScreen.LOBBY_JOINED != null) {
-            networkManager.sendInput(LobbyScreen.LOBBY_JOINED, directions);
+            networkManager.sendInput(LobbyScreen.LOBBY_JOINED, X, Y);
         }
     }
 

@@ -177,7 +177,8 @@ public class NetworkManager {
 
         final JSONObject inputs = new JSONObject();
         inputs.put("lobbyName", args[0]);
-        inputs.put("directions", args[1]);
+        inputs.put("x", args[1]);
+        inputs.put("y", args[2]);
 
         getSocket().emit(Constants.INPUT, socketID, inputs);
     }

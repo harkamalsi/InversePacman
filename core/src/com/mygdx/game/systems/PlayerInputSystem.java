@@ -18,6 +18,7 @@ import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.play.LobbyScreen;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.Math;
@@ -86,15 +87,13 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                     String otherType = response.getJSONObject(i).getString("type");
 
                     //System.out.println(response.getJSONObject(i));
-                    JSONArray xy = response.getJSONObject(i).getJSONArray("directions");
-                    //System.out.println(xy);
+                    //JSONArray xy = response.getJSONObject(i).getJSONArray("directions");
 
+                    x = Float.parseFloat(response.getJSONObject(i).getString("x"));
+                    y = Float.parseFloat(response.getJSONObject(i).getString("y"));
 
-                    if (pc.id.equals(otherType) && xy.length() > 0) {
-                        float X = Float.parseFloat(xy.getString(0));
-                        float Y = Float.parseFloat(xy.getString(1));
-
-                        pc.body.setTransform(X,Y,0);
+                    if (pc.id.equals(otherType) && x != 0 && y != 0) {
+                        pc.body.setTransform(x,y,0);
                     }
                 }
             }
@@ -156,11 +155,10 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     private void sendServerInput(float x, float y){
 
-        connection.DIRECTIONS = new JSONArray();
-        connection.DIRECTIONS.put(String.valueOf(x));
-        connection.DIRECTIONS.put(String.valueOf(y));
+        connection.X = String.valueOf(x);
+        connection.Y = String.valueOf(y);
 
-        connection.sendInput(connection.DIRECTIONS);
+        connection.sendInput();
     }
 
     //function for deciding drag direction
