@@ -1,1 +1,1 @@
-0
+pacman_skins/pacman.png

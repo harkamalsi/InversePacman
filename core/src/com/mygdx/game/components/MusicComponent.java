@@ -12,9 +12,11 @@ public class MusicComponent implements Component {
     public FileHandle trackdir;
     public ArrayList<Sound> sounds;
 
+
     public MusicComponent(FileHandle trackdir, Sound...sounds) {
         this.trackdir = trackdir;
         this.sounds = new ArrayList<Sound>();
         this.sounds.addAll(Arrays.asList(sounds));
+
     }
 }

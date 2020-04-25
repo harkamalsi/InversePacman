@@ -106,9 +106,11 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
+
     public static boolean MULTIPLAYER;
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private Entity musicEntity;
+    private Entity musicPauseEntity;
 
     //World building
     public World world;
@@ -388,15 +390,8 @@ public final class PlayScreen extends AbstractScreen {
         Vector2 vector = playerComponent.body.getPosition();
         System.out.println("pacman is here: " + playerComponent.body.getPosition());
 
-        // probably make method of this or system
-        FileHandle skin_dir = Gdx.files.internal("pacman_skins");
-        ArrayList<String> skinList = new ArrayList<String>();
-        for(FileHandle skintostring : skin_dir.list()) {
-            String name = skintostring.path();
-            skinList.add(name);
-        }
 
-        pacmansprite = new Texture(skinList.get(app.skin_number));
+        pacmansprite = new Texture(app.skin);
 
 
 
@@ -435,8 +430,8 @@ public final class PlayScreen extends AbstractScreen {
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
         engine.addEntity(musicEntity);
 
-       // musicPauseEntity = new Entity();
-        //musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
+        musicPauseEntity = new Entity();
+        musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
         //engine.addEntity(musicPauseEntity);
 
         //aiSystem.setDifficulty("MURDEROUS");
