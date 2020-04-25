@@ -48,7 +48,7 @@ public class Hud implements Disposable {
         score = 0;
         
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
-        font.getData().setScale(PlayScreen.scaleX);
+        font.getData().setScale(PlayScreen.scaleX * 0.75f);
 
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         stage = new Stage(viewport, sb);
