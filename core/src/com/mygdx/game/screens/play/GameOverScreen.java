@@ -84,7 +84,7 @@ public class GameOverScreen extends AbstractScreen {
     public void update(float delta) {
         System.out.println("time elapsed " + elapsed);
         elapsed += delta;
-        if(Gdx.input.justTouched()){
+        if(Gdx.input.justTouched() && elapsed > 2){
             musicSystem.dispose();
             engine.removeAllEntities();
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
