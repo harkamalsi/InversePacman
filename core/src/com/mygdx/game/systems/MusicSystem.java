@@ -24,6 +24,7 @@ public class MusicSystem extends IteratingSystem {
 
     private ArrayList tracks;
     private Music song;
+    private Music pauseMusic;
     private Sound sound;
     private InversePacman app;
 
@@ -45,6 +46,7 @@ public class MusicSystem extends IteratingSystem {
     private Array<Entity> entityArray;
     private MusicComponent mc;
 
+
     private ComponentMapper<MusicComponent> musicM;
 
 
@@ -54,6 +56,7 @@ public class MusicSystem extends IteratingSystem {
 
         entityArray = new Array<Entity>();
 
+        pauseMusic = Gdx.audio.newMusic(Gdx.files.internal("music/pause/InvPacMan Chill Pause.mp3"));
 
         tracks = new ArrayList<FileHandle>();
 
@@ -82,18 +85,26 @@ public class MusicSystem extends IteratingSystem {
         // have to check this because it can crash if screens are switched faster than the music can load
         if(song != null) {
             song.dispose();
+            pauseMusic.dispose();
         }
     }
 
     public void pause() {
         update(1);
         song.pause();
+        pauseMusic.play();
         pause = true;
     }
 
     public void resume() {
+        pauseMusic.pause();
         song.play();
         pause = false;
+    }
+
+    public void setMusicPosition(int position) {
+        update(1);
+        song.setPosition(position);
     }
 
     private void playMusic(ArrayList<FileHandle> tracks, int lasttrack) {

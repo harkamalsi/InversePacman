@@ -104,8 +104,10 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
+
     public static boolean MULTIPLAYER;
     private Entity musicEntity;
+    private Entity musicPauseEntity;
 
     //World building
     public World world;
@@ -438,8 +440,8 @@ public final class PlayScreen extends AbstractScreen {
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
         engine.addEntity(musicEntity);
 
-       // musicPauseEntity = new Entity();
-        //musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
+        musicPauseEntity = new Entity();
+        musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
         //engine.addEntity(musicPauseEntity);
 
         //aiSystem.setDifficulty("MURDEROUS");
