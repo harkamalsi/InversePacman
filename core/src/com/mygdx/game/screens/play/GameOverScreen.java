@@ -66,8 +66,8 @@ public class GameOverScreen extends AbstractScreen {
         sound = Gdx.audio.newSound(Gdx.files.internal("sound/the_winner.ogg"));
 
         excitementBg = new TextureRegion(new Texture("gameover/excitement_bg.png"));
-        won_bg = new TextureRegion(new Texture("gameover/Nampac.jpg"));
-        lost_bg = new TextureRegion(new Texture("gameover/Ghosts.jpg"));
+        won_bg = new TextureRegion(new Texture("gameover/won.png"));
+        lost_bg = new TextureRegion(new Texture("gameover/gameover.png"));
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
 
@@ -172,11 +172,20 @@ public class GameOverScreen extends AbstractScreen {
             engine.removeEntity(bgEntity);
         }
         if(elapsed > 2.0 && engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
+            engine.removeEntity(front_ellipseEntity);
+            engine.removeEntity(ellipseEntity);
             engine.addEntity(won_bgEntity);
+            engine.addEntity(ellipseEntity);
+            engine.addEntity(front_ellipseEntity);
+
             resultpageadded = true;
         }
         if(elapsed > 2.0 && !engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
+            engine.removeEntity(front_ellipseEntity);
+            engine.removeEntity(ellipseEntity);
             engine.addEntity(lost_bgEntity);
+            engine.addEntity(ellipseEntity);
+            engine.addEntity(front_ellipseEntity);
             resultpageadded = true;
         }
         engine.update(delta);
