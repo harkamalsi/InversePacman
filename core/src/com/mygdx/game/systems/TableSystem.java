@@ -43,6 +43,7 @@ public class TableSystem extends IteratingSystem {
         this.app = app;
         tableM = ComponentMapper.getFor(TableComponent.class);
         //tc = ComponentMapper.getFor(TransformComponent.class);
+        this.app = app;
     }
 
     @Override

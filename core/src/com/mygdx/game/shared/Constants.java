@@ -27,4 +27,9 @@ public class Constants {
     public static final String GET_PLAYER_WITH_ID = "get_player_with_id";
     public static final String CHANGE_NICKNAME = "change_nickname";
     public static final String CHANGE_SKINTYPE = "change_skin_type";
+
+    public static final String SINGLE_PLAYER_SCORE_KEY = "spScore";
+    public static final String MULTIPLAYER_SCORE_KEY = "mpScore";
+
+    public static final int DEFAULT_PILL_POINTS = 100;
 }

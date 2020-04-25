@@ -52,7 +52,7 @@ public class GameScreenManager {
         engine = new Engine();
 
         initGameScreens();
-        setScreen(STATE.MAIN_MENU_SCREEN);
+        setScreen(STATE.SPLASH_SCREEN);
 
 
         //System.out.println(prevScreens);

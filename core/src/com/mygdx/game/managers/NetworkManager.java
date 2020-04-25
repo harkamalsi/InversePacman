@@ -33,6 +33,9 @@ public class NetworkManager {
     private JSONObject player = new JSONObject();
     private JSONArray serverInput;
     private String lobby = null;
+    private JSONArray players = new JSONArray();
+    private JSONObject response;
+    public Boolean connected = false;
 
     public NetworkManager() {
         setSocket();
@@ -406,4 +409,30 @@ public class NetworkManager {
             //System.out.println("SOCKETPING" + " RECEIVED PING! ");
         }
     };
+
+    public void setPlayers(JSONArray players) {
+        this.players = players;
+    }
+
+    public JSONArray getPlayers() {
+        return players;
+    }
+
+    public void fetchAllPlayers() {
+        if (fetch) {
+            getSocket().emit(Constants.GET_ALL_PLAYERS, socketID);
+
+            getSocket().on(Constants.GET_ALL_PLAYERS, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONArray response = (JSONArray) args[0];
+                    System.out.println("Players response: " + response);
+                    setPlayers(response);
+                }
+            });
+
+            //fetch = false;
+        }
+    }
+
 }

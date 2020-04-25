@@ -1,57 +1,76 @@
 package com.mygdx.game.systems;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.managers.GameScreenManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public class MusicSystem extends EntitySystem {
+public class MusicSystem extends IteratingSystem {
 
     private ArrayList tracks;
     private Music song;
+    private Sound sound;
     private InversePacman app;
 
     private FileHandle trackdir;
     private FileHandle store;
     private FileHandle settings;
+    private boolean start;
 
     private int tracknr;
 
     private float stored_music_volume;
     private float stored_sound_volume;
     private boolean music;
-    private boolean sound;
+    private boolean soundon;
     private  boolean pause;
     private float music_volume;
     private float sound_volume;
+    private ArrayList<Sound> sounds;
+    private Array<Entity> entityArray;
+    private MusicComponent mc;
 
-    public MusicSystem(FileHandle trackdir) {
-        this.trackdir = trackdir;
+    private ComponentMapper<MusicComponent> musicM;
+
+
+    public MusicSystem() {
+        super(Family.all(MusicComponent.class).get());
+        musicM = ComponentMapper.getFor(MusicComponent.class);
+
+        entityArray = new Array<Entity>();
+
+
+        tracks = new ArrayList<FileHandle>();
+
         settings = Gdx.files.local("settings.txt");
         String text = settings.readString();
         String wordsArray[] = text.split("\\r?\\n|,");
         music = Boolean.parseBoolean(wordsArray[1]);
-        sound = Boolean.parseBoolean(wordsArray[3]);
+        soundon = Boolean.parseBoolean(wordsArray[3]);
         stored_music_volume = Float.parseFloat(wordsArray[0]);
         stored_sound_volume = Float.parseFloat(wordsArray[2]);
         if(music) {
             music_volume = stored_music_volume;
         }
-        if(sound) {
+        if(soundon) {
             sound_volume = stored_sound_volume;
         }
-        tracks = new ArrayList<FileHandle>();
-        for(FileHandle track : trackdir.list()) {
-            tracks.add(track);
-        }
-        System.out.println("music volume: " + music_volume);
-        playMusic(tracks, -1);
+
 
     }
 
@@ -60,10 +79,14 @@ public class MusicSystem extends EntitySystem {
     }
 
     public void dispose() {
-        song.dispose();
+        // have to check this because it can crash if screens are switched faster than the music can load
+        if(song != null) {
+            song.dispose();
+        }
     }
 
     public void pause() {
+        update(1);
         song.pause();
         pause = true;
     }
@@ -77,6 +100,7 @@ public class MusicSystem extends EntitySystem {
         Random track = new Random();
         System.out.println("Start " + tracknr);
         System.out.println("Last track " + lasttrack);
+        //System.out.println(tracks);
         /* The if statements make sure that the same song never plays twice in a row, unless there
            is only one song
          */
@@ -105,18 +129,25 @@ public class MusicSystem extends EntitySystem {
         song.play();
     }
 
+    public void playSound(int soundfile) {
+        update(1);
+        sounds.get(soundfile);
+        sound = sounds.get(soundfile);
+        sound.play(sound_volume);
+    }
+
     private void setSettings() {
         settings = Gdx.files.local("settings.txt");
         String text = settings.readString();
         String wordsArray[] = text.split("\\r?\\n|,");
         music = Boolean.parseBoolean(wordsArray[1]);
-        sound = Boolean.parseBoolean(wordsArray[3]);
+        soundon = Boolean.parseBoolean(wordsArray[3]);
         stored_music_volume = Float.parseFloat(wordsArray[0]);
         stored_sound_volume = Float.parseFloat(wordsArray[2]);
         if(music) {
             music_volume = stored_music_volume;
         }
-        if(sound) {
+        if(soundon) {
             sound_volume = stored_sound_volume;
         }
     }
@@ -133,14 +164,45 @@ public class MusicSystem extends EntitySystem {
 
     @Override
     public void update(float dt) {
-        getMusic();
-        if(!song.isPlaying() && !pause){
-            System.out.println("updating music");
-            System.out.println("song changed");
-            // Song needs to be disposed before it is changed
-            song.dispose();
-            playMusic(tracks, tracknr);
-        }
+        super.update(dt);
 
+        for (Entity entity : entityArray) {
+            mc = musicM.get(entity);
+            this.trackdir = mc.trackdir;
+            this.sounds = new ArrayList<Sound>();
+            this.sounds = mc.sounds;
+
+            if(tracks.isEmpty()) {
+                for (FileHandle track : mc.trackdir.list()) {
+                    tracks.add(track);
+                }
+            }
+            //System.out.println("music volume: " + music_volume);
+
+            if(!start && !tracks.isEmpty()) {
+                playMusic(tracks, -1);
+                start = true;
+            }
+
+
+            if(!tracks.isEmpty()) {
+                getMusic();
+                if (!song.isPlaying() && !pause) {
+                    System.out.println("updating music");
+                    System.out.println("song changed");
+                    // Song needs to be disposed before it is changed
+                    song.dispose();
+                    playMusic(tracks, tracknr);
+                }
+            }
+        }
+        entityArray.clear();
+
+
+    }
+
+    @Override
+    protected void processEntity(Entity entity, float deltaTime) {
+        entityArray.add(entity);
     }
 }

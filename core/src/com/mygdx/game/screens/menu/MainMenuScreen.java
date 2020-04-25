@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.EntityManager;
@@ -57,6 +58,7 @@ public class MainMenuScreen extends AbstractScreen {
     private Entity ellipseEntity;
     private Entity front_ellipseEntity;
     private Entity bgEntity;
+    private Entity musicEntity;
 
 
     private Sprite playsprite;
@@ -112,27 +114,35 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
             app.gsm.setScreen(GameScreenManager.STATE.PLAY);
         }
         if(singleplayerButton.flags == 1 || Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.PLAY);
         }
         if(multiplayerButton.flags == 1) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
 
         if(highscoreButton.flags == 1) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
             // I think it's okay if we keep ths music going here?
             //music.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN);
         }
         if(optionButton.flags == 1) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.OPTION_SCREEN);
+
+
+
+
         }
 
         /*else if (Gdx.input.isKeyPressed(Input.Keys.P) && app.gsm.currentState == GameScreenManager.STATE.MAIN_MENU_SCREEN) {
@@ -217,7 +227,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
         buttonSystem = new ButtonSystem(camera);
         renderingSystem = new RenderingSystem(batch);
-        musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
+        musicSystem = new MusicSystem();
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
@@ -267,6 +277,10 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         optionsprite = new Sprite(option);
         optionButton = new Entity();
         app.addSpriteEntity(optionsprite, optionButton, engine, Gdx.graphics.getWidth() / 2 - (optionsprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)5.6, optionsprite.getRegionWidth() * scaleX, optionsprite.getRegionHeight() * scaleY, true, false, false, false);
+
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/menu")));
+        engine.addEntity(musicEntity);
 
         // ***** Option button END *****
 

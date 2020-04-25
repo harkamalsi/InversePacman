@@ -1,11 +1,14 @@
 package com.mygdx.game.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.scenes.Hud;
+import com.mygdx.game.screens.play.PlayScreen;
 
 public class PlayerComponent implements Component {
 
@@ -24,18 +27,20 @@ public class PlayerComponent implements Component {
 
     public float invincibleTimer;
 
+
     public Body body;
     public String id;
-    private boolean ai;
+    public boolean ai;
     private String type;
+    private Vector2 randomPos = null;
 
     public PlayerComponent() {
         currentState = IDLE;
-        hp = 1;
+        hp = 3;
         invincibleTimer = 0;
     }
 
-    public void createPlayerBody(World world, String id, float x, float y, String type){
+    public void createPlayerBody(World world, String id, float x, float y, String type, boolean isSensor){
         this.id = id;
         this.type = type;
         BodyDef bdef = new BodyDef();
@@ -43,17 +48,19 @@ public class PlayerComponent implements Component {
         bdef.position.set(x,y);
         bdef.fixedRotation = true;
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(30/2,30/2);
+
+        shape.setAsBox((PlayScreen.scaleX *1.32f)*16/2,(PlayScreen.scaleX *1.32f)*16/2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0f;
+        fixtureDef.isSensor = isSensor;
 
         this.body = world.createBody(bdef);
         this.body.createFixture(fixtureDef).setUserData(this);
 
-//        body.createFixture(shape, 1.0f);
         shape.dispose();
+        Hud.setLives(hp);
     }
 
     public String getType() {
@@ -69,6 +76,8 @@ public class PlayerComponent implements Component {
     }
 
     public void hit(PlayerComponent playerHit) {
+        this.hp -= 1;
+        Hud.setLives(hp);
         System.out.println(id + " have been hit by " + playerHit.getId());
     }
 
@@ -76,4 +85,15 @@ public class PlayerComponent implements Component {
         System.out.println(id + " have been hit by " + playerHitBy.getId());
     }
 
+    public Body getBody() {
+        return body;
+    }
+
+    public Vector2 getRandomPos() {
+        return randomPos;
+    }
+
+    public void setRandomPos(Vector2 randomPos) {
+        this.randomPos = randomPos;
+    }
 }

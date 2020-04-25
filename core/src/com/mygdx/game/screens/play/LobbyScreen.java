@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -78,6 +79,8 @@ public class LobbyScreen extends AbstractScreen {
     private Entity front_ellipseEntity;
     private Entity bgEntity;
     private Entity tbEntity;
+
+    private Entity musicEntity;
 
 
     private Sprite createLobbySprite;
@@ -177,9 +180,9 @@ public class LobbyScreen extends AbstractScreen {
         ellipseSprite = new Sprite(ellipse);
 
         buttonSystem = new ButtonSystem(camera);
-        tableSystem = new TableSystem(this.app);
+        tableSystem = new TableSystem(app);
         renderingSystem = new RenderingSystem(batch);
-        musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
+        musicSystem = new MusicSystem();
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
@@ -212,6 +215,10 @@ public class LobbyScreen extends AbstractScreen {
                 .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f));
 
         engine.addEntity(createLobbyButton);
+
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/menu")));
+        engine.addEntity(musicEntity);
     }
 
     @Override

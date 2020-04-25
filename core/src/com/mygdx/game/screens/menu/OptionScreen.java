@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.EntityManager;
@@ -70,6 +71,8 @@ public class OptionScreen extends AbstractScreen {
     private Entity ellipseEntity;
     private Entity front_ellipseEntity;
 
+    private Entity musicEntity;
+
 
     private Sprite backSprite;
     private Sprite volume_muteSprite;
@@ -102,7 +105,7 @@ public class OptionScreen extends AbstractScreen {
         super(app, engine);
         this.engine = engine;
         bg = new TextureRegion(new Texture("optionscreen/option_bg.png"));
-        back = new TextureRegion(new Texture("back.png"));
+        back = new TextureRegion(new Texture("back3x.png"));
         settings = new TextureRegion(new Texture("optionscreen/options_button.png"));
         increase_music = new TextureRegion(new Texture("optionscreen/music_louder.png"));
         decrease_music = new TextureRegion(new Texture("optionscreen/music_lower.png"));
@@ -136,7 +139,8 @@ public class OptionScreen extends AbstractScreen {
 
         }
         if(backButton.flags == 1) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
 
             // saves the volume and sound levels to the settings file
@@ -267,7 +271,7 @@ public class OptionScreen extends AbstractScreen {
 
         buttonSystem = new ButtonSystem(camera);
         renderingSystem = new RenderingSystem(batch);
-        musicSystem = new MusicSystem(Gdx.files.internal("music/pause"));
+        musicSystem = new MusicSystem();
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
@@ -345,10 +349,13 @@ public class OptionScreen extends AbstractScreen {
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth(), backSprite.getRegionHeight(), true,false, false, false);
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
 
         // ***** Back button END *****
 
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
+        engine.addEntity(musicEntity);
 
     }
 
@@ -406,7 +413,7 @@ public class OptionScreen extends AbstractScreen {
         font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
 
         layout.setText(font, "music");
-        font.draw(batch,layout, Gdx.graphics.getWidth() / (2 *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.625f * 32f) + layout.height / 2);
+        font.draw(batch,layout, Gdx.graphics.getWidth() / (2 *32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.5f * 32f) + layout.height / 2);
         layout.setText(font, df.format(app.music_volume * 100) + "%");
         font.draw(batch,layout, Gdx.graphics.getWidth() / (6 * 32f) - layout.width / 2,Gdx.graphics.getHeight() / (1.90f * 32f));
         layout.setText(font, "sound");

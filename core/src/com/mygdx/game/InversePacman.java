@@ -139,12 +139,13 @@ public class InversePacman extends Game {
 		engine = new Engine();
 
 		//Setup managers
+
 		//Network
 		NETWORKMANAGER = new NetworkManager();
-
 		assets = new AssetManager();
 		gsm = new GameScreenManager(this);
 		saveManager = new SaveManager(false);
+
 
 		//Picture
 		img = new Texture("Test1.png");

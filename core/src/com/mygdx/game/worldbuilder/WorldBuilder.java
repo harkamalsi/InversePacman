@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
         private static ArrayList<RectangleMapObject> playersPostionList = new ArrayList<>();
         private static ArrayList<RectangleMapObject> pillsPostionList = new ArrayList<>();
-        private static ArrayList<ArrayList<Node>> nodeCostMatrix = new ArrayList<>();;
+        private static ArrayList<ArrayList<Node>> nodeCostMatrix = new ArrayList<>();
         private static ArrayList<PlayerComponent> playerList = new ArrayList<>();
         private static ArrayList<PillComponent> pillList = new ArrayList<>();
 
@@ -30,7 +30,8 @@ import java.util.ArrayList;
                 ,MapObjects wallObjects
                 ,MapLayer backgroundLayer
                 ,MapObjects playerObjects
-                ,MapObjects pillObjects ) {
+                ,MapObjects pillObjects
+                ,MapLayer aiRouteLayer ) {
 
             playersPostionList.clear();
             pillsPostionList.clear();
@@ -39,10 +40,9 @@ import java.util.ArrayList;
             pillList.clear();
 
             parseWallObjectLayer(wallObjects, world);
-            parseMapToNode(backgroundLayer);
+            parseMapToNode(aiRouteLayer);
             parsePillObjectLayer(pillObjects);
             parsePlayerObjectLayer(playerObjects);
-
         }
 
         private static void parseWallObjectLayer(MapObjects collisionObjects, World world){
@@ -81,10 +81,6 @@ import java.util.ArrayList;
                     playersPostionList.add(point);
 
                 }
-                else {
-                    System.out.println(object.getClass());
-                    continue;
-                }
             }
         }
 
@@ -95,10 +91,6 @@ import java.util.ArrayList;
                     pillsPostionList.add(point);
 
                 }
-                else {
-                    System.out.println(object.getClass());
-                    continue;
-                }
             }
         }
 
@@ -106,19 +98,25 @@ import java.util.ArrayList;
             TiledMapTileLayer mapLayer = (TiledMapTileLayer) backgroundLayer;
             int height = mapLayer.getHeight();
             int width = mapLayer.getWidth();
-            System.out.println(height);
-            System.out.println(width);
 
-            for (int y=0; y < height; y++) {
+            for (int y = 0; y < height; y++) {
                 nodeCostMatrix.add(y, new ArrayList<Node>());
-                System.out.println("\n");
                 for (int x = 0; x < width; x++){
                     try {
-                        mapLayer.getCell(x,height-y-1).getTile().getId();
-                        System.out.print(" . ");
+                        mapLayer.getCell(x,y).getTile().getId();
                         nodeCostMatrix.get(y).add(x, new Node(1, "ground", true));
                     } catch (Exception e) {
                         nodeCostMatrix.get(y).add(x, new Node(-1, "wall", false));
+                    }
+                }
+            }
+            for ( int y=49; y > -1; y--) {
+                System.out.println("\n");
+                for ( int x=50; x > -1; x--) {
+                    if (nodeCostMatrix.get(y).get(x).getType() == "ground") {
+                        System.out.print(" . ");
+                    }
+                    else {
                         System.out.print(" X ");
                     }
                 }
@@ -141,18 +139,19 @@ import java.util.ArrayList;
 
 
         public static void createPlayers(World world) {
-           for (int i=0; i < getPlayerPositionList().size(); i++) {
+           for (Integer i=0; i < getPlayerPositionList().size(); i++) {
                PlayerComponent player = new PlayerComponent();
                Vector2 vector = new Vector2();
                getPlayerPositionList().get(i).getRectangle().getCenter(vector);
 
 
                if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
-                   player.createPlayerBody(world, "GHOST_NUMBER_" + i, vector.x, vector.y, "GHOST");
+                   player.createPlayerBody(world, "GHOST_NUMBER_" + i.toString(), vector.x, vector.y, "GHOST", true);
                    playerList.add(player);
+
                }
                else if (getPlayerPositionList().get(i).getName().equals("Pacman")) {
-                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN");
+                   player.createPlayerBody(world, "PACMAN", vector.x, vector.y, "PACMAN", false);
                    playerList.add(player);
                }
 
@@ -172,9 +171,6 @@ import java.util.ArrayList;
                 if (getPillsPostionList().get(i).getName().equals("Pill")) {
                     pill.createPillBody(world, "PILL_NUMBER_" + i, vector.x, vector.y);
                     pillList.add(pill);
-                }
-                else {
-                    continue;
                 }
 
             }
