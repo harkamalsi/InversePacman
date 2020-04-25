@@ -33,7 +33,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     private TextureRegion front_ellipse;
     private TextureRegion back;
 
-    private Entity singlePlayerGhostsButton;
+    //private Entity singlePlayerGhostsButton;
     private Entity singlePlayerNamcapButton;
     private Entity multiplayerGhostsButton;
     private Entity multiplayerNamcapButton;
@@ -44,7 +44,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
     private SpriteBatch batch;
 
-    private Sprite singlePlayerGhostsSprite;
+    //private Sprite singlePlayerGhostsSprite;
     private Sprite singlePlayerNamcapSprite;
     private Sprite multiplayerGhostsSprite;
     private Sprite multiplayerNamcapSprite;
@@ -84,9 +84,9 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     }
 
     private void handleInput() {
-        if (singlePlayerGhostsButton.flags == 1) {
-            app.gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
-        }
+//        if (singlePlayerGhostsButton.flags == 1) {
+//            app.gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
+//        }
 
         if (singlePlayerNamcapButton.flags == 1) {
             app.gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_NAMCAP_BOARD_SCREEN);
@@ -168,36 +168,33 @@ public class LeaderboardMenuScreen extends AbstractScreen {
         front_ellipseEntity = new Entity();
         app.addSpriteEntity(front_ellipseSprite, front_ellipseEntity, engine,Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false, false, false);
 
-
-        // Single Player ghosts button
         float firstYPosition = Gdx.graphics.getHeight();
-
-        singlePlayerGhostsSprite = new Sprite(ghosts);
-        singlePlayerGhostsButton = new Entity();
-        app.addSpriteEntity(singlePlayerGhostsSprite, singlePlayerGhostsButton, engine, Gdx.graphics.getWidth()/ 2  - (singlePlayerGhostsSprite.getRegionWidth() / 2 * (scaleX)) ,
-                firstYPosition / 1.75f, singlePlayerGhostsSprite.getRegionWidth() * scaleX, singlePlayerGhostsSprite.getRegionHeight() * scaleY, true,  false, false, false);
+        // Single Player ghosts button
+//
+//        singlePlayerGhostsSprite = new Sprite(ghosts);
+//        singlePlayerGhostsButton = new Entity();
+//        app.addSpriteEntity(singlePlayerGhostsSprite, singlePlayerGhostsButton, engine, Gdx.graphics.getWidth()/ 2  - (singlePlayerGhostsSprite.getRegionWidth() / 2 * (scaleX)) ,
+//                firstYPosition / 1.75f, singlePlayerGhostsSprite.getRegionWidth() * scaleX, singlePlayerGhostsSprite.getRegionHeight() * scaleY, true,  false, false, false);
 
 
         // Single Player Nam-Pac button
         singlePlayerNamcapSprite = new Sprite(namcap);
         singlePlayerNamcapButton = new Entity();
         app.addSpriteEntity(singlePlayerNamcapSprite, singlePlayerNamcapButton, engine, Gdx.graphics.getWidth()/ 2  - (singlePlayerNamcapSprite.getRegionWidth() / 2 * (scaleX)) ,
-                firstYPosition / 2f, singlePlayerNamcapSprite.getRegionWidth() * scaleX, singlePlayerNamcapSprite.getRegionHeight() * scaleY, true, false, false, false);
-        //addButton(singlePlayerNamcapSprite, singlePlayerNamcapButton, firstYPosition / 2f);
-
-        // Multiplayer ghosts button
-        multiplayerGhostsSprite = new Sprite(ghosts);
-        multiplayerGhostsButton = new Entity();
-        app.addSpriteEntity(multiplayerGhostsSprite, multiplayerGhostsButton , engine, Gdx.graphics.getWidth()/ 2  - (multiplayerGhostsSprite.getRegionWidth() / 2 * (scaleX)) ,
-                firstYPosition / 4f, multiplayerGhostsSprite.getRegionWidth() * scaleX, multiplayerGhostsSprite.getRegionHeight() * scaleY, true, false, false, false);
-        //addButton(multiplayerGhostsSprite, multiplayerGhostsButton, firstYPosition / 4f);
+                firstYPosition / 1.75f, singlePlayerNamcapSprite.getRegionWidth() * scaleX, singlePlayerNamcapSprite.getRegionHeight() * scaleY, true, false, false, false);
 
         // Multiplayer Nam-Pac button
         multiplayerNamcapSprite = new Sprite(namcap);
         multiplayerNamcapButton = new Entity();
         app.addSpriteEntity(multiplayerNamcapSprite, multiplayerNamcapButton, engine, Gdx.graphics.getWidth()/ 2  - (multiplayerNamcapSprite.getRegionWidth() / 2 * (scaleX)) ,
-                firstYPosition / 5.6f, multiplayerNamcapSprite.getRegionWidth() * scaleX, multiplayerNamcapSprite.getRegionHeight() * scaleY, true, false, false, false);
-        //addButton(multiplayerNamcapSprite, multiplayerNamcapButton, firstYPosition / 5.6f);
+                firstYPosition / 4f, multiplayerNamcapSprite.getRegionWidth() * scaleX, multiplayerNamcapSprite.getRegionHeight() * scaleY, true, false, false, false);
+
+
+        // Multiplayer ghosts button
+        multiplayerGhostsSprite = new Sprite(ghosts);
+        multiplayerGhostsButton = new Entity();
+        app.addSpriteEntity(multiplayerGhostsSprite, multiplayerGhostsButton , engine, Gdx.graphics.getWidth()/ 2  - (multiplayerGhostsSprite.getRegionWidth() / 2 * (scaleX)) ,
+                firstYPosition / 5.6f, multiplayerGhostsSprite.getRegionWidth() * scaleX, multiplayerGhostsSprite.getRegionHeight() * scaleY, true, false, false, false);
 
         backSprite = new Sprite(back);
         backButton = new Entity();
@@ -218,20 +215,4 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     public void hide() {
 
     }
-
-
-
-    private void addButton(Sprite sprite, Entity button, float y) {
-        //sprite.setBounds(Gdx.graphics.getWidth()/ 2 - sprite.getRegionWidth() / 2,
-        //y, sprite.getRegionWidth(), sprite.getRegionHeight());
-
-        button.add(new TextureComponent(sprite, Gdx.graphics.getWidth()/ 2  - (sprite.getRegionWidth() / 2 * (scaleX)) ,
-                y, sprite.getRegionWidth() * scaleX, sprite.getRegionHeight() * scaleY, false, false, false))
-                .add(new ButtonComponent(Gdx.graphics.getWidth()/ 2  - (sprite.getRegionWidth() / 2 * (scaleX)) ,
-                        y, sprite.getRegionWidth() * scaleX, sprite.getRegionHeight() * scaleY))
-                .add(new TransformComponent(Gdx.graphics.getWidth()/ 2  - (sprite.getRegionWidth() / 2 * (scaleX)) ,
-                        y));
-        engine.addEntity(button);
-    }
-
 }
