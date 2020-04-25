@@ -137,7 +137,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         backButton = new Entity();
         app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
 
-        app.networkManager.fetchAllPlayers();
+        InversePacman.NETWORKMANAGER.fetchAllPlayers();
     }
 
     @Override
@@ -160,7 +160,7 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     }
 
     public  Array<PlayerScore> retrieveSortedPlayerScores() {
-        JSONArray players = app.networkManager.getPlayers();
+        JSONArray players = InversePacman.NETWORKMANAGER.getPlayers();
 
         Array<PlayerScore> playerScores = retrievePlayerScores(players);
         if (playerScores != null && playerScores.size > 0) {

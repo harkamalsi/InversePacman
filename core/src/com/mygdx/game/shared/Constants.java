@@ -3,10 +3,12 @@ package com.mygdx.game.shared;
 public class Constants {
     public static final String HOST = "https://inverse-pacman-api.herokuapp.com";
     //public static final String HOST = "http://localhost:8080";
-    //public static final String HOST = "http://10.0.75.1:8080";
+    //public static final String HOST = "http://10.0.2.2:8080";
+    //public static final String HOST = "http://192.168.60.1:8080";
 
     public static final String GET_GAME_LOBBIES = "get_game_lobbies";
     public static final String JOIN_LOBBY = "join_lobby";
+    public static final String GET_LOBBY = "get_lobby";
     public static final String LEAVE_LOBBY = "leave_lobby";
     public static final String CREATE_LOBBY = "create_lobby";
     public static final String PLAYER_JOINED_JOINED = "player_joined_lobby";

@@ -21,12 +21,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
+import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -35,12 +37,16 @@ import com.mygdx.game.systems.TableSystem;
 
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
+
 public class LobbyScreen extends AbstractScreen {
     private OrthographicCamera camera;
     private FitViewport viewport;
 
     private EntityManager entityManager;
-    private NetworkManager networkManager;
+    private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
+    private MultiplayerMessage connection = MultiplayerMessage.getInstance();
+    public static String LOBBY_JOINED;
 
     private SpriteBatch batch;
     private SpriteBatch bgBatch;
@@ -74,6 +80,8 @@ public class LobbyScreen extends AbstractScreen {
     private Entity bgEntity;
     private Entity tbEntity;
 
+    private Entity musicEntity;
+
 
     private Sprite createLobbySprite;
     private Sprite multisprite;
@@ -97,8 +105,8 @@ public class LobbyScreen extends AbstractScreen {
 
         /*this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
-        networkManager = new NetworkManager();
-        table = new TableComponent(networkManager);
+        //networkManager = new NetworkManager();
+        table = new TableComponent();
 
         bg = new TextureRegion(new Texture("lobbyscreen/lobbyScreen.png"));
         createLobby = new TextureRegion(new Texture("lobbyscreen/createLobbyButton.png"));
@@ -114,8 +122,6 @@ public class LobbyScreen extends AbstractScreen {
 
         scaleX = (Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE) * 0.8f;
         scaleY = (Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE) * 0.8f;
-
-
     }
 
     @Override
@@ -138,16 +144,24 @@ public class LobbyScreen extends AbstractScreen {
 
     public void handleInput() {
         String nickname = "PepsiCoke";
-        String playerType = "pacman";
+        String playerType = "GHOST";
         String joinLobbyName = "Lobby1";
 
         if(createLobbyButton.flags == 1) {
             System.out.println("CreateLobbyButton pressed but lobby not created!");
 
             if (table.createLobby) {
-                System.out.println("Create Lobby Called!");
-                networkManager.createLobby(nickname, playerType);
-                app.gsm.setScreen(GameScreenManager.STATE.PLAY);
+                connection.createLobby(nickname, playerType);
+                /*MULTIPLAYER = true;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {}
+                String lobby = connection.getLobby();
+                while (lobby == null) {
+                    lobby = connection.getLobby();
+                }
+                LobbyScreen.LOBBY_JOINED = lobby;*/
+                //app.gsm.setScreen(GameScreenManager.STATE.PLAY);
             } 
             createLobbyButton.flags = 0;
         }
@@ -168,7 +182,7 @@ public class LobbyScreen extends AbstractScreen {
         buttonSystem = new ButtonSystem(camera);
         tableSystem = new TableSystem(app);
         renderingSystem = new RenderingSystem(batch);
-        musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
+        musicSystem = new MusicSystem();
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
@@ -201,6 +215,10 @@ public class LobbyScreen extends AbstractScreen {
                 .add(new TransformComponent((Gdx.graphics.getWidth() / 2 - (createLobbySprite.getRegionWidth() / 2 * scaleX)), Gdx.graphics.getHeight() / 20f));
 
         engine.addEntity(createLobbyButton);
+
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/menu")));
+        engine.addEntity(musicEntity);
     }
 
     @Override

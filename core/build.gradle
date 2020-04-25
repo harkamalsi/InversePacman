@@ -6,6 +6,6 @@ sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
-    implementation 'io.socket:socket.io-client:1.0.0'
+    implementation 'io.socket:socket.io-client:0.8.3'
     implementation 'org.json:json:20190722'
 }

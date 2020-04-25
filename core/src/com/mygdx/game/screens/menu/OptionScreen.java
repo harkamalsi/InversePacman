@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.EntityManager;
@@ -69,6 +70,8 @@ public class OptionScreen extends AbstractScreen {
     private Entity bgEntity;
     private Entity ellipseEntity;
     private Entity front_ellipseEntity;
+
+    private Entity musicEntity;
 
 
     private Sprite backSprite;
@@ -136,7 +139,8 @@ public class OptionScreen extends AbstractScreen {
 
         }
         if(backButton.flags == 1) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
 
             // saves the volume and sound levels to the settings file
@@ -267,7 +271,7 @@ public class OptionScreen extends AbstractScreen {
 
         buttonSystem = new ButtonSystem(camera);
         renderingSystem = new RenderingSystem(batch);
-        musicSystem = new MusicSystem(Gdx.files.internal("music/pause"));
+        musicSystem = new MusicSystem();
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
@@ -349,6 +353,9 @@ public class OptionScreen extends AbstractScreen {
 
         // ***** Back button END *****
 
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
+        engine.addEntity(musicEntity);
 
     }
 
