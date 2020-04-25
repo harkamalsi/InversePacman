@@ -27,6 +27,7 @@ public class PlayerComponent implements Component {
 
     public float invincibleTimer;
 
+    public boolean pacmanGotHit;
 
     public Body body;
     public String id;
@@ -76,8 +77,11 @@ public class PlayerComponent implements Component {
     }
 
     public void hit(PlayerComponent playerHit) {
-        this.hp -= 1;
-        Hud.setLives(hp);
+        if (id.equals("PACMAN")){
+            this.hp -= 1;
+            Hud.setLives(hp);
+            pacmanGotHit = true;
+        }
         System.out.println(id + " have been hit by " + playerHit.getId());
     }
 

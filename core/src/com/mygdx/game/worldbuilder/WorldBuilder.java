@@ -178,6 +178,15 @@ import java.util.ArrayList;
             }
 
         }
+        public static void resetBodyPositions(){
+            for (int i = 0; i <getPlayerList().size(); i++){
+                Vector2 vector = new Vector2();
+                getPlayerPositionList().get(i).getRectangle().getCenter(vector);
+                getPlayerList().get(i).body.setTransform(vector,0);
+
+            }
+
+        }
 
         public static ArrayList<ArrayList<Node>> getNodeCostMatrix() {
             return nodeCostMatrix;

@@ -108,7 +108,9 @@ public final class PlayScreen extends AbstractScreen {
     //Box2d
     public OrthogonalTiledMapRenderer tmr;
     public TiledMap map;
+
     public boolean destroyAllBodies;
+    public boolean pacmanGotHit;
 
     private Engine engine;
 
@@ -216,20 +218,21 @@ public final class PlayScreen extends AbstractScreen {
             //engine.removeSystem(pillSystem);
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
-            /*int count = 0;
-            for(int i = 0; i <= WorldBuilder.getPillList().size(); i++ ) {
-                count += 1;
-                WorldBuilder.getPillList().remove(i);
-            }
-            for(int i = 0; i <= WorldBuilder.getPlayerList().size(); i++ ) {
-                count += 1;
-                WorldBuilder.getPlayerList().remove(i);
-            }
-            System.out.println(count);
-            System.out.println("my medication gone: " + WorldBuilder.getPillList());*/
-
-            //WorldBuilder.getPillList().remove(0);
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
+        }
+
+        if(hud.remainingLives < 1){
+            engine.removeAllEntities();
+
+            musicSystem.dispose();
+            engine.removeSystem(musicSystem);
+            engine.removeSystem(collisionSystem);
+            //engine.removeSystem(renderingSystem);
+            //engine.removeSystem(pillSystem);
+            engine.removeSystem(animationSystem);
+            ghostsheet.dispose();
+            app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
+
         }
         hud.update(delta);
     }
@@ -374,9 +377,12 @@ public final class PlayScreen extends AbstractScreen {
 
             engine.addEntity(pill);
         }
-        PlayerComponent playerComponent = WorldBuilder.getPlayerList().get(4);
-        Vector2 vector = playerComponent.body.getPosition();
-        System.out.println("pacman is here: " + playerComponent.body.getPosition());
+
+        PlayerComponent pacmanComponent = WorldBuilder.getPlayerList().get(4);
+        Vector2 vector = pacmanComponent.body.getPosition();
+        System.out.println("pacman is here: " + pacmanComponent.body.getPosition());
+
+
         pacmansprite = new Texture("pacman.png");
 
 
@@ -454,6 +460,13 @@ public final class PlayScreen extends AbstractScreen {
                     world.destroyBody(body);
                 }
                 destroyAllBodies = false;
+            }
+            PlayerComponent pacmanComponent = WorldBuilder.getPlayerList().get(4);
+
+
+            if(pacmanComponent.pacmanGotHit){
+                WorldBuilder.resetBodyPositions();
+                pacmanComponent.pacmanGotHit = false;
             }
 
             world.step(1/60f,6,2);
