@@ -139,7 +139,6 @@ public class LobbyScreen extends AbstractScreen {
     @Override
     public void update(float delta) {
         handleInput();
-
     }
 
     public void handleInput() {
@@ -149,7 +148,7 @@ public class LobbyScreen extends AbstractScreen {
 
         if(createLobbyButton.flags == 1) {
             if (table.createLobby) {
-                connection.createLobby(nickname, playerType);
+                connection.createLobby(nickname, TableComponent.PLAYERTYPE);
                 /*MULTIPLAYER = true;
                 try {
                     Thread.sleep(1000);

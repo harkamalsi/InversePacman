@@ -53,19 +53,8 @@ public class TableSystem extends IteratingSystem {
         super.update(deltaTime);
     }
 
-    private void handleLobbyButtonClicked(String lobbyName) {
-        this.connection.joinLobby(lobbyName, "Cokey", "GHOST");
-        /*try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {}
-        String lobby = connection.getLobby();
-        while (lobby == null) {
-            System.out.println(lobby);
-            lobby = connection.getLobby();
-        }
-        System.out.println(lobby);*/
-
-
+    private void handleLobbyButtonClicked(String lobbyName, String type) {
+        this.connection.joinLobby(lobbyName, "Cokey", type);
     }
 
     private void startGame() {
@@ -76,8 +65,8 @@ public class TableSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
-        cc.reset();
 
+        cc.reset();
         JSONArray lobbies = connection.getLobbies();
 
         if (NetworkManager.CONNECTED) {
@@ -99,12 +88,13 @@ public class TableSystem extends IteratingSystem {
                 cc.addRow(lobbyName, lobbyPlayers);
             }
             cc.addCheckbox();
+            cc.addTypeCheckboxes();
             cc.draw = false;
         }
         cc.draw();
 
         if (cc.lobbyButtonClicked && LobbyScreen.LOBBY_JOINED == null) {
-            handleLobbyButtonClicked(cc.getJoinLobbyName());
+            handleLobbyButtonClicked(cc.getJoinLobbyName(), cc.PLAYERTYPE);
         }
 
         String lobbyJoined = connection.getLobby();
