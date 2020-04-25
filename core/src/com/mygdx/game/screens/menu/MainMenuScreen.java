@@ -135,6 +135,10 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
             engine.removeSystem(musicSystem);
             musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.OPTION_SCREEN);
+
+
+
+
         }
 
         /*else if (Gdx.input.isKeyPressed(Input.Keys.P) && app.gsm.currentState == GameScreenManager.STATE.MAIN_MENU_SCREEN) {
@@ -219,7 +223,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
         buttonSystem = new ButtonSystem(camera);
         renderingSystem = new RenderingSystem(batch);
-        musicSystem = new MusicSystem(Gdx.files.internal("music/menu"));
+        musicSystem = new MusicSystem();
 
         engine = new Engine();
         engine.addSystem(buttonSystem);

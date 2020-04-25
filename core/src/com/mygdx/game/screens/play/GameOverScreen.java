@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.MusicSystem;
@@ -43,6 +44,8 @@ public class GameOverScreen extends AbstractScreen {
     private Entity bgEntity;
     private Entity won_bgEntity;
     private Entity lost_bgEntity;
+
+    private Entity musicEntity;
 
     private Sprite ellipseSprite;
     private Sprite front_ellipseSprite;
@@ -98,19 +101,12 @@ public class GameOverScreen extends AbstractScreen {
 
         //sound.play(app.sound_volume);
         //Must check and retrieve if the player won or lost
-        if(engine.getSystem(PillSystem.class).allPillsCollected()) {
-            musicSystem = new MusicSystem(Gdx.files.internal("music/gameover/won"), sound);
-        }
-        if(!engine.getSystem(PillSystem.class).allPillsCollected()) {
-            musicSystem = new MusicSystem(Gdx.files.internal("music/gameover/lost"), sound);
-        }
+
+        musicSystem = new MusicSystem();
 
         engine.addSystem(musicSystem);
 
 
-
-        musicSystem.pause();
-        musicSystem.playSound(0);
 
         bgSprite = new Sprite(excitementBg);
         bgEntity = new Entity();
@@ -138,6 +134,18 @@ public class GameOverScreen extends AbstractScreen {
         app.addSpriteEntity(lost_bgSprite, lost_bgEntity, engine,0, -2, Gdx.graphics.getWidth() +2, Gdx.graphics.getHeight() +2,false,false,false, false );
         engine.removeEntity(lost_bgEntity);
 
+        musicEntity = new Entity();
+
+        if(engine.getSystem(PillSystem.class).allPillsCollected()) {
+            musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/won"), sound));
+        }
+        if(!engine.getSystem(PillSystem.class).allPillsCollected()) {
+            musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/lost"), sound));
+        }
+
+        engine.addEntity(musicEntity);
+        musicSystem.pause();
+        musicSystem.playSound(0);
 
     }
 

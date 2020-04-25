@@ -48,7 +48,7 @@ public class MusicSystem extends IteratingSystem {
     private ComponentMapper<MusicComponent> musicM;
 
 
-    public MusicSystem(FileHandle trackdir, Sound ...sounds) {
+    public MusicSystem() {
         super(Family.all(MusicComponent.class).get());
         musicM = ComponentMapper.getFor(MusicComponent.class);
 
@@ -79,10 +79,14 @@ public class MusicSystem extends IteratingSystem {
     }
 
     public void dispose() {
-        //song.dispose();
+        // have to check this because it can crash if screens are switched faster than the music can load
+        if(song != null) {
+            song.dispose();
+        }
     }
 
     public void pause() {
+        update(1);
         song.pause();
         pause = true;
     }
@@ -96,6 +100,7 @@ public class MusicSystem extends IteratingSystem {
         Random track = new Random();
         System.out.println("Start " + tracknr);
         System.out.println("Last track " + lasttrack);
+        //System.out.println(tracks);
         /* The if statements make sure that the same song never plays twice in a row, unless there
            is only one song
          */
@@ -125,6 +130,7 @@ public class MusicSystem extends IteratingSystem {
     }
 
     public void playSound(int soundfile) {
+        update(1);
         sounds.get(soundfile);
         sound = sounds.get(soundfile);
         sound.play(sound_volume);
@@ -173,18 +179,21 @@ public class MusicSystem extends IteratingSystem {
             }
             //System.out.println("music volume: " + music_volume);
 
-            if(!start) {
+            if(!start && !tracks.isEmpty()) {
                 playMusic(tracks, -1);
                 start = true;
             }
 
-            getMusic();
-            if(!song.isPlaying() && !pause){
-                System.out.println("updating music");
-                System.out.println("song changed");
-                // Song needs to be disposed before it is changed
-                song.dispose();
-                playMusic(tracks, tracknr);
+
+            if(!tracks.isEmpty()) {
+                getMusic();
+                if (!song.isPlaying() && !pause) {
+                    System.out.println("updating music");
+                    System.out.println("song changed");
+                    // Song needs to be disposed before it is changed
+                    song.dispose();
+                    playMusic(tracks, tracknr);
+                }
             }
         }
         entityArray.clear();
