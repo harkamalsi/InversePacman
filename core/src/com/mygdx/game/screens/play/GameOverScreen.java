@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PillSystem;
@@ -27,6 +28,8 @@ public class GameOverScreen extends AbstractScreen {
     private TextureRegion lost_bg;
     private float elapsed;
     private Sound sound;
+
+    private MultiplayerMessage connection = MultiplayerMessage.getInstance();
 
     private RenderingSystem renderingSystem;
 
@@ -66,8 +69,8 @@ public class GameOverScreen extends AbstractScreen {
         sound = Gdx.audio.newSound(Gdx.files.internal("sound/the_winner.ogg"));
 
         excitementBg = new TextureRegion(new Texture("gameover/excitement_bg.png"));
-        won_bg = new TextureRegion(new Texture("gameover/Nampac.jpg"));
-        lost_bg = new TextureRegion(new Texture("gameover/Ghosts.jpg"));
+        won_bg = new TextureRegion(new Texture("gameover/won.png"));
+        lost_bg = new TextureRegion(new Texture("gameover/gameover.png"));
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
 
@@ -75,17 +78,18 @@ public class GameOverScreen extends AbstractScreen {
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
 
-
     }
 
     @Override
     public void update(float delta) {
+        System.out.println("time elapsed " + elapsed);
         elapsed += delta;
         if(Gdx.input.justTouched()){
-            app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
-            //engine.removeSystem(musicSystem);
             musicSystem.dispose();
             engine.removeAllEntities();
+            app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
+            //engine.removeSystem(musicSystem);
+
         }
         // need to add start boolean or music would not stop playing when switching screens
         if(elapsed > 2 && start) {
@@ -97,6 +101,9 @@ public class GameOverScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        elapsed = 0;
+        resultpageadded = false;
+
         System.out.println("Did we win? " + engine.getSystem(PillSystem.class).allPillsCollected());
 
         //sound.play(app.sound_volume);
@@ -137,9 +144,11 @@ public class GameOverScreen extends AbstractScreen {
         musicEntity = new Entity();
 
         if(engine.getSystem(PillSystem.class).allPillsCollected()) {
+            connection.leaveLobby();
             musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/won"), sound));
         }
         if(!engine.getSystem(PillSystem.class).allPillsCollected()) {
+            connection.leaveLobby();
             musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/lost"), sound));
         }
 
@@ -172,11 +181,20 @@ public class GameOverScreen extends AbstractScreen {
             engine.removeEntity(bgEntity);
         }
         if(elapsed > 2.0 && engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
+            engine.removeEntity(front_ellipseEntity);
+            engine.removeEntity(ellipseEntity);
             engine.addEntity(won_bgEntity);
+            engine.addEntity(ellipseEntity);
+            engine.addEntity(front_ellipseEntity);
+
             resultpageadded = true;
         }
         if(elapsed > 2.0 && !engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
+            engine.removeEntity(front_ellipseEntity);
+            engine.removeEntity(ellipseEntity);
             engine.addEntity(lost_bgEntity);
+            engine.addEntity(ellipseEntity);
+            engine.addEntity(front_ellipseEntity);
             resultpageadded = true;
         }
         engine.update(delta);

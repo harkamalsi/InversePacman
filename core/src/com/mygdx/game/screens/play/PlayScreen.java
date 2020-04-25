@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -58,7 +59,13 @@ import com.mygdx.game.worldbuilder.WorldBuilder;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import java.util.concurrent.Future;
+
+import sun.security.jgss.GSSCaller;
+
 import java.util.concurrent.ThreadLocalRandom;
+
 
 public final class PlayScreen extends AbstractScreen {
 
@@ -378,12 +385,20 @@ public final class PlayScreen extends AbstractScreen {
             engine.addEntity(pill);
         }
 
-        PlayerComponent pacmanComponent = WorldBuilder.getPlayerList().get(4);
-        Vector2 vector = pacmanComponent.body.getPosition();
-        System.out.println("pacman is here: " + pacmanComponent.body.getPosition());
+        PlayerComponent playerComponent = WorldBuilder.getPlayerList().get(4);
+        Vector2 vector = playerComponent.body.getPosition();
+        System.out.println("pacman is here: " + playerComponent.body.getPosition());
 
+        // probably make method of this or system
+        FileHandle skin_dir = Gdx.files.internal("pacman_skins");
+        ArrayList<String> skinList = new ArrayList<String>();
+        for(FileHandle skintostring : skin_dir.list()) {
+            String name = skintostring.path();
+            skinList.add(name);
+        }
 
-        pacmansprite = new Texture("pacman.png");
+        pacmansprite = new Texture(skinList.get(app.skin_number));
+
 
 
 
@@ -459,6 +474,7 @@ public final class PlayScreen extends AbstractScreen {
                 for (Body body: bodies){
                     world.destroyBody(body);
                 }
+                //world.dispose();
                 destroyAllBodies = false;
             }
             PlayerComponent pacmanComponent = WorldBuilder.getPlayerList().get(4);

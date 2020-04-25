@@ -41,6 +41,10 @@ public class MultiplayerMessage {
         networkManager.readyUp(lobbyName, isReadyUp);
     }
 
+    public void leaveLobby() {
+        networkManager.leaveLobby(LobbyScreen.LOBBY_JOINED);
+    }
+
     // Getting response
     public JSONArray getInput() {
         tempResponse = networkManager.getUpdate(LobbyScreen.LOBBY_JOINED);
