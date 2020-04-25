@@ -3,8 +3,10 @@ package com.mygdx.game.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -14,7 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -26,6 +30,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.swing.event.ChangeEvent;
 
 public class TableComponent implements Component {
@@ -38,6 +43,9 @@ public class TableComponent implements Component {
     public boolean lobbyButtonClicked = false;
     public boolean createLobby = false;
     public boolean isReadyUpChecked = false;
+    public static String PLAYERTYPE = "GHOST";
+    public boolean pacmanType = false;
+    public boolean ghostType = true;
     private Container<Table> tableContainer;
 
     public TableComponent() {
@@ -121,8 +129,85 @@ public class TableComponent implements Component {
             }
         });
 
-        // WHY DOESN'T THIS CENTER!?
-        table.add(readyUpCheckbox);
+        table.add(readyUpCheckbox).expandX().padBottom(20);
+    }
+
+    public void addTypeCheckboxes() {
+        final CheckBox pacmantypeCheckBox = new CheckBox("PACMAN", skin);
+        final CheckBox ghostTypeCheckBox = new CheckBox("GHOST", skin);
+
+        pacmantypeCheckBox.getLabel().setFontScale(0.5f);
+        pacmantypeCheckBox.setSize(50f, 50f);
+        pacmantypeCheckBox.getImage().setScaling(Scaling.fit);
+        pacmantypeCheckBox.getImageCell().size(50f, 50f);
+        pacmantypeCheckBox.setChecked(pacmanType);
+
+        ghostTypeCheckBox.getLabel().setFontScale(0.5f);
+        ghostTypeCheckBox.setSize(50f, 50f);
+        ghostTypeCheckBox.getImage().setScaling(Scaling.fit);
+        ghostTypeCheckBox.getImageCell().size(50f, 50f);
+        ghostTypeCheckBox.setChecked(ghostType);
+
+        pacmantypeCheckBox.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (ghostType) {
+                    return true;
+                }
+
+                pacmanType = !pacmanType;
+                ghostTypeCheckBox.setChecked(pacmanType);
+
+                return true;
+            }
+        });
+
+        ghostTypeCheckBox.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (pacmanType) {
+                    return true;
+                }
+
+                ghostType = !ghostType;
+                ghostTypeCheckBox.setChecked(ghostType);
+
+                return true;
+            }
+        });
+
+        /*final SelectBox<String> selectBox = new SelectBox<String>(skin);
+        Array<String> options = new Array<String>();
+        options.add("GHOST");
+        options.add("PACMAN");
+        selectBox.setItems(options);
+        selectBox.setSelected(playerType);
+
+        selectBox.addCaptureListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                playerType = selectBox.getSelected();
+                selectBox.setSelected(playerType);
+                return false;
+            }
+        });*/
+
+        if (ghostType) {
+            PLAYERTYPE = "GHOST";
+        } else {
+            PLAYERTYPE = "PACMAN";
+        }
+
+        table.row();
+        table.add(ghostTypeCheckBox).expandX();
+        table.add(pacmantypeCheckBox).expandX();
         table.row();
     }
 
