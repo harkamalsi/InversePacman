@@ -485,6 +485,14 @@ public final class PlayScreen extends AbstractScreen {
                 pacmanComponent.pacmanGotHit = false;
             }
 
+            if(pacmanComponent.ghostHit != null){
+                WorldBuilder.resetBodyPosition(pacmanComponent.ghostHit);
+                pacmanComponent.ghostHit = null;
+            }
+
+
+
+
             world.step(1/60f,6,2);
 
         }
