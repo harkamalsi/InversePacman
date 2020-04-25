@@ -260,13 +260,15 @@ public class OptionScreen extends AbstractScreen {
             for(FileHandle skintostring : skin_dir.list()) {
                 String name = skintostring.path();
                 skinList.add(name);
-                System.out.println(name);
+                //System.out.println(name);
             }
-            System.out.println(skinList.size());
+            //System.out.println(skinList.size());
             app.skin_number += 1;
             app.skin_number = app.skin_number % skinList.size();
-            skin.writeString(app.skin_number + "", false);
-            drawPreview(skinList.get(app.skin_number));
+            System.out.println(skinList.get(app.skin_number));
+            skin.writeString(skinList.get(app.skin_number), false);
+            app.skin = skinList.get(app.skin_number);
+            drawPreview(app.skin);
 
 
         }
@@ -285,7 +287,7 @@ public class OptionScreen extends AbstractScreen {
 
     @Override
     public void update(float delta) {
-        System.out.println(engine.getEntities().size());
+        //System.out.println(engine.getEntities().size());
         handleInput();
         app.step();
         //System.out.println("Width app: " + app.APP_WIDTH + " Actual width: " + Gdx.graphics.getWidth());
@@ -301,10 +303,6 @@ public class OptionScreen extends AbstractScreen {
         this.camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-
-
-
 
         batch = new SpriteBatch();
 
@@ -397,14 +395,9 @@ public class OptionScreen extends AbstractScreen {
         engine.addEntity(musicEntity);
 
 // probably make method of this or system
-        FileHandle skin_dir = Gdx.files.internal("pacman_skins");
-        ArrayList<String> skinList = new ArrayList<String>();
-        for(FileHandle skintostring : skin_dir.list()) {
-            String name = skintostring.path();
-            skinList.add(name);
-        }
 
-        preview = new TextureRegion(new Texture(skinList.get(app.skin_number)));
+
+        preview = new TextureRegion(new Texture(app.skin));
         previewSprite = new Sprite(preview);
         previewEntity = new Entity();
         app.addSpriteEntity(previewSprite, previewEntity, engine, Gdx.graphics.getWidth() / 2 - previewSprite.getRegionWidth()*scaleX / 4,Gdx.graphics.getHeight() / 15, previewSprite.getRegionWidth()*scaleX / 2, previewSprite.getRegionHeight()*scaleX / 2, true, false, false, false);

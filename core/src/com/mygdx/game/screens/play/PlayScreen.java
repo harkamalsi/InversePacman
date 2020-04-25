@@ -61,6 +61,7 @@ import com.mygdx.game.worldbuilder.WorldBuilder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.concurrent.Future;
 
 
@@ -84,7 +85,8 @@ public final class PlayScreen extends AbstractScreen {
 
     private Texture pacmansprite;
     private Texture ghostsheet;
-    private Texture pillSprite;
+    private Texture littlePillSprite;
+    private Texture powerPillSprite;
 
     private TextureRegion pausescreen;
     private TextureRegion pausetexture;
@@ -104,9 +106,11 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
+
     public static boolean MULTIPLAYER;
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private Entity musicEntity;
+    private Entity musicPauseEntity;
 
     //World building
     public World world;
@@ -137,10 +141,10 @@ public final class PlayScreen extends AbstractScreen {
     private PillSystem pillSystem;
 
 
-
     public static float scaleX;
     private float scaleY;
 
+    private static final Integer[] powerPillIndices = {4, 30, 105, 120};
 
 
     public PlayScreen(final InversePacman app, Engine engine) {
@@ -294,12 +298,6 @@ public final class PlayScreen extends AbstractScreen {
         WorldBuilder.createPills(world);
         //this.camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
-
-
-
-
-
-
         // To add a new songs, place the file under the folder assets/music/play
         //batch = new SpriteBatch();
         playerInputSystem = new PlayerInputSystem(MULTIPLAYER);
@@ -326,6 +324,37 @@ public final class PlayScreen extends AbstractScreen {
         engine.addSystem(musicSystem);
         engine.addSystem(buttonSystem);
         engine.addSystem(pillSystem);
+
+        // Pill logic
+        littlePillSprite = new Texture("white_pill.png");
+        powerPillSprite = new Texture("orange_pill.png");
+
+        Vector2 scale = new Vector2();
+        for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
+            PillComponent pillComponent = WorldBuilder.getPillList().get(i);
+            Vector2 vector = pillComponent.body.getPosition();
+
+            TextureRegion pillTextureRegion;
+            // If the current index has been identified as a power pill index,
+            // then the pill is a power pill and the size of its texture is increased
+            if ((Arrays.asList(powerPillIndices)).contains(i)) {
+                pillComponent.setPowerPill(true);
+                scale.set(.10f*(scaleX*1.32f), .10f*(scaleX * 1.32f));
+                pillTextureRegion = new TextureRegion(powerPillSprite);
+            } else {
+                pillComponent.setPowerPill(false);
+                scale.set(0.07f*(scaleX *1.32f), 0.07f*(scaleX *1.32f));
+                pillTextureRegion = new TextureRegion(littlePillSprite);
+            }
+
+            pill = new Entity();
+            pill.add(WorldBuilder.getPillList().get(i))
+                    .add(new TextureComponent(new TextureRegion(pillTextureRegion)))
+                    .add(new TransformComponent((scaleX *1.32f)*vector.x / RenderingSystem.PPM,
+                            (scaleX *1.32f)*vector.y / RenderingSystem.PPM, scale.x, scale.y, 0f));
+
+            engine.addEntity(pill);
+        }
 
         //splitting up the different frames in the ghost sheet and adding them to an animation
         ghostsheet = new Texture("ghosts.png");
@@ -354,7 +383,7 @@ public final class PlayScreen extends AbstractScreen {
             Vector2 vector = playerComponent.body.getPosition();
 
 
-            Vector2 scale = new Vector2(0.9f*(scaleX *1.32f), 0.9f*(scaleX *1.32f));
+            scale = new Vector2(0.9f*(scaleX *1.32f), 0.9f*(scaleX *1.32f));
 
             ghost = new Entity();
             ghost.add(new VelocityComponent())
@@ -369,54 +398,13 @@ public final class PlayScreen extends AbstractScreen {
             engine.addEntity(ghost);
         }
 
-        // Pill logic
-        pillSprite = new Texture("white_pill.png");
-
-        // decide which pills will be power pills
-        ArrayList<Integer> powerPillsIndices = new ArrayList<>();
-        while (powerPillsIndices.size() < 4) {
-            int randomNum = ThreadLocalRandom.current().nextInt(0,WorldBuilder.getPillList().size() + 1);
-            if (!powerPillsIndices.contains(randomNum)) {
-                powerPillsIndices.add(randomNum);
-            }
-        }
-
-        Vector2 scale = new Vector2();
-        for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
-            scale.set(0.05f*(scaleX *1.32f), 0.05f*(scaleX *1.32f));
-            PillComponent pillComponent = WorldBuilder.getPillList().get(i);
-            Vector2 vector = pillComponent.body.getPosition();
-
-            // If the current index has been identified as a power pill index,
-            // then the pill is a power pill and the size of its texture is increased
-            if (powerPillsIndices.contains(i)) {
-                pillComponent.setPowerPill(true);
-                scale.set(.10f*(scaleX*1.32f), .10f*(scaleX * 1.32f));
-            }
-
-            pill = new Entity();
-            pill.add(WorldBuilder.getPillList().get(i))
-                    .add(new TextureComponent(new TextureRegion(pillSprite)))
-                    .add(new TransformComponent((scaleX *1.32f)*vector.x / RenderingSystem.PPM,
-                            (scaleX *1.32f)*vector.y / RenderingSystem.PPM, scale.x, scale.y, 0f));
-
-
-            engine.addEntity(pill);
-        }
-
+        // Pac-Man
         PlayerComponent playerComponent = WorldBuilder.getPlayerList().get(4);
         Vector2 vector = playerComponent.body.getPosition();
         System.out.println("pacman is here: " + playerComponent.body.getPosition());
 
-        // probably make method of this or system
-        FileHandle skin_dir = Gdx.files.internal("pacman_skins");
-        ArrayList<String> skinList = new ArrayList<String>();
-        for(FileHandle skintostring : skin_dir.list()) {
-            String name = skintostring.path();
-            skinList.add(name);
-        }
 
-        pacmansprite = new Texture(skinList.get(app.skin_number));
+        pacmansprite = new Texture(app.skin);
 
 
 
@@ -455,8 +443,8 @@ public final class PlayScreen extends AbstractScreen {
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
         engine.addEntity(musicEntity);
 
-       // musicPauseEntity = new Entity();
-        //musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
+        musicPauseEntity = new Entity();
+        musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
         //engine.addEntity(musicPauseEntity);
 
         //aiSystem.setDifficulty("MURDEROUS");
