@@ -36,7 +36,7 @@ public class GameOverScreen extends AbstractScreen {
 
     private MusicSystem musicSystem;
     private boolean won = true;
-    private boolean start = true;
+    private boolean start;
     private boolean resultpageadded = false;
 
     private TextureRegion ellipse;
@@ -62,6 +62,7 @@ public class GameOverScreen extends AbstractScreen {
     public GameOverScreen(final InversePacman app, Engine engine) {
         super(app, engine);
         this.engine = engine;
+
 
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
@@ -103,6 +104,7 @@ public class GameOverScreen extends AbstractScreen {
     public void show() {
         elapsed = 0;
         resultpageadded = false;
+        start = true;
 
         System.out.println("Did we win? " + engine.getSystem(PillSystem.class).allPillsCollected());
 

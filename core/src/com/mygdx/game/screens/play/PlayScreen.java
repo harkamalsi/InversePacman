@@ -232,15 +232,17 @@ public final class PlayScreen extends AbstractScreen {
             engine.removeAllEntities();
 
             musicSystem.dispose();
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
             engine.removeSystem(collisionSystem);
             //engine.removeSystem(renderingSystem);
             //engine.removeSystem(pillSystem);
-            engine.removeSystem(animationSystem);
+            //engine.removeSystem(animationSystem);
+            //engine.removeAllEntities();
             ghostsheet.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
-
+            //destroyAllBodies = true;
         }
+
         hud.update(delta);
     }
 
@@ -436,6 +438,11 @@ public final class PlayScreen extends AbstractScreen {
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
         engine.addEntity(musicEntity);
 
+       // musicPauseEntity = new Entity();
+        //musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
+        //engine.addEntity(musicPauseEntity);
+
+        //aiSystem.setDifficulty("MURDEROUS");
 
     }
 
@@ -474,7 +481,7 @@ public final class PlayScreen extends AbstractScreen {
                 for (Body body: bodies){
                     world.destroyBody(body);
                 }
-                //world.dispose();
+                world.dispose();
                 destroyAllBodies = false;
             }
             PlayerComponent pacmanComponent = WorldBuilder.getPlayerList().get(4);
