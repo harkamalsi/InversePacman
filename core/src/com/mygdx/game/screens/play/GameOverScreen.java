@@ -26,7 +26,7 @@ public class GameOverScreen extends AbstractScreen {
     protected TextureRegion excitementBg;
     private TextureRegion won_bg;
     private TextureRegion lost_bg;
-    private float elapsed = 0;
+    private float elapsed;
     private Sound sound;
 
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
@@ -78,11 +78,11 @@ public class GameOverScreen extends AbstractScreen {
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
 
-
     }
 
     @Override
     public void update(float delta) {
+        System.out.println("time elapsed " + elapsed);
         elapsed += delta;
         if(Gdx.input.justTouched()){
             musicSystem.dispose();
@@ -101,6 +101,9 @@ public class GameOverScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        elapsed = 0;
+        resultpageadded = false;
+
         System.out.println("Did we win? " + engine.getSystem(PillSystem.class).allPillsCollected());
 
         //sound.play(app.sound_volume);

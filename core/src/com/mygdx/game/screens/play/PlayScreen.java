@@ -474,6 +474,7 @@ public final class PlayScreen extends AbstractScreen {
                 for (Body body: bodies){
                     world.destroyBody(body);
                 }
+                //world.dispose();
                 destroyAllBodies = false;
             }
             PlayerComponent pacmanComponent = WorldBuilder.getPlayerList().get(4);
