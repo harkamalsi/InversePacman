@@ -14,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.PlayerComponent;
+import com.mygdx.game.screens.play.PlayScreen;
+
 
 import java.util.ArrayList;
 
@@ -146,7 +148,7 @@ import java.util.ArrayList;
 
 
                if (getPlayerPositionList().get(i).getName().equals("Ghost")) {
-                   player.createPlayerBody(world, "GHOST_NUMBER_" + i.toString(), vector.x, vector.y, "GHOST", true);
+                   player.createPlayerBody(world, "GHOST_NUMBER_" + i.toString(), vector.x, vector.y, "GHOST", !PlayScreen.MULTIPLAYER);
                    playerList.add(player);
 
                }

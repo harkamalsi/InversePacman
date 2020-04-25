@@ -60,8 +60,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import sun.security.jgss.GSSCaller;
-
 public final class PlayScreen extends AbstractScreen {
 
     public static boolean pause;
@@ -99,6 +97,7 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
+    public static boolean MULTIPLAYER;
     private Entity musicEntity;
 
     //World building
@@ -273,9 +272,8 @@ public final class PlayScreen extends AbstractScreen {
 
 
         // To add a new songs, place the file under the folder assets/music/play
-
         //batch = new SpriteBatch();
-        playerInputSystem = new PlayerInputSystem();
+        playerInputSystem = new PlayerInputSystem(MULTIPLAYER);
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();
@@ -288,7 +286,9 @@ public final class PlayScreen extends AbstractScreen {
         pillSystem = new PillSystem();
 
         engine.addSystem(playerInputSystem);
-        engine.addSystem(aiSystem);
+        if(!MULTIPLAYER){
+            engine.addSystem(aiSystem);
+        }
         engine.addSystem(movementSystem);
         engine.addSystem(collisionSystem);
         engine.addSystem(renderingSystem);
