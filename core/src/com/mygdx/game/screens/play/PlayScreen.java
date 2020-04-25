@@ -286,7 +286,7 @@ public final class PlayScreen extends AbstractScreen {
         pillSystem = new PillSystem();
 
         engine.addSystem(playerInputSystem);
-        engine.addSystem(aiSystem);
+        //engine.addSystem(aiSystem);
         engine.addSystem(movementSystem);
         engine.addSystem(collisionSystem);
         engine.addSystem(renderingSystem);

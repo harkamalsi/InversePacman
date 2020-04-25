@@ -26,14 +26,22 @@ public class MultiplayerMessage {
         return instance;
     }
 
+    // Sending request
     public void sendInput() {
         if (LobbyScreen.LOBBY_JOINED != null) {
             networkManager.sendInput(LobbyScreen.LOBBY_JOINED, X, Y);
         }
     }
 
-    //android:networkSecurityConfig="@xml/network_security_config"
+    public void joinLobby(String lobbyName, String nickname, String type) {
+        networkManager.joinLobby(lobbyName, nickname, type);
+    }
 
+    public void readyUp(String lobbyName, Boolean isReadyUp) {
+        networkManager.readyUp(lobbyName, isReadyUp);
+    }
+
+    // Getting response
     public JSONArray getInput() {
         tempResponse = networkManager.getUpdate(LobbyScreen.LOBBY_JOINED);
         if (tempResponse != null) {
@@ -55,9 +63,7 @@ public class MultiplayerMessage {
         return networkManager.getLobby();
     }
 
-    public void joinLobby(String lobbyName, String nickname, String type) {
-        networkManager.joinLobby(lobbyName, nickname, type);
-    }
+
 
     public JSONArray getLobbies() {
         return networkManager.getLobbies();
