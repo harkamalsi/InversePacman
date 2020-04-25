@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PillSystem;
@@ -27,6 +28,8 @@ public class GameOverScreen extends AbstractScreen {
     private TextureRegion lost_bg;
     private float elapsed;
     private Sound sound;
+
+    private MultiplayerMessage connection = MultiplayerMessage.getInstance();
 
     private RenderingSystem renderingSystem;
 
@@ -137,9 +140,11 @@ public class GameOverScreen extends AbstractScreen {
         musicEntity = new Entity();
 
         if(engine.getSystem(PillSystem.class).allPillsCollected()) {
+            connection.leaveLobby();
             musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/won"), sound));
         }
         if(!engine.getSystem(PillSystem.class).allPillsCollected()) {
+            connection.leaveLobby();
             musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/lost"), sound));
         }
 

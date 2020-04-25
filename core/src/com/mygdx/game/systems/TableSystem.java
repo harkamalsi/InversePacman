@@ -52,7 +52,7 @@ public class TableSystem extends IteratingSystem {
     }
 
     private void handleLobbyButtonClicked(String lobbyName) {
-        this.connection.joinLobby(lobbyName, "Cokey", "PACMAN");
+        this.connection.joinLobby(lobbyName, "Cokey", "GHOST");
         this.connection.readyUp(lobbyName, true);
         MULTIPLAYER = true;
         /*try {
