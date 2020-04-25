@@ -29,6 +29,7 @@ import com.mygdx.game.systems.RenderingSystem;
 
 // to format the numbers shown for sound and volume
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class OptionScreen extends AbstractScreen {
 
@@ -57,6 +58,9 @@ public class OptionScreen extends AbstractScreen {
     private TextureRegion front_ellipse;
     private TextureRegion settings;
 
+    private TextureRegion changeTexture;
+    private TextureRegion preview;
+
     private Entity backButton;
     private Entity volume_muteButton;
     private Entity sound_muteButton;
@@ -73,6 +77,9 @@ public class OptionScreen extends AbstractScreen {
 
     private Entity musicEntity;
 
+    private Entity changeSkinButton;
+    private Entity previewEntity;
+
 
     private Sprite backSprite;
     private Sprite volume_muteSprite;
@@ -88,6 +95,9 @@ public class OptionScreen extends AbstractScreen {
     private Sprite bgSprite;
     private Sprite front_ellipseSprite;
 
+    private Sprite changeSkinSprite;
+    private Sprite previewSprite;
+
     private Music music;
 
     private BitmapFont font;
@@ -98,7 +108,6 @@ public class OptionScreen extends AbstractScreen {
 
     private DecimalFormat df;
     private GlyphLayout layout;
-
 
 
     public OptionScreen(InversePacman app, Engine engine) {
@@ -115,6 +124,7 @@ public class OptionScreen extends AbstractScreen {
         sound_mute = new TextureRegion(new Texture("optionscreen/mute_sound.png"));
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
+        changeTexture = new TextureRegion(new Texture("pacman_skins/pacman.png"));
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
         layout = new GlyphLayout(); //dont do this every frame! Store it as member
 
@@ -243,10 +253,39 @@ public class OptionScreen extends AbstractScreen {
             sound_muteButton.flags = 0;
         }
 
+        if(previewEntity.flags == 1) {
+            FileHandle skin = Gdx.files.local("skin.txt");
+            FileHandle skin_dir = Gdx.files.internal("pacman_skins");
+            ArrayList<String> skinList = new ArrayList<String>();
+            for(FileHandle skintostring : skin_dir.list()) {
+                String name = skintostring.path();
+                skinList.add(name);
+                System.out.println(name);
+            }
+            System.out.println(skinList.size());
+            app.skin_number += 1;
+            app.skin_number = app.skin_number % skinList.size();
+            skin.writeString(app.skin_number + "", false);
+            drawPreview(skinList.get(app.skin_number));
+
+
+        }
+
+    }
+
+    private void drawPreview(String name) {
+        if(previewEntity != null) {
+            engine.removeEntity(previewEntity);
+        }
+        preview = new TextureRegion(new Texture(name));
+        previewSprite = new Sprite(preview);
+        previewEntity = new Entity();
+        app.addSpriteEntity(previewSprite, previewEntity, engine, Gdx.graphics.getWidth() / 2 - previewSprite.getRegionWidth()*scaleX / 4,Gdx.graphics.getHeight() / 15, previewSprite.getRegionWidth()*scaleX / 2, previewSprite.getRegionHeight()*scaleX / 2, true, false, false, false);
     }
 
     @Override
     public void update(float delta) {
+        System.out.println(engine.getEntities().size());
         handleInput();
         app.step();
         //System.out.println("Width app: " + app.APP_WIDTH + " Actual width: " + Gdx.graphics.getWidth());
@@ -356,6 +395,19 @@ public class OptionScreen extends AbstractScreen {
         musicEntity = new Entity();
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
         engine.addEntity(musicEntity);
+
+// probably make method of this or system
+        FileHandle skin_dir = Gdx.files.internal("pacman_skins");
+        ArrayList<String> skinList = new ArrayList<String>();
+        for(FileHandle skintostring : skin_dir.list()) {
+            String name = skintostring.path();
+            skinList.add(name);
+        }
+
+        preview = new TextureRegion(new Texture(skinList.get(app.skin_number)));
+        previewSprite = new Sprite(preview);
+        previewEntity = new Entity();
+        app.addSpriteEntity(previewSprite, previewEntity, engine, Gdx.graphics.getWidth() / 2 - previewSprite.getRegionWidth()*scaleX / 4,Gdx.graphics.getHeight() / 15, previewSprite.getRegionWidth()*scaleX / 2, previewSprite.getRegionHeight()*scaleX / 2, true, false, false, false);
 
     }
 

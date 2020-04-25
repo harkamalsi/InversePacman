@@ -19,6 +19,7 @@ import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.managers.SaveManager;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class InversePacman extends Game {
@@ -66,7 +67,7 @@ public class InversePacman extends Game {
 	public boolean music;
 	public boolean sound;
 
-
+	public int skin_number;
 
 	public float a;
 
@@ -97,6 +98,39 @@ public class InversePacman extends Game {
 			}
 		}*/
 
+		if(!Gdx.files.local("skin.txt").exists()) {
+			FileHandle put = Gdx.files.local("skin.txt");
+			try {
+				put.file().createNewFile();
+			}
+			catch (IOException e) {
+				System.out.println(e);
+			}
+			put.copyTo(Gdx.files.local("."));
+		}
+
+		FileHandle skin = Gdx.files.local("skin.txt");
+		String text = skin.readString();
+		FileHandle skin_dir = Gdx.files.internal("pacman_skins");
+
+		ArrayList<String> skinList = new ArrayList<String>();
+		for(FileHandle skintostring : skin_dir.list()) {
+			String name = skintostring.path();
+			skinList.add(name);
+		}
+
+		try {
+			skin_number = Integer.parseInt(text);
+			if(skin_number  >= skinList.size()) {
+				skin_number = 0;
+			}
+		}
+		catch (NumberFormatException e) {
+			skin.writeString(0 + "", false);
+			skin_number = 0;
+		}
+
+
 		if(!Gdx.files.local("settings.txt").exists()){
 			FileHandle put = Gdx.files.local("settings.txt");
 			try {
@@ -109,7 +143,7 @@ public class InversePacman extends Game {
 
 		}
         FileHandle settings = Gdx.files.local("settings.txt");
-		String text = settings.readString();
+		text = settings.readString();
 		String wordsArray[] = text.split("\\r?\\n|,");
 		try {
 			music = Boolean.parseBoolean(wordsArray[1]);
