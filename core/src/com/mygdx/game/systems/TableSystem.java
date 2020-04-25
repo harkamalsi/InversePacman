@@ -53,7 +53,7 @@ public class TableSystem extends IteratingSystem {
     }
 
     private void handleLobbyButtonClicked(String lobbyName) {
-        this.connection.joinLobby(lobbyName, "Cokey", "PACMAN");
+        this.connection.joinLobby(lobbyName, "Cokey", "GHOST");
         String lobbyJoined = connection.getLobby();
         if (lobbyJoined != null) {
             MULTIPLAYER = true;
@@ -112,13 +112,11 @@ public class TableSystem extends IteratingSystem {
         if (LobbyScreen.LOBBY_JOINED != null) {
             cc.lobbyButtonClicked = false;
 
-            System.out.println("********** " + LobbyScreen.LOBBY_JOINED + " " + connection.METYPE);
             if (prevIsReadyUpChecked != cc.isReadyUpChecked) {
                 connection.readyUp(LobbyScreen.LOBBY_JOINED, cc.isReadyUpChecked);
             }
             prevIsReadyUpChecked = cc.isReadyUpChecked;
             if (cc.isReadyUpChecked) {
-                System.out.println("GAME STARTED");
                 startGame();
             }
         }

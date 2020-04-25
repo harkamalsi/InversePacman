@@ -239,7 +239,6 @@ public class NetworkManager {
                 public void call(Object... args) {
                     JSONArray response = (JSONArray) args[0];
                     setLobbies(response);
-                    //System.out.println(response);
                 }
             });
 
