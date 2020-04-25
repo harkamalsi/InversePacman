@@ -187,10 +187,9 @@ public final class PlayScreen extends AbstractScreen {
         }
 
         if(backButton.flags == 1) {
-            musicSystem.dispose();
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
             engine.removeAllEntities();
-
+            musicSystem.dispose();
             destroyAllBodies = true;
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
@@ -206,7 +205,7 @@ public final class PlayScreen extends AbstractScreen {
 
 
 
-        if (pillSystem.allPillsCollected()) {
+        if (!pillSystem.allPillsCollected()) {
             engine.removeAllEntities();
 
             musicSystem.dispose();

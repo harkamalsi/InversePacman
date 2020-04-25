@@ -83,7 +83,7 @@ public class GameOverScreen extends AbstractScreen {
         elapsed += delta;
         if(Gdx.input.justTouched()){
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
             musicSystem.dispose();
             engine.removeAllEntities();
         }

@@ -114,25 +114,29 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
             app.gsm.setScreen(GameScreenManager.STATE.PLAY);
         }
         if(singleplayerButton.flags == 1 || Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.PLAY);
         }
         if(multiplayerButton.flags == 1) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
 
         if(highscoreButton.flags == 1) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
             // I think it's okay if we keep ths music going here?
             //music.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN);
         }
         if(optionButton.flags == 1) {
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
+            engine.removeAllEntities();
             musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.OPTION_SCREEN);
 
