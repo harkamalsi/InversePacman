@@ -60,8 +60,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import sun.security.jgss.GSSCaller;
-
 public final class PlayScreen extends AbstractScreen {
 
     public static boolean pause;
