@@ -85,7 +85,7 @@ public class GameOverScreen extends AbstractScreen {
     public void update(float delta) {
         System.out.println("time elapsed " + elapsed);
         elapsed += delta;
-        if(Gdx.input.justTouched() && elapsed > 2){
+        if(Gdx.input.justTouched() && elapsed > 7){
             musicSystem.dispose();
             engine.removeAllEntities();
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
@@ -93,7 +93,7 @@ public class GameOverScreen extends AbstractScreen {
 
         }
         // need to add start boolean or music would not stop playing when switching screens
-        if(elapsed > 2 && start) {
+        if(start) {
             musicSystem.resume();
             start = false;
         }
@@ -145,18 +145,17 @@ public class GameOverScreen extends AbstractScreen {
 
         musicEntity = new Entity();
 
-        if(engine.getSystem(PillSystem.class).allPillsCollected()) {
-            connection.leaveLobby();
-            musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/won"), sound));
-        }
-        if(!engine.getSystem(PillSystem.class).allPillsCollected()) {
-            connection.leaveLobby();
-            musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/lost"), sound));
-        }
+
+        connection.leaveLobby();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/won"), sound));
+
+
+
 
         engine.addEntity(musicEntity);
         musicSystem.pause();
         musicSystem.playSound(0);
+        musicSystem.setMusicPosition(13);
 
     }
 
@@ -179,10 +178,10 @@ public class GameOverScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
 
-        if (elapsed > 2.0) {
+        if (elapsed > 7.0) {
             engine.removeEntity(bgEntity);
         }
-        if(elapsed > 2.0 && engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
+        if(elapsed > 7.0 && engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
             engine.removeEntity(front_ellipseEntity);
             engine.removeEntity(ellipseEntity);
             engine.addEntity(won_bgEntity);
@@ -191,7 +190,19 @@ public class GameOverScreen extends AbstractScreen {
 
             resultpageadded = true;
         }
-        if(elapsed > 2.0 && !engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
+        if(elapsed > 7.0 && !engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
+            System.out.println("hello");
+            engine.removeEntity(musicEntity);
+            musicSystem.dispose();
+            engine.removeSystem(musicSystem);
+            engine.addSystem(musicSystem);
+            musicSystem = new MusicSystem();
+            engine.addSystem(musicSystem);
+            musicEntity = new Entity();
+            musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/lost"), sound));
+            engine.addEntity(musicEntity);
+            musicSystem.setMusicPosition(1);
+
             engine.removeEntity(front_ellipseEntity);
             engine.removeEntity(ellipseEntity);
             engine.addEntity(lost_bgEntity);
