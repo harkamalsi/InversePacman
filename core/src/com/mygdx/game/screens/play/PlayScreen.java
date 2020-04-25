@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
 import com.mygdx.game.components.CollisionComponent;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
@@ -95,6 +97,8 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
+    private Entity musicEntity;
+
     //World building
     public World world;
     public Body player;
@@ -130,6 +134,7 @@ public final class PlayScreen extends AbstractScreen {
 
     public PlayScreen(final InversePacman app, Engine engine) {
         super(app, engine);
+
         this.engine = engine;
         pausetexture = new TextureRegion(new Texture("playscreen/pause3x.png"));
         back = new TextureRegion(new Texture("back3x.png"));
@@ -182,10 +187,9 @@ public final class PlayScreen extends AbstractScreen {
         }
 
         if(backButton.flags == 1) {
-            musicSystem.dispose();
-            engine.removeSystem(musicSystem);
+            //engine.removeSystem(musicSystem);
             engine.removeAllEntities();
-
+            musicSystem.dispose();
             destroyAllBodies = true;
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
@@ -201,7 +205,7 @@ public final class PlayScreen extends AbstractScreen {
 
 
 
-        if (pillSystem.allPillsCollected()) {
+        if (!pillSystem.allPillsCollected()) {
             engine.removeAllEntities();
 
             musicSystem.dispose();
@@ -278,7 +282,7 @@ public final class PlayScreen extends AbstractScreen {
         buttonSystem = new ButtonSystem(camera2);
         stateSystem = new StateSystem();
         animationSystem = new AnimationSystem();
-        musicSystem = new MusicSystem(Gdx.files.internal("music/play"));
+        musicSystem = new MusicSystem();
         pillSystem = new PillSystem();
 
         engine.addSystem(playerInputSystem);
@@ -387,6 +391,10 @@ public final class PlayScreen extends AbstractScreen {
         backSprite = new Sprite(back);
         backButton = new Entity();
         app.addSpriteEntity(backSprite, backButton, engine,  Gdx.graphics.getWidth() / 10, 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
+
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
+        engine.addEntity(musicEntity);
 
 
     }
