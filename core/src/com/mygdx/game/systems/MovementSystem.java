@@ -43,4 +43,8 @@ public class MovementSystem extends IteratingSystem {
         tc.position.set(temp2);
 //        tc.position.set(temp2).scl(0.0313f,0.0313f);
     }
+
+    public void minimax() {
+
+    }
 }

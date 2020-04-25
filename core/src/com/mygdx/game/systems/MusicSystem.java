@@ -87,7 +87,7 @@ public class MusicSystem extends IteratingSystem {
 
     public void pause() {
         update(1);
-        song.pause();
+        song.dispose();
         pause = true;
     }
 
@@ -97,13 +97,14 @@ public class MusicSystem extends IteratingSystem {
     }
 
     private void playMusic(ArrayList<FileHandle> tracks, int lasttrack) {
+        /*
         Random track = new Random();
         System.out.println("Start " + tracknr);
         System.out.println("Last track " + lasttrack);
         //System.out.println(tracks);
         /* The if statements make sure that the same song never plays twice in a row, unless there
            is only one song
-         */
+         *//*
         if(lasttrack > -1 && tracks.size() > 1) {
             store = tracks.remove(lasttrack);
         }
@@ -127,6 +128,7 @@ public class MusicSystem extends IteratingSystem {
         song.setLooping(false);
         song.setVolume(music_volume);
         song.play();
+        */
     }
 
     public void playSound(int soundfile) {
@@ -184,7 +186,6 @@ public class MusicSystem extends IteratingSystem {
                 start = true;
             }
 
-
             if(!tracks.isEmpty()) {
                 getMusic();
                 if (!song.isPlaying() && !pause) {
@@ -204,5 +205,6 @@ public class MusicSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         entityArray.add(entity);
+
     }
 }
