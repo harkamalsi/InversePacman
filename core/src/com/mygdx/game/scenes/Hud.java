@@ -29,7 +29,7 @@ public class Hud implements Disposable {
     // Player score/time tracking
     private float timer;
     private static Integer score;
-    private static Integer remainingLives;
+    public static Integer remainingLives;
 
     // Scene2D widgets
     private Label timerText;

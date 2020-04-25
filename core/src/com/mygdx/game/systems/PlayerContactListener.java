@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.PlayerComponent;
+import com.mygdx.game.screens.play.PlayScreen;
+import com.mygdx.game.worldbuilder.WorldBuilder;
 
 
 public class PlayerContactListener implements ContactListener {
