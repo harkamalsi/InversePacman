@@ -78,6 +78,15 @@ public class InversePacman extends Game {
 	public float b = (float)(Math.PI / 2);
 	private boolean bright = false;
 
+	public static boolean isNumeric(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch(NumberFormatException e){
+			return false;
+		}
+	}
+
 	// Creates The managers,
 	@Override
 	public void create () {
@@ -109,16 +118,17 @@ public class InversePacman extends Game {
 				System.out.println(e);
 			}
 			put.copyTo(Gdx.files.local("."));
+			put.writeString("1", false);
 		}
 
 		FileHandle skin = Gdx.files.local("skin.txt");
 		String text = skin.readString();
-		FileHandle skin_dir = Gdx.files.internal("pacman_skins");
+
 
 
 
 		this.skin = text;
-		if(!Gdx.files.local(text).exists()) {
+		if(!Gdx.files.local(text).exists() || isNumeric(text)) {
 			this.skin = "pacman_skins/pacman.png";
 			skin.writeString("pacman_skins/pacman.png", false);
 		}
