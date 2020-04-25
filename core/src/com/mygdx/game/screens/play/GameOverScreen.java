@@ -26,7 +26,7 @@ public class GameOverScreen extends AbstractScreen {
     protected TextureRegion excitementBg;
     private TextureRegion won_bg;
     private TextureRegion lost_bg;
-    private float elapsed;
+    private float elapsed = 0;
     private Sound sound;
 
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
@@ -85,10 +85,11 @@ public class GameOverScreen extends AbstractScreen {
     public void update(float delta) {
         elapsed += delta;
         if(Gdx.input.justTouched()){
-            app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
-            //engine.removeSystem(musicSystem);
             musicSystem.dispose();
             engine.removeAllEntities();
+            app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
+            //engine.removeSystem(musicSystem);
+
         }
         // need to add start boolean or music would not stop playing when switching screens
         if(elapsed > 2 && start) {
