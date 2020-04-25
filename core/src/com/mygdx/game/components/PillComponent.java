@@ -12,9 +12,12 @@ public class PillComponent implements Component {
     public Body body, triggerBody;
     private String id;
     private boolean collected = false;
+    private boolean powerPill = false;
 
     public PillComponent() {
     }
+
+
 
     public void createTriggerBody(World world, float x, float y) {
        /* BodyDef bdef = new BodyDef();
@@ -69,5 +72,15 @@ public class PillComponent implements Component {
 
     public boolean isCollected() {
         return collected;
+    }
+    public boolean isPowerPill() {
+        return powerPill;
+    }
+    public void setPowerPill(boolean powerPill) {
+        this.powerPill = true;
+    }
+
+    public void destroyPillBody() {
+        body.getWorld().destroyBody(body);
     }
 }
