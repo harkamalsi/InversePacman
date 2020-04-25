@@ -163,6 +163,10 @@ public class NetworkManager {
 
     }
 
+    public void readyUp(String lobbyName, Boolean isReadyUp) {
+        getSocket().emit(Constants.READY_UP, socketID, lobbyName, isReadyUp);
+    }
+
     public void leaveLobby(String lobbyName) {
         // args: lobbyName
         //System.out.println("Leave Lobby is called!");

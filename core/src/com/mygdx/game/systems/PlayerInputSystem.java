@@ -212,7 +212,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     }
 
     private void sendServerInput(float x, float y){
-        System.out.println(shouldSendUpdate);
         if (shouldSendUpdate) {
             connection.X = String.valueOf(x);
             connection.Y = String.valueOf(y);
