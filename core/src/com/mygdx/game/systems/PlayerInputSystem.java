@@ -49,6 +49,10 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private ComponentMapper<TextureComponent> texM;
     private ComponentMapper<PlayerComponent> playerM;
 
+    private float prevX, prevY = -1;
+    private boolean shouldGetUpdate = false;
+    private boolean shouldSendUpdate = false;
+
 
     public PlayerInputSystem(boolean multiplayer){
         super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
@@ -80,7 +84,15 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
         if (multiplayer && LobbyScreen.LOBBY_JOINED != null) {
 
-            JSONArray response = getServerInput();
+            JSONArray response = getServerInput();;
+
+            /*if (shouldGetUpdate) {
+
+                shouldGetUpdate = false;
+            } else {
+                shouldGetUpdate = true;
+            }*/
+
             //System.out.println(response);
             if (response != null) {
                 for (int i = 0; i < response.length(); i++) {
@@ -89,8 +101,12 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                     //System.out.println(response.getJSONObject(i));
                     //JSONArray xy = response.getJSONObject(i).getJSONArray("directions");
 
-                    x = Float.parseFloat(response.getJSONObject(i).getString("x"));
-                    y = Float.parseFloat(response.getJSONObject(i).getString("y"));
+                    try {
+                        x = Float.parseFloat(response.getJSONObject(i).getString("x"));
+                        y = Float.parseFloat(response.getJSONObject(i).getString("y"));
+                    } catch (JSONException e) {
+                        return;
+                    }
 
                     if (pc.id.equals(otherType) && x != 0 && y != 0) {
                         pc.body.setTransform(x,y,0);
@@ -143,8 +159,14 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
             pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
 
-            sendServerInput(pc.body.getPosition().x,pc.body.getPosition().y);
 
+
+            if (prevX != pc.body.getPosition().x || prevY != pc.body.getPosition().y){
+                sendServerInput(pc.body.getPosition().x,pc.body.getPosition().y);
+            }
+
+            prevX = pc.body.getPosition().x;
+            prevY = pc.body.getPosition().y;
 
         }
     }
@@ -154,11 +176,17 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     }
 
     private void sendServerInput(float x, float y){
+        System.out.println(shouldSendUpdate);
+        if (shouldSendUpdate) {
+            connection.X = String.valueOf(x);
+            connection.Y = String.valueOf(y);
 
-        connection.X = String.valueOf(x);
-        connection.Y = String.valueOf(y);
+            connection.sendInput();
 
-        connection.sendInput();
+            shouldSendUpdate = false;
+        } else {
+            shouldSendUpdate = true;
+        }
     }
 
     //function for deciding drag direction
