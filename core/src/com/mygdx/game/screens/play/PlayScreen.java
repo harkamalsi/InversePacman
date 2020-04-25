@@ -99,6 +99,7 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
+    public static boolean MULTIPLAYER;
     private Entity musicEntity;
 
     //World building
@@ -273,9 +274,8 @@ public final class PlayScreen extends AbstractScreen {
 
 
         // To add a new songs, place the file under the folder assets/music/play
-
         //batch = new SpriteBatch();
-        playerInputSystem = new PlayerInputSystem();
+        playerInputSystem = new PlayerInputSystem(MULTIPLAYER);
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();

@@ -75,6 +75,15 @@ public class GameScreenManager {
         this.gameScreens.put(STATE.SPLASH_SCREEN, new SplashScreen(app, engine));
     }
 
+    public void setScreen(STATE nextScreen, boolean multiplayer) {
+        //System.out.println("prevscreens" + prevScreens);
+        this.prevScreens.add(nextScreen);
+        app.setScreen(gameScreens.get(nextScreen));
+        //System.out.println("prevscreens" + prevScreens);
+        currentState = nextScreen;
+        System.out.println(nextScreen);
+    }
+
     public void setScreen(STATE nextScreen) {
         //System.out.println("prevscreens" + prevScreens);
         this.prevScreens.add(nextScreen);
