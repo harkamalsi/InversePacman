@@ -35,6 +35,7 @@ public class TableSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> tc;
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private InversePacman app;
+    public boolean prevIsReadyUpChecked = false;
 
 
     @SuppressWarnings("unchecked")
@@ -53,7 +54,11 @@ public class TableSystem extends IteratingSystem {
 
     private void handleLobbyButtonClicked(String lobbyName) {
         this.connection.joinLobby(lobbyName, "Cokey", "PACMAN");
-        MULTIPLAYER = true;
+        String lobbyJoined = connection.getLobby();
+        if (lobbyJoined != null) {
+            MULTIPLAYER = true;
+            LobbyScreen.LOBBY_JOINED = lobbyJoined;
+        }
         /*try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {}
@@ -63,7 +68,7 @@ public class TableSystem extends IteratingSystem {
             lobby = connection.getLobby();
         }
         System.out.println(lobby);*/
-        LobbyScreen.LOBBY_JOINED = lobbyName;
+
 
     }
 
@@ -101,15 +106,21 @@ public class TableSystem extends IteratingSystem {
         }
         cc.draw();
 
-        if (cc.joinLobby) {
+        if (cc.lobbyButtonClicked && LobbyScreen.LOBBY_JOINED == null) {
             handleLobbyButtonClicked(cc.getJoinLobbyName());
         }
         if (LobbyScreen.LOBBY_JOINED != null) {
-            connection.readyUp(LobbyScreen.LOBBY_JOINED, cc.isReadyUpChecked);
-            if (connection.METYPE != null) {
+            cc.lobbyButtonClicked = false;
+
+            System.out.println("********** " + LobbyScreen.LOBBY_JOINED + " " + connection.METYPE);
+            if (prevIsReadyUpChecked != cc.isReadyUpChecked) {
+                connection.readyUp(LobbyScreen.LOBBY_JOINED, cc.isReadyUpChecked);
+            }
+            prevIsReadyUpChecked = cc.isReadyUpChecked;
+            if (cc.isReadyUpChecked) {
+                System.out.println("GAME STARTED");
                 startGame();
             }
         }
-        cc.joinLobby = false;
     }
 }

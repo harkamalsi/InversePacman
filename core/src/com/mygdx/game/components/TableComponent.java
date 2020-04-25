@@ -35,7 +35,7 @@ public class TableComponent implements Component {
     public boolean draw;
     public boolean getLobbies;
     public String joinLobbyName = "";
-    public boolean joinLobby = false;
+    public boolean lobbyButtonClicked = false;
     public boolean createLobby = false;
     public boolean isReadyUpChecked = false;
     private Container<Table> tableContainer;
@@ -64,7 +64,7 @@ public class TableComponent implements Component {
     }
 
     public void addRow(final String nameLabel, String nameText) {
-        TextButton lobbyButton = new TextButton(nameLabel, skin);
+        final TextButton lobbyButton = new TextButton(nameLabel, skin);
         Label lobbyPlayers = new Label(nameText, skin);
 
         table.add(lobbyButton).expand().padBottom(20);
@@ -79,7 +79,7 @@ public class TableComponent implements Component {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 joinLobbyName = nameLabel;
-                joinLobby = true;
+                lobbyButtonClicked = true;
                 return true;
             }
         });
@@ -116,6 +116,7 @@ public class TableComponent implements Component {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 isReadyUpChecked = !isReadyUpChecked;
                 readyUpCheckbox.setChecked(isReadyUpChecked);
+
                 return true;
             }
         });

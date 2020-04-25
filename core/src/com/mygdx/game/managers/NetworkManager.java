@@ -114,19 +114,17 @@ public class NetworkManager {
     private void fetchLobby() {
         //System.out.println("Fetch lobby is called!");
 
-        if (fetch) {
-            getSocket().emit(Constants.GET_LOBBY, socketID);
+        getSocket().emit(Constants.GET_LOBBY, socketID);
 
-            getSocket().on(Constants.GET_LOBBY, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONObject response = (JSONObject) args[0];
-                    setLobby(response.getString("lobby"));
-                }
-            });
+        getSocket().on(Constants.GET_LOBBY, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject response = (JSONObject) args[0];
+                setLobby(response.getString("lobby"));
+            }
+        });
 
-            fetch = false;
-        }
+        //fetch = false;
     }
     public String getLobby() {
         this.fetchLobby();
