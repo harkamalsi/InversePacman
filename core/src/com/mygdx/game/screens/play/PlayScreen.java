@@ -55,6 +55,8 @@ import com.mygdx.game.systems.StateSystem;
 import com.mygdx.game.worldbuilder.WorldBuilder;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import sun.security.jgss.GSSCaller;
 
@@ -334,13 +336,30 @@ public final class PlayScreen extends AbstractScreen {
             engine.addEntity(ghost);
         }
 
+        // Pill logic
         pillSprite = new Texture("white_pill.png");
 
-        Vector2 scale = new Vector2(0.05f*(scaleX *1.32f), 0.05f*(scaleX *1.32f));
+        // decide which pills will be power pills
+        ArrayList<Integer> powerPillsIndices = new ArrayList<>();
+        while (powerPillsIndices.size() < 4) {
+            int randomNum = ThreadLocalRandom.current().nextInt(0,WorldBuilder.getPillList().size() + 1);
+            if (!powerPillsIndices.contains(randomNum)) {
+                powerPillsIndices.add(randomNum);
+            }
+        }
 
+        Vector2 scale = new Vector2();
         for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
+            scale.set(0.05f*(scaleX *1.32f), 0.05f*(scaleX *1.32f));
             PillComponent pillComponent = WorldBuilder.getPillList().get(i);
             Vector2 vector = pillComponent.body.getPosition();
+
+            // If the current index has been identified as a power pill index,
+            // then the pill is a power pill and the size of its texture is increased
+            if (powerPillsIndices.contains(i)) {
+                pillComponent.setPowerPill(true);
+                scale.set(.10f*(scaleX*1.32f), .10f*(scaleX * 1.32f));
+            }
 
             pill = new Entity();
             pill.add(WorldBuilder.getPillList().get(i))
