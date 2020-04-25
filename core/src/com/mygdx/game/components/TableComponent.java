@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -36,6 +37,7 @@ public class TableComponent implements Component {
     public String joinLobbyName = "";
     public boolean joinLobby = false;
     public boolean createLobby = false;
+    public boolean isReadyUpChecked = false;
     private Container<Table> tableContainer;
 
     public TableComponent() {
@@ -94,6 +96,32 @@ public class TableComponent implements Component {
         table.row();
         table.add(message2);
         table.row();
+    }
+
+    public void addCheckbox() {
+        final CheckBox readyUpCheckbox = new CheckBox(" Ready?", skin);
+
+        readyUpCheckbox.getLabel().setFontScale(0.5f);
+        readyUpCheckbox.setSize(50f, 50f);
+        readyUpCheckbox.getImage().setScaling(Scaling.fit);
+        readyUpCheckbox.getImageCell().size(50f, 50f);
+        readyUpCheckbox.setChecked(isReadyUpChecked);
+
+        readyUpCheckbox.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isReadyUpChecked = !isReadyUpChecked;
+                readyUpCheckbox.setChecked(isReadyUpChecked);
+                return true;
+            }
+        });
+
+        // WHY DOESN'T THIS CENTER!?
+        table.add(readyUpCheckbox).center().row();
     }
 
     public String getJoinLobbyName() {
