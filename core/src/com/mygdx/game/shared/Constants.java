@@ -28,4 +28,6 @@ public class Constants {
 
     public static final String SINGLE_PLAYER_SCORE_KEY = "spScore";
     public static final String MULTIPLAYER_SCORE_KEY = "mpScore";
+
+    public static final int DEFAULT_PILL_POINTS = 100;
 }

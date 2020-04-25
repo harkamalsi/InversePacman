@@ -9,6 +9,7 @@ import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.scenes.Hud;
+import com.mygdx.game.shared.Constants;
 import com.mygdx.game.worldbuilder.WorldBuilder;
 
 public class PillSystem extends IteratingSystem {
@@ -28,9 +29,11 @@ public class PillSystem extends IteratingSystem {
 
         if (pillComponent.isCollected()) {
             // change this to Hud.getscore where get score gets the current score of the game
-            Hud.addPointsToScore(500);
+            int pointsToAdd = pillComponent.isPowerPill() ?
+                    2 * Constants.DEFAULT_PILL_POINTS : Constants.DEFAULT_PILL_POINTS;
+            Hud.addPointsToScore(pointsToAdd);
             getEngine().removeEntity(entity);
-            pillComponent.body.getWorld().destroyBody(pillComponent.body);
+            pillComponent.destroyPillBody();
             pillCount--;
             System.out.println("Pills remaining: " + pillCount);
         }
