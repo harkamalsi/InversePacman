@@ -26,7 +26,7 @@ public class GameOverScreen extends AbstractScreen {
     protected TextureRegion excitementBg;
     private TextureRegion won_bg;
     private TextureRegion lost_bg;
-    private float elapsed = 0;
+    private float elapsed;
     private Sound sound;
 
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
@@ -36,7 +36,7 @@ public class GameOverScreen extends AbstractScreen {
 
     private MusicSystem musicSystem;
     private boolean won = true;
-    private boolean start = true;
+    private boolean start;
     private boolean resultpageadded = false;
 
     private TextureRegion ellipse;
@@ -63,6 +63,7 @@ public class GameOverScreen extends AbstractScreen {
         super(app, engine);
         this.engine = engine;
 
+
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
 
@@ -78,13 +79,13 @@ public class GameOverScreen extends AbstractScreen {
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
 
-
     }
 
     @Override
     public void update(float delta) {
+        System.out.println("time elapsed " + elapsed);
         elapsed += delta;
-        if(Gdx.input.justTouched()){
+        if(Gdx.input.justTouched() && elapsed > 2){
             musicSystem.dispose();
             engine.removeAllEntities();
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
@@ -101,6 +102,10 @@ public class GameOverScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        elapsed = 0;
+        resultpageadded = false;
+        start = true;
+
         System.out.println("Did we win? " + engine.getSystem(PillSystem.class).allPillsCollected());
 
         //sound.play(app.sound_volume);

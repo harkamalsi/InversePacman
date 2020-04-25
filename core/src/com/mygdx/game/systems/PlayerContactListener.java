@@ -31,6 +31,10 @@ public class PlayerContactListener implements ContactListener {
                 PillComponent pillB = (PillComponent) fixtureB.getUserData();
                 PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
                 if(!pillB.isCollected() && playerA.getType().equals("PACMAN")) {
+                    if (pillB.isPowerPill()){
+                        playerA.powerMode = true;
+                        playerA.invincibleTimer += 10;
+                    }
                     pillB.PillCollected();
                 }
             }

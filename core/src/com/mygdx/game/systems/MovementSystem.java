@@ -8,7 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
+import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.play.PlayScreen;
+import com.mygdx.game.worldbuilder.WorldBuilder;
 
 public class MovementSystem extends IteratingSystem {
     private Vector2 temp = new Vector2();
@@ -31,6 +33,24 @@ public class MovementSystem extends IteratingSystem {
         TransformComponent tc = tm.get(entity);
         VelocityComponent vel = vm.get(entity);
         PlayerComponent pc = playerM.get(entity);
+
+        if (pc.id.equals("PACMAN") && pc.powerMode ){
+            if(pc.invincibleTimer > 0){
+                Vector2 scalepacman = new Vector2(0.30f,0.30f);
+                tc.scale = scalepacman;
+                pc.invincibleTimer -= deltaTime;
+            }
+
+            else{
+                Vector2 scalepacman = new Vector2(0.15f,0.15f);
+                tc.scale = scalepacman;
+                pc.powerMode = false;
+            }
+
+        }
+
+
+
 
 //        temp.set(vel.acceleration).scl(deltaTime);
 //        vel.velocity.add(temp);

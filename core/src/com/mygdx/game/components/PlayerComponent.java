@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.play.PlayScreen;
+import com.mygdx.game.worldbuilder.WorldBuilder;
 
 public class PlayerComponent implements Component {
 
@@ -29,6 +30,11 @@ public class PlayerComponent implements Component {
 
     public boolean pacmanGotHit;
 
+    public boolean ghostGotHit;
+    public Body ghostHit;
+
+    public boolean powerMode;
+
     public Body body;
     public String id;
     public boolean ai;
@@ -39,6 +45,7 @@ public class PlayerComponent implements Component {
         currentState = IDLE;
         hp = 3;
         invincibleTimer = 0;
+        powerMode = false;
     }
 
     public void createPlayerBody(World world, String id, float x, float y, String type, boolean isSensor){
@@ -77,12 +84,22 @@ public class PlayerComponent implements Component {
     }
 
     public void hit(PlayerComponent playerHit) {
-        if (id.equals("PACMAN")){
-            this.hp -= 1;
-            Hud.setLives(hp);
-            pacmanGotHit = true;
+
+        if (id.equals("PACMAN")) {
+
+            if (!powerMode) {
+                this.hp -= 1;
+                Hud.setLives(hp);
+                pacmanGotHit = true;
+            }
+
+            else {
+                ghostHit = playerHit.getBody();
+                Hud.addPointsToScore(500);
+            }
+
+            System.out.println(id + " have been hit by " + playerHit.getId());
         }
-        System.out.println(id + " have been hit by " + playerHit.getId());
     }
 
     public void hitBy(PlayerComponent playerHitBy) {

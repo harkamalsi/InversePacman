@@ -260,7 +260,7 @@ public class AISystem extends IteratingSystem{
         return new Vector2(newX, newY);
     }
 
-    private void setDifficulty(String difficulty) {
+    public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
     }
 }

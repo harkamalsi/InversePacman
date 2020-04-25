@@ -80,50 +80,51 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
         float x = 0f;
         float y = 0f;
-        if(!multiplayer){
-            if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
-                x = 0f;
-                y = vc.velocity.y;
+        if(pc.id.equals("PACMAN")) {
+            if (!multiplayer) {
+                if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
+                    x = 0f;
+                    y = vc.velocity.y;
 
-                sc.setState(1);
-            }
-
-            if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)) {
-                x = 0f;
-                y = -vc.velocity.y;
-
-                sc.setState(2);
-            }
-
-            if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)) {
-                x = -vc.velocity.x;
-                y = 0f;
-
-                sc.setState(3);
-
-                //flips texture
-                if (texc.region != null && texc.region.isFlipX()) {
-                    texc.region.flip(true, false);
-                }
-            }
-
-            if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)) {
-                x = vc.velocity.x;
-                y = 0f;
-
-                sc.setState(4);
-
-                //flips texture
-                if (texc.region != null && !texc.region.isFlipX()){
-                    texc.region.flip(true,false);
+                    sc.setState(1);
                 }
 
-            }
+                if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)) {
+                    x = 0f;
+                    y = -vc.velocity.y;
 
-            pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
-            pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+                    sc.setState(2);
+                }
+
+                if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)) {
+                    x = -vc.velocity.x;
+                    y = 0f;
+
+                    sc.setState(3);
+
+                    //flips texture
+                    if (texc.region != null && texc.region.isFlipX()) {
+                        texc.region.flip(true, false);
+                    }
+                }
+
+                if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)) {
+                    x = vc.velocity.x;
+                    y = 0f;
+
+                    sc.setState(4);
+
+                    //flips texture
+                    if (texc.region != null && !texc.region.isFlipX()) {
+                        texc.region.flip(true, false);
+                    }
+
+                }
+
+                pc.body.setLinearVelocity(x * 50, pc.body.getLinearVelocity().y);
+                pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y * 50);
+            }
         }
-
 
         if (multiplayer && LobbyScreen.LOBBY_JOINED != null) {
 
