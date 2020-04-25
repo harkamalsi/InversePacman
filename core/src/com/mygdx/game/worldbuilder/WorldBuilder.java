@@ -183,9 +183,14 @@ import java.util.ArrayList;
                 Vector2 vector = new Vector2();
                 getPlayerPositionList().get(i).getRectangle().getCenter(vector);
                 getPlayerList().get(i).body.setTransform(vector,0);
-
             }
 
+        }
+
+        public static void resetBodyPosition(Body body){
+            Vector2 vector = new Vector2();
+            getPlayerPositionList().get(4).getRectangle().getCenter(vector);
+            body.setTransform(vector.x,vector.y,0);
         }
 
         public static ArrayList<ArrayList<Node>> getNodeCostMatrix() {
