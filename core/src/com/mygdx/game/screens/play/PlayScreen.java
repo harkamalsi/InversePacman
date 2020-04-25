@@ -205,7 +205,7 @@ public final class PlayScreen extends AbstractScreen {
 
 
 
-        if (!pillSystem.allPillsCollected()) {
+        if (pillSystem.allPillsCollected()) {
             engine.removeAllEntities();
 
             musicSystem.dispose();
