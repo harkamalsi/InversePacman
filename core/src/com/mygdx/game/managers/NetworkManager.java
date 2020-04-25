@@ -124,7 +124,6 @@ public class NetworkManager {
             }
         });
 
-        //fetch = false;
     }
     public String getLobby() {
         this.fetchLobby();

@@ -42,6 +42,7 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.AISystem;
@@ -62,7 +63,6 @@ import java.util.ArrayList;
 
 import java.util.concurrent.Future;
 
-import sun.security.jgss.GSSCaller;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -105,6 +105,7 @@ public final class PlayScreen extends AbstractScreen {
     private Entity pill;
 
     public static boolean MULTIPLAYER;
+    private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private Entity musicEntity;
 
     //World building
@@ -201,6 +202,9 @@ public final class PlayScreen extends AbstractScreen {
             engine.removeAllEntities();
             musicSystem.dispose();
             destroyAllBodies = true;
+
+            connection.leaveLobby();
+
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
 

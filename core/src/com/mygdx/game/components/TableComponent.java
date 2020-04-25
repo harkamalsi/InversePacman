@@ -122,7 +122,8 @@ public class TableComponent implements Component {
         });
 
         // WHY DOESN'T THIS CENTER!?
-        table.add(readyUpCheckbox).center().row();
+        table.add(readyUpCheckbox);
+        table.row();
     }
 
     public String getJoinLobbyName() {

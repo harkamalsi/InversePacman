@@ -148,8 +148,6 @@ public class LobbyScreen extends AbstractScreen {
         String joinLobbyName = "Lobby1";
 
         if(createLobbyButton.flags == 1) {
-            System.out.println("CreateLobbyButton pressed but lobby not created!");
-
             if (table.createLobby) {
                 connection.createLobby(nickname, playerType);
                 /*MULTIPLAYER = true;

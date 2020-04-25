@@ -22,6 +22,7 @@ import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.play.LobbyScreen;
+import com.mygdx.game.screens.play.PlayScreen;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,11 +55,6 @@ public class TableSystem extends IteratingSystem {
 
     private void handleLobbyButtonClicked(String lobbyName) {
         this.connection.joinLobby(lobbyName, "Cokey", "GHOST");
-        String lobbyJoined = connection.getLobby();
-        if (lobbyJoined != null) {
-            MULTIPLAYER = true;
-            LobbyScreen.LOBBY_JOINED = lobbyJoined;
-        }
         /*try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {}
@@ -81,6 +77,7 @@ public class TableSystem extends IteratingSystem {
         //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
         cc.reset();
+
         JSONArray lobbies = connection.getLobbies();
 
         if (NetworkManager.CONNECTED) {
@@ -88,7 +85,6 @@ public class TableSystem extends IteratingSystem {
         }
 
         if (!cc.createLobby && cc.draw) {
-            cc.reset();
             cc.addConnectingToServerMessage();
             cc.draw = false;
         }
@@ -96,6 +92,7 @@ public class TableSystem extends IteratingSystem {
         if(cc.draw) {
             for (int i = 0; i < lobbies.length(); i++) { //lobbies.length
                 JSONObject lobbyObject = lobbies.getJSONObject(i);
+
                 String lobbyName = lobbyObject.getString("lobbyName");
                 String lobbyPlayers = lobbyObject.getString("lobbyPlayers");
 
@@ -109,6 +106,13 @@ public class TableSystem extends IteratingSystem {
         if (cc.lobbyButtonClicked && LobbyScreen.LOBBY_JOINED == null) {
             handleLobbyButtonClicked(cc.getJoinLobbyName());
         }
+
+        String lobbyJoined = connection.getLobby();
+        if (lobbyJoined != null) {
+            PlayScreen.MULTIPLAYER = true;
+            LobbyScreen.LOBBY_JOINED = lobbyJoined;
+        }
+
         if (LobbyScreen.LOBBY_JOINED != null) {
             cc.lobbyButtonClicked = false;
 
