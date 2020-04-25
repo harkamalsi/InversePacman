@@ -41,7 +41,7 @@ public class InversePacman extends Game {
 	public GameScreenManager gsm;
 	public AssetManager assets;
 	public SaveManager saveManager;
-	public NetworkManager networkManager;
+	public static NetworkManager NETWORKMANAGER;
 
 	// Batches
 	public SpriteBatch batch;
@@ -173,7 +173,9 @@ public class InversePacman extends Game {
 		engine = new Engine();
 
 		//Setup managers
-		networkManager = new NetworkManager();
+
+		//Network
+		NETWORKMANAGER = new NetworkManager();
 		assets = new AssetManager();
 		gsm = new GameScreenManager(this);
 		saveManager = new SaveManager(false);
@@ -181,6 +183,8 @@ public class InversePacman extends Game {
 
 		//Picture
 		img = new Texture("Test1.png");
+
+
 
 //		// Camera
 //		camera = new OrthographicCamera();

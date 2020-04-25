@@ -12,8 +12,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
-        classpath 'io.socket:socket.io-client:1.0.0'
-        classpath 'org.json:json:20190722'
     }
 }
 

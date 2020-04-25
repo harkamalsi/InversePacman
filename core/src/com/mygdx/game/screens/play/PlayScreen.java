@@ -59,9 +59,13 @@ import com.mygdx.game.worldbuilder.WorldBuilder;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
 import java.util.concurrent.Future;
 
 import sun.security.jgss.GSSCaller;
+
+import java.util.concurrent.ThreadLocalRandom;
+
 
 public final class PlayScreen extends AbstractScreen {
 
@@ -100,6 +104,7 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
 
+    public static boolean MULTIPLAYER;
     private Entity musicEntity;
 
     //World building
@@ -110,7 +115,9 @@ public final class PlayScreen extends AbstractScreen {
     //Box2d
     public OrthogonalTiledMapRenderer tmr;
     public TiledMap map;
+
     public boolean destroyAllBodies;
+    public boolean pacmanGotHit;
 
     private Engine engine;
 
@@ -218,20 +225,21 @@ public final class PlayScreen extends AbstractScreen {
             //engine.removeSystem(pillSystem);
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
-            /*int count = 0;
-            for(int i = 0; i <= WorldBuilder.getPillList().size(); i++ ) {
-                count += 1;
-                WorldBuilder.getPillList().remove(i);
-            }
-            for(int i = 0; i <= WorldBuilder.getPlayerList().size(); i++ ) {
-                count += 1;
-                WorldBuilder.getPlayerList().remove(i);
-            }
-            System.out.println(count);
-            System.out.println("my medication gone: " + WorldBuilder.getPillList());*/
-
-            //WorldBuilder.getPillList().remove(0);
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
+        }
+
+        if(hud.remainingLives < 1){
+            engine.removeAllEntities();
+
+            musicSystem.dispose();
+            engine.removeSystem(musicSystem);
+            engine.removeSystem(collisionSystem);
+            //engine.removeSystem(renderingSystem);
+            //engine.removeSystem(pillSystem);
+            engine.removeSystem(animationSystem);
+            ghostsheet.dispose();
+            app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
+
         }
         hud.update(delta);
     }
@@ -274,9 +282,8 @@ public final class PlayScreen extends AbstractScreen {
 
 
         // To add a new songs, place the file under the folder assets/music/play
-
         //batch = new SpriteBatch();
-        playerInputSystem = new PlayerInputSystem();
+        playerInputSystem = new PlayerInputSystem(MULTIPLAYER);
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionSystem = new CollisionSystem();
@@ -289,7 +296,9 @@ public final class PlayScreen extends AbstractScreen {
         pillSystem = new PillSystem();
 
         engine.addSystem(playerInputSystem);
-        engine.addSystem(aiSystem);
+        if(!MULTIPLAYER){
+            engine.addSystem(aiSystem);
+        }
         engine.addSystem(movementSystem);
         engine.addSystem(collisionSystem);
         engine.addSystem(renderingSystem);
@@ -341,13 +350,30 @@ public final class PlayScreen extends AbstractScreen {
             engine.addEntity(ghost);
         }
 
+        // Pill logic
         pillSprite = new Texture("white_pill.png");
 
-        Vector2 scale = new Vector2(0.05f*(scaleX *1.32f), 0.05f*(scaleX *1.32f));
+        // decide which pills will be power pills
+        ArrayList<Integer> powerPillsIndices = new ArrayList<>();
+        while (powerPillsIndices.size() < 4) {
+            int randomNum = ThreadLocalRandom.current().nextInt(0,WorldBuilder.getPillList().size() + 1);
+            if (!powerPillsIndices.contains(randomNum)) {
+                powerPillsIndices.add(randomNum);
+            }
+        }
 
+        Vector2 scale = new Vector2();
         for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
+            scale.set(0.05f*(scaleX *1.32f), 0.05f*(scaleX *1.32f));
             PillComponent pillComponent = WorldBuilder.getPillList().get(i);
             Vector2 vector = pillComponent.body.getPosition();
+
+            // If the current index has been identified as a power pill index,
+            // then the pill is a power pill and the size of its texture is increased
+            if (powerPillsIndices.contains(i)) {
+                pillComponent.setPowerPill(true);
+                scale.set(.10f*(scaleX*1.32f), .10f*(scaleX * 1.32f));
+            }
 
             pill = new Entity();
             pill.add(WorldBuilder.getPillList().get(i))
@@ -358,6 +384,7 @@ public final class PlayScreen extends AbstractScreen {
 
             engine.addEntity(pill);
         }
+
         PlayerComponent playerComponent = WorldBuilder.getPlayerList().get(4);
         Vector2 vector = playerComponent.body.getPosition();
         System.out.println("pacman is here: " + playerComponent.body.getPosition());
@@ -448,6 +475,13 @@ public final class PlayScreen extends AbstractScreen {
                     world.destroyBody(body);
                 }
                 destroyAllBodies = false;
+            }
+            PlayerComponent pacmanComponent = WorldBuilder.getPlayerList().get(4);
+
+
+            if(pacmanComponent.pacmanGotHit){
+                WorldBuilder.resetBodyPositions();
+                pacmanComponent.pacmanGotHit = false;
             }
 
             world.step(1/60f,6,2);
