@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -72,7 +73,11 @@ public class TableComponent implements Component {
     }
 
     public void addRow(final String nameLabel, String nameText) {
-        final TextButton lobbyButton = new TextButton(nameLabel, skin);
+        /*TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = BitmapFont();
+        textButtonStyle.fontColor = Color.WHITE;
+        textButtonStyle.downFontColor = Color.RED;*/
+        final TextButton lobbyButton = new TextButton(nameLabel, skin); //skin
         Label lobbyPlayers = new Label(nameText, skin);
 
         table.add(lobbyButton).expand().padBottom(20);
@@ -88,6 +93,8 @@ public class TableComponent implements Component {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 joinLobbyName = nameLabel;
                 lobbyButtonClicked = true;
+                //System.out.println("CLIECKEDDDDDDDDDD");
+                //lobbyButton.setStyle(skin.get("chosen", TextButton.TextButtonStyle.class));
                 return true;
             }
         });

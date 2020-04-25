@@ -15,6 +15,7 @@
   },
   TextButtonStyle: {
     default: { parent: default, font: default-font, fontColor: white },
+    chosen : { parent: default, font: default-font, fontColor: { r: 253, g: 181, b: 97, a: 1 } },
     toggle: { parent: default, checked: default-round-down, downFontColor: red }
   },
   ScrollPaneStyle: {
@@ -67,4 +68,11 @@
       background: default-pane, wrapWidth: 150
     }
   },
+
+  com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+    default: { parent: default, font: default-font, fontColor: white },
+    chosen : { parent: default, font: default-font, fontColor: { r: 253, g: 181, b: 97, a: 1 } },
+    toggle: { parent: default, checked: default-round-down, downFontColor: red }
+  }
 }
+
