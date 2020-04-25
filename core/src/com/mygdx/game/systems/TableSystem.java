@@ -53,7 +53,7 @@ public class TableSystem extends IteratingSystem {
 
     private void handleLobbyButtonClicked(String lobbyName) {
         this.connection.joinLobby(lobbyName, "Cokey", "PACMAN");
-        this.connection.readyUp(lobbyName, true);
+
         MULTIPLAYER = true;
         /*try {
             Thread.sleep(1000);
@@ -65,8 +65,11 @@ public class TableSystem extends IteratingSystem {
         }
         System.out.println(lobby);*/
         LobbyScreen.LOBBY_JOINED = lobbyName;
-        app.gsm.setScreen(GameScreenManager.STATE.PLAY);
 
+    }
+
+    private void startGame() {
+        app.gsm.setScreen(GameScreenManager.STATE.PLAY);
     }
 
     @Override
@@ -94,6 +97,7 @@ public class TableSystem extends IteratingSystem {
 
                 cc.addRow(lobbyName, lobbyPlayers);
             }
+            cc.addCheckbox();
             cc.draw = false;
         }
         cc.draw();
@@ -101,9 +105,12 @@ public class TableSystem extends IteratingSystem {
         if (cc.joinLobby) {
             handleLobbyButtonClicked(cc.getJoinLobbyName());
         }
+        if (LobbyScreen.LOBBY_JOINED != null) {
+            connection.readyUp(LobbyScreen.LOBBY_JOINED, cc.isReadyUpChecked);
+            if (connection.METYPE != null) {
+                startGame();
+            }
+        }
         cc.joinLobby = false;
-
     }
-
-
 }
