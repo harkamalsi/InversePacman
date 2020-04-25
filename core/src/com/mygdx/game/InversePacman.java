@@ -67,6 +67,8 @@ public class InversePacman extends Game {
 	public boolean music;
 	public boolean sound;
 
+	public String skin;
+
 	public int skin_number;
 
 	public float a;
@@ -75,6 +77,15 @@ public class InversePacman extends Game {
 	private boolean change = false;
 	public float b = (float)(Math.PI / 2);
 	private boolean bright = false;
+
+	public static boolean isNumeric(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch(NumberFormatException e){
+			return false;
+		}
+	}
 
 	// Creates The managers,
 	@Override
@@ -107,28 +118,22 @@ public class InversePacman extends Game {
 				System.out.println(e);
 			}
 			put.copyTo(Gdx.files.local("."));
+			put.writeString("1", false);
 		}
 
 		FileHandle skin = Gdx.files.local("skin.txt");
 		String text = skin.readString();
-		FileHandle skin_dir = Gdx.files.internal("pacman_skins");
 
-		ArrayList<String> skinList = new ArrayList<String>();
-		for(FileHandle skintostring : skin_dir.list()) {
-			String name = skintostring.path();
-			skinList.add(name);
+
+
+
+		this.skin = text;
+		if(!Gdx.files.local(text).exists() || isNumeric(text)) {
+			this.skin = "pacman_skins/pacman.png";
+			skin.writeString("pacman_skins/pacman.png", false);
 		}
 
-		try {
-			skin_number = Integer.parseInt(text);
-			if(skin_number  >= skinList.size()) {
-				skin_number = 0;
-			}
-		}
-		catch (NumberFormatException e) {
-			skin.writeString(0 + "", false);
-			skin_number = 0;
-		}
+
 
 
 		if(!Gdx.files.local("settings.txt").exists()){

@@ -77,7 +77,7 @@ public class PillComponent implements Component {
         return powerPill;
     }
     public void setPowerPill(boolean powerPill) {
-        this.powerPill = true;
+        this.powerPill = powerPill;
     }
 
     public void destroyPillBody() {
