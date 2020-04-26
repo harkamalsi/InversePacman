@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -59,11 +60,8 @@ public final class PlayScreen extends AbstractScreen {
     //camera for the buttonsystem
     private OrthographicCamera camera2;
 
-
     private Hud hud;
 
-
-    //private SpriteBatch batch;
     private EntityManager entityManager;
 
     private Texture pacmansprite;
@@ -105,8 +103,6 @@ public final class PlayScreen extends AbstractScreen {
     private Entity front_ellipseEntity;
     private Entity pauseiconEntity;
 
-
-
     public static boolean MULTIPLAYER;
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private Entity musicEntity;
@@ -126,7 +122,6 @@ public final class PlayScreen extends AbstractScreen {
 
     private Engine engine;
 
-    //public boolean pause = false;
     private boolean resume = false;
 
     private CollisionEventSystem collisionEventSystem;
@@ -159,26 +154,18 @@ public final class PlayScreen extends AbstractScreen {
         front_ellipse = new TextureRegion(new Texture("playscreen/front_ellipse.png"));
         pauseicon = new TextureRegion(new Texture("playscreen/pauseicon.png"));
 
-//        this.engine = engine;
-//         Sets the camera; width and height.
+        //Sets the camera; width and height.
         this.camera = new OrthographicCamera();
-
         this.camera2 = new OrthographicCamera();
-
-        //I/System.out: camera  (415.38464,690.0,0.0)
-
 
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
         this.camera.setToOrtho(false, Gdx.graphics.getWidth() / (scaleX *1.32f), Gdx.graphics.getHeight() / (scaleX*1.32f));
         this.camera2.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        //camera.translate(415.38464f,690.0f,0);
-
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
         this.camera.setToOrtho(false, Gdx.graphics.getWidth() / (scaleX *1.32f), Gdx.graphics.getHeight() / (scaleX*1.32f));
-
 
         hud = new Hud(app.batch);
     }
@@ -212,14 +199,10 @@ public final class PlayScreen extends AbstractScreen {
         }
 
         if(backButton.flags == 1) {
-            if(MULTIPLAYER){
-                //System.out.println("lobby left");
-                connection.leaveLobby();
-            }
-            //engine.removeSystem(musicSystem);
             for (EntitySystem system : engine.getSystems()){
                 engine.removeSystem(system);
             }
+            musicSystem.dispose();
             engine.removeAllEntities();
             destroyAllBodies = true;
 
@@ -246,8 +229,6 @@ public final class PlayScreen extends AbstractScreen {
         // Chooses the next song to play if the song has finished
         // Had to add the second condition since it chose to play a new song as I switched screens
 
-
-
         if (pillSystem.allPillsCollected()) {
             if (PlayScreen.MULTIPLAYER) {
                 app.NETWORKMANAGER.updateMultiplayerScore(app.NETWORKMANAGER.getPlayerId(), TableComponent.PLAYERTYPE);
@@ -259,16 +240,9 @@ public final class PlayScreen extends AbstractScreen {
             musicSystem.dispose();
             engine.removeSystem(musicSystem);
             engine.removeSystem(collisionEventSystem);
-            //engine.removeSystem(renderingSystem);
-            //engine.removeSystem(pillSystem);
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
             destroyAllBodies = true;
-            if(MULTIPLAYER){
-                connection.leaveLobby();
-                LobbyScreen.LOBBY_JOINED = null;
-                MULTIPLAYER = false;
-            }
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 
@@ -279,36 +253,17 @@ public final class PlayScreen extends AbstractScreen {
             engine.removeAllEntities();
 
             musicSystem.dispose();
-            //engine.removeSystem(musicSystem);
             engine.removeSystem(collisionEventSystem);
-            //engine.removeSystem(renderingSystem);
-            //engine.removeSystem(pillSystem);
-            //engine.removeSystem(animationSystem);
-            //engine.removeAllEntities();
             ghostsheet.dispose();
             destroyAllBodies = true;
-            if(MULTIPLAYER){
-                connection.leaveLobby();
-                LobbyScreen.LOBBY_JOINED = null;
-                MULTIPLAYER = false;
-            }
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
-            //destroyAllBodies = true;
         }
 
         hud.update(delta);
     }
 
-
     @Override
     public void show() {
-        //this.camera = new OrthographicCamera();
-        //this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        //this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // We should probably change the above to below
-        //this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
-
         //world
         world = new World(new Vector2(0f, 0), false);
         world.setContactListener(new PlayerContactListener());
@@ -411,7 +366,6 @@ public final class PlayScreen extends AbstractScreen {
         animcomponent.animations.put(4,walkAnimation);
 
 
-        //Vector2 scale = new Vector2(1f, 1f);
 
         for (int i = 0; i<4; i++){
 
@@ -441,9 +395,6 @@ public final class PlayScreen extends AbstractScreen {
 
 
         pacmansprite = new Texture(app.skin);
-
-
-
 
         pacmanSpritus = new Sprite(pacmansprite);
         Vector2 position = new Vector2(20,20);
@@ -477,7 +428,8 @@ public final class PlayScreen extends AbstractScreen {
         app.addSpriteEntity(backSprite, backButton, engine, 0,  50 * 32 * scaleX/ 1.5f, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
 
         musicEntity = new Entity();
-        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
+        Sound powerPillSound = Gdx.audio.newSound(Gdx.files.internal("sound/power.ogg"));
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play"), powerPillSound));
         engine.addEntity(musicEntity);
 
         musicPauseEntity = new Entity();

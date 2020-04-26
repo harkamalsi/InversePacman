@@ -19,11 +19,8 @@ import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.managers.SaveManager;
 import java.io.IOException;
-import java.util.ArrayList;
-
 
 public class InversePacman extends Game {
-
 
 	// App Variables
 	public static final String APP_TITLE = "InversePacman v0.1";
@@ -92,25 +89,6 @@ public class InversePacman extends Game {
 	// Creates The managers,
 	@Override
 	public void create () {
-
-		//FileHandle file = new FileHandle(Gdx.files.internal("settings.txt").path());
-		//file.
-		//System.out.println(file.exists());
-
-		/*File file = new File(Gdx.files.internal("settings.txt").path());
-		if(!file.exists()) {
-			try {
-				System.out.println("Yellow");
-				file.getParentFile().mkdirs();
-				file.createNewFile();
-
-
-			}
-			catch (IOException e){
-				System.out.println(e);
-			}
-		}*/
-
 		if(!Gdx.files.local("skin.txt").exists()) {
 			FileHandle put = Gdx.files.local("skin.txt");
 			try {
@@ -126,17 +104,11 @@ public class InversePacman extends Game {
 		FileHandle skin = Gdx.files.local("skin.txt");
 		String text = skin.readString();
 
-
-
-
 		this.skin = text;
 		if(!Gdx.files.local(text).exists() || isNumeric(text)) {
 			this.skin = "pacman_skins/pacman.png";
 			skin.writeString("pacman_skins/pacman.png", false);
 		}
-
-
-
 
 		if(!Gdx.files.local("settings.txt").exists()){
 			FileHandle put = Gdx.files.local("settings.txt");
@@ -147,8 +119,8 @@ public class InversePacman extends Game {
 				System.out.println(e);
 			}
 			put.copyTo(Gdx.files.local("."));
-
 		}
+
         FileHandle settings = Gdx.files.local("settings.txt");
 		text = settings.readString();
 		String wordsArray[] = text.split("\\r?\\n|,");
@@ -180,8 +152,6 @@ public class InversePacman extends Game {
 		engine = new Engine();
 
 		//Setup managers
-
-		//Network
 		saveManager = new SaveManager(false);
 		NETWORKMANAGER = new NetworkManager(saveManager);
 		assets = new AssetManager();
@@ -190,42 +160,21 @@ public class InversePacman extends Game {
 
 		//Picture
 		img = new Texture("Test1.png");
-
-
-
-//		// Camera
-//		camera = new OrthographicCamera();
-//		camera.setToOrtho(false,V_WIDTH, V_HEIGHT);
-
 	}
 
 	@Override
 	public void render() {
 		super.render();
 
-
 		// Changing the different screens based on the button pressed, should be changed to touch inputs from menu.
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 			Gdx.app.exit();
 		}
 
-		/*else if (Gdx.input.isKeyPressed(Input.Keys.P) && gsm.currentState == GameScreenManager.STATE.MAIN_MENU_SCREEN) {
-			System.out.println("PAUSING!");
-			gsm.setScreen(GameScreenManager.STATE.PAUSE);
-		}
-		else if (Gdx.input.isKeyJustPressed(Input.Keys.R) && gsm.currentState == GameScreenManager.STATE.PAUSE) {
-			System.out.println("UNPAUSING!");
-			//gsm.popScreen();
-			gsm.setScreen(GameScreenManager.STATE.PLAY);
-			//gsm.popScreen();
-		}*/
 		else if (Gdx.input.isKeyPressed(Input.Keys.S) && gsm.currentState == GameScreenManager.STATE.PLAY) {
 			gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
 		}
 	}
-
-
-
 
 	@Override
 	public void dispose() {
