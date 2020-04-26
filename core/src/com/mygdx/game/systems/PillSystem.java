@@ -29,8 +29,15 @@ public class PillSystem extends IteratingSystem {
 
         if (pillComponent.isCollected()) {
             // change this to Hud.getscore where get score gets the current score of the game
-            int pointsToAdd = pillComponent.isPowerPill() ?
-                    2 * Constants.DEFAULT_PILL_POINTS : Constants.DEFAULT_PILL_POINTS;
+            int pointsToAdd;
+            if (pillComponent.isPowerPill()) {
+                MusicSystem musicSystem = this.getEngine().getSystem(MusicSystem.class);
+                musicSystem.playSound(0);
+                pointsToAdd = 2 * Constants.DEFAULT_PILL_POINTS;
+            } else {
+                pointsToAdd = Constants.DEFAULT_PILL_POINTS;
+            }
+
             Hud.addPointsToScore(pointsToAdd);
             getEngine().removeEntity(entity);
             pillComponent.destroyPillBody();
