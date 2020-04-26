@@ -19,14 +19,10 @@ import java.util.HashMap;
 
 public class AISystem extends IteratingSystem{
 
-
-    private static final float X_VELOCITY = 2f;
-    private static final float Y_VELOCITY = 2f;
-
-
     private ComponentMapper<PlayerComponent> playerM;
     private ComponentMapper<StateComponent> stateM;
     private ComponentMapper<TextureComponent> texM;
+    private ComponentMapper<VelocityComponent> velM;
 
     private AiNode currentNode = new AiNode();
     private ArrayList<AiNode> openNodeList = new ArrayList<>();
@@ -42,10 +38,10 @@ public class AISystem extends IteratingSystem{
 
     public AISystem(){
         super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
-//        ghostM = ComponentMapper.getFor(GhostComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
+        velM = ComponentMapper.getFor(VelocityComponent.class);
         difficultyMap.put("ALWAYS_RANDOM", 0);
         difficultyMap.put("DRAGVOLL", 30);
         difficultyMap.put("EASY", 50);
@@ -54,7 +50,6 @@ public class AISystem extends IteratingSystem{
         difficultyMap.put("MURDEROUS", 30000);
 
 
-        //Gdx.input.setInputProcessor(this);
 
 
 
@@ -65,6 +60,8 @@ public class AISystem extends IteratingSystem{
         PlayerComponent pc = playerM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
+        VelocityComponent velocityC = velM.get(entity);
+
         Vector2 ghostPosition = getTiledPosition(pc.getBody().getPosition());
         if(!pc.id.equals("PACMAN") || !ghostPosition.equals(getTiledPosition(WorldBuilder.getPlayerList().get(4).getBody().getPosition()))) {
             behaviourManager(pc);
@@ -81,21 +78,21 @@ public class AISystem extends IteratingSystem{
 
             if (move.equals(new Vector2(0, 1))){
                 x = 0f;
-                y = Y_VELOCITY;
+                y = velocityC.ghostVelocity.y;
 
                 sc.setState(1);
             }
 
             if (move.equals(new Vector2(0, -1))){
                 x = 0f;
-                y = -Y_VELOCITY;
+                y = -velocityC.ghostVelocity.y;
 
                 sc.setState(2);
             }
 
 
             if (move.equals(new Vector2(-1, 0))){
-                x = -X_VELOCITY;
+                x = -velocityC.ghostVelocity.x;
                 y = 0f;
 
                 sc.setState(3);
@@ -107,7 +104,7 @@ public class AISystem extends IteratingSystem{
             }
 
             if (move.equals(new Vector2(1, 0))){
-                x = X_VELOCITY;
+                x = velocityC.ghostVelocity.x;
                 y = 0f;
 
                 sc.setState(4);
