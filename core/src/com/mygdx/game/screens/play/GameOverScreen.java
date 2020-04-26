@@ -153,7 +153,6 @@ public class GameOverScreen extends AbstractScreen {
 
 
         engine.addEntity(musicEntity);
-        musicSystem.pause();
         musicSystem.playSound(0);
         musicSystem.setMusicPosition(13);
 

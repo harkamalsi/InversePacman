@@ -102,9 +102,14 @@ public class MusicSystem extends IteratingSystem {
         pause = false;
     }
 
-    public void setMusicPosition(int position) {
+    public void setMusicPosition(float position) {
         update(1);
         song.setPosition(position);
+    }
+
+    public float getMusicPosition() {
+        update(1);
+        return song.getPosition();
     }
 
     private void playMusic(ArrayList<FileHandle> tracks, int lasttrack) {

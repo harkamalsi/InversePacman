@@ -93,8 +93,12 @@ public final class PlayScreen extends AbstractScreen {
     private TextureRegion pausescreen;
     private TextureRegion pausetexture;
     private TextureRegion back;
+    private TextureRegion ellipse;
+
 
     private Sprite pauseSprite;
+    private Sprite ellipseSprite;
+
 
     private Sprite pauseButtonSprite;
     private Sprite pacmanSpritus;
@@ -107,6 +111,8 @@ public final class PlayScreen extends AbstractScreen {
     private Entity backButton;
     private Entity ghost;
     private Entity pill;
+    private Entity ellipseEntity;
+
 
 
     public static boolean MULTIPLAYER;
@@ -153,8 +159,9 @@ public final class PlayScreen extends AbstractScreen {
         super(app, engine);
 
         this.engine = engine;
-        pausetexture = new TextureRegion(new Texture("playscreen/pause3x.png"));
-        back = new TextureRegion(new Texture("back3x.png"));
+        ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
+        pausetexture = new TextureRegion(new Texture("playscreen/pause2x.png"));
+        back = new TextureRegion(new Texture("playscreen/back2x.png"));
 
 //        this.engine = engine;
 //         Sets the camera; width and height.
@@ -189,6 +196,9 @@ public final class PlayScreen extends AbstractScreen {
 
 
             destroyAllBodies = true;
+            if(MULTIPLAYER){
+                connection.leaveLobby();
+            }
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
 
         }
@@ -209,7 +219,9 @@ public final class PlayScreen extends AbstractScreen {
             musicSystem.dispose();
             destroyAllBodies = true;
 
-            connection.leaveLobby();
+            if(MULTIPLAYER){
+                connection.leaveLobby();
+            }
 
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
@@ -240,6 +252,10 @@ public final class PlayScreen extends AbstractScreen {
             //engine.removeSystem(pillSystem);
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
+            destroyAllBodies = true;
+            if(MULTIPLAYER){
+                connection.leaveLobby();
+            }
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 
@@ -254,6 +270,10 @@ public final class PlayScreen extends AbstractScreen {
             //engine.removeSystem(animationSystem);
             //engine.removeAllEntities();
             ghostsheet.dispose();
+            destroyAllBodies = true;
+            if(MULTIPLAYER){
+                connection.leaveLobby();
+            }
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
             //destroyAllBodies = true;
         }
@@ -322,6 +342,10 @@ public final class PlayScreen extends AbstractScreen {
         // Pill logic
         littlePillSprite = new Texture("white_pill.png");
         powerPillSprite = new Texture("orange_pill.png");
+
+        ellipseSprite = new Sprite(ellipse);
+        ellipseEntity = new Entity();
+        app.addSpriteEntity(ellipseSprite, ellipseEntity, engine, (Gdx.graphics.getWidth() / 2 - (ellipse.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() - (ellipse.getRegionHeight() * (scaleY))), (ellipse.getRegionWidth() * (scaleX)), (ellipse.getRegionHeight() * (scaleY)), false, true, true, false);
 
         Vector2 scale = new Vector2();
         for (int i = 0; i < WorldBuilder.getPillList().size(); i++) {
@@ -427,11 +451,11 @@ public final class PlayScreen extends AbstractScreen {
 
         pauseButtonSprite = new Sprite(pausetexture);
         pauseButton = new Entity();
-        app.addSpriteEntity(pauseButtonSprite, pauseButton, engine,  Gdx.graphics.getWidth() / 1.5f, 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
+        app.addSpriteEntity(pauseButtonSprite, pauseButton, engine,  Gdx.graphics.getWidth() - (pauseButtonSprite.getRegionWidth() * scaleX), 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine,  Gdx.graphics.getWidth() / 10, 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
+        app.addSpriteEntity(backSprite, backButton, engine, 0, 50 * 32 * scaleX/ 1.5f, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
 
         musicEntity = new Entity();
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
@@ -441,7 +465,7 @@ public final class PlayScreen extends AbstractScreen {
         musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
         //engine.addEntity(musicPauseEntity);
 
-        //aiSystem.setDifficulty("MURDEROUS");
+        aiSystem.setDifficulty(app.ai_difficulty);
 
     }
 

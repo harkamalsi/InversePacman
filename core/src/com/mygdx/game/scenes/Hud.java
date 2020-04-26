@@ -38,6 +38,8 @@ public class Hud implements Disposable {
     private Label timerLabel;
     private Label scoreLabel;
     private Label remainingLivesLabel;
+    private Label filler1;
+    private Label filler2;
     private BitmapFont font;
 
 
@@ -65,15 +67,30 @@ public class Hud implements Disposable {
         timerLabel = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
         scoreLabel = new Label("SCORE", new Label.LabelStyle(font, Color.WHITE));
         remainingLivesLabel = new Label("LIVES", new Label.LabelStyle(font, Color.WHITE));
+        filler1 = new Label("filler", new Label.LabelStyle(font, Color.WHITE));
+        filler2 = new Label("filler", new Label.LabelStyle(font, Color.WHITE));
 
-        table.add(timerLabel).expandX().padTop(10);
+        filler1.setVisible(false);
+        filler2.setVisible(false);
+        table.add(filler1).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
-        table.add(remainingLivesLabel).expandX().padTop(10);
-
+        table.add(filler2).expandX().padTop(10);
 
         table.row();
-        table.add(timerText).expandX();
+        table.add(filler1).expandX().padTop(10);
         table.add(scoreText).expandX();
+        table.add(filler2).expandX().padTop(10);
+
+        table.row();
+        table.add(filler1);
+        table.row();
+        table.row();
+        table.add(timerLabel).expandX().padTop(10);
+        table.add(filler1);
+        table.add(remainingLivesLabel).expandX().padTop(10);
+        table.row();
+        table.add(timerText).expandX();
+        table.add(filler1);
         table.add(remainingLivesText).expandX();
 
 
