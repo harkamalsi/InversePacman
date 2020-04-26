@@ -47,18 +47,6 @@ public class NetworkManager {
 
     public NetworkManager() {
         setSocket();
-
-        while (!fetch) {
-        }
-        file = Gdx.files.local("bin/id.txt");
-        if (file.exists()) {
-            playerId = file.readString();
-            if (playerId == null || playerId.isEmpty()) {
-                fetchPlayer();
-            }
-        } else {
-            fetchPlayer();
-        }
     }
 
     public void setSocket() {
@@ -81,6 +69,16 @@ public class NetworkManager {
                 socketID = socket.connect().id();
                 fetch = true;
                 CONNECTED = true;
+
+                file = Gdx.files.local("bin/id.txt");
+                if (file.exists()) {
+                    playerId = file.readString();
+                    if (playerId == null || playerId.isEmpty()) {
+                        fetchPlayer();
+                    }
+                } else {
+                    fetchPlayer();
+                }
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
             @Override
@@ -473,7 +471,6 @@ public class NetworkManager {
                 @Override
                 public void call(Object... args) {
                     JSONObject response = (JSONObject)args[0];
-                    System.out.println("MY RESPONSE: " + response);
                     setPlayerId(response.getString("_id"));
                     file.writeString(playerId, false);
                 }
