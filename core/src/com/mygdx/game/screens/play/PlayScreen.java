@@ -264,6 +264,9 @@ public final class PlayScreen extends AbstractScreen {
         }
 
         if(hud.remainingLives < 1){
+            if (PlayScreen.MULTIPLAYER) {
+                app.NETWORKMANAGER.updateMultiplayerScore(app.NETWORKMANAGER.getPlayerId(), TableComponent.PLAYERTYPE);
+            }
             engine.removeAllEntities();
 
             musicSystem.dispose();

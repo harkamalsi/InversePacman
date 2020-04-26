@@ -182,10 +182,10 @@ public class InversePacman extends Game {
 		//Setup managers
 
 		//Network
-		NETWORKMANAGER = new NetworkManager();
+		saveManager = new SaveManager(false);
+		NETWORKMANAGER = new NetworkManager(saveManager);
 		assets = new AssetManager();
 		gsm = new GameScreenManager(this);
-		saveManager = new SaveManager(false);
 
 
 		//Picture

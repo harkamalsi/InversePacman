@@ -24,7 +24,7 @@ public class SaveManager {
         public ObjectMap<String, Object> data = new ObjectMap<String, Object>();
     }
 
-    private FileHandle file = Gdx.files.local("bin/scores.json");
+    private FileHandle file = Gdx.files.local("bin/ids.json");
 
     private Save getSave() {
         Save save = new Save();
@@ -41,7 +41,7 @@ public class SaveManager {
         return save;
     }
 
-    public void saveToJson() {
+    private void saveToJson() {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
         if (encoded) {
