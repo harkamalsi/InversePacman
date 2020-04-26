@@ -16,6 +16,8 @@ public class CollisionEventSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<PlayerComponent> playerM;
 
+    private float collisionTimer = 0f;
+
 
     public CollisionEventSystem() {
         super(Family.all(TransformComponent.class, PlayerComponent.class).get());
@@ -29,6 +31,9 @@ public class CollisionEventSystem extends IteratingSystem {
 
         TransformComponent tc = transformM.get(entity);
         PlayerComponent pc = playerM.get(entity);
+
+        collisionTimer -= deltaTime;
+        System.out.println(collisionTimer);
 
 
         //scaling pacman on powerpill pickup
@@ -49,7 +54,8 @@ public class CollisionEventSystem extends IteratingSystem {
 
         //resetting position on all players when pacman hit & resetting ghost position in powermode
         if (pc.id.equals("PACMAN") && pc.playerCollidedWith != null) {
-            if(pc.playerIdCollidedWith != "PACMAN" && !pc.powerMode ){
+            if(pc.playerIdCollidedWith != "PACMAN" && !pc.powerMode && collisionTimer <= 0){
+                collisionTimer = 2f;
                 pc.hp -= 1;
                 Hud.setLives(pc.hp);
                 WorldBuilder.resetBodyPositions();
