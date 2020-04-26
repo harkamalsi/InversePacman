@@ -77,7 +77,7 @@ public class Hud implements Disposable {
         filler2 = new Label("filler", new Label.LabelStyle(font, Color.WHITE));
 
         //
-        hintText = new Label("Move Namcap to collect all\npills without colliding\ninto the ghosts!", new Label.LabelStyle(hintFont, Color.WHITE));
+        hintText = new Label("Move Namcap to collect all\npills without colliding\nwith the ghosts!", new Label.LabelStyle(hintFont, Color.WHITE));
         //hintText = new Label("Move Namcap", new Label.LabelStyle(font, Color.WHITE));
         filler1.setVisible(false);
         filler2.setVisible(false);
