@@ -43,7 +43,7 @@ public class AISystem extends IteratingSystem{
         texM = ComponentMapper.getFor(TextureComponent.class);
         velM = ComponentMapper.getFor(VelocityComponent.class);
         difficultyMap.put("ALWAYS_RANDOM", 0);
-        difficultyMap.put("DRAGVOLL", 30);
+        difficultyMap.put("SUPEREASY", 30);
         difficultyMap.put("EASY", 50);
         difficultyMap.put("MEDIUM", 100);
         difficultyMap.put("HARD", 450);
