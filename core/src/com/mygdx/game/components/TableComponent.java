@@ -3,8 +3,10 @@ package com.mygdx.game.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -46,6 +48,7 @@ public class TableComponent implements Component {
     public static String PLAYERTYPE = "GHOST";
     public boolean pacmanType = false;
     public boolean ghostType = true;
+    FileHandle file;
     private Container<Table> tableContainer;
 
     public TableComponent() {
@@ -71,8 +74,37 @@ public class TableComponent implements Component {
         Gdx.input.setInputProcessor(stage);
     }
 
+    public void addConnectingToServerMessage() {
+        Label message1 = new Label("Connecting to", skin);
+        Label message2 = new Label(" server...", skin);
+        message1.setFontScale(0.9f);
+        message2.setFontScale(0.9f);
+        table.add(message1).padBottom(20);
+        table.row();
+        table.add(message2);
+        table.row();
+    }
+
+    public void addPlayerNickname() {
+        file = Gdx.files.local("bin/id.txt");
+        if (file.exists()) {
+            String playerNickname = file.readString();
+            Label nickNameMessage = new Label("Nickname: ", skin);
+            Label nickName = new Label(playerNickname, skin);
+            nickNameMessage.setFontScale(0.5f);
+            nickName.setFontScale(0.5f);
+            table.add(nickNameMessage).expandX().padBottom(150);
+            table.add(nickName).expandX().padBottom(150);
+            table.row();
+        }
+    }
+
     public void addRow(final String nameLabel, String nameText) {
-        final TextButton lobbyButton = new TextButton(nameLabel, skin);
+        /*TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = BitmapFont();
+        textButtonStyle.fontColor = Color.WHITE;
+        textButtonStyle.downFontColor = Color.RED;*/
+        final TextButton lobbyButton = new TextButton(nameLabel, skin); //skin
         Label lobbyPlayers = new Label(nameText, skin);
 
         table.add(lobbyButton).expand().padBottom(20);
@@ -88,21 +120,12 @@ public class TableComponent implements Component {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 joinLobbyName = nameLabel;
                 lobbyButtonClicked = true;
+                System.out.println("CLIECKEDDDDDDDDDD");
+                lobbyButton.setStyle(skin.get("toggle", TextButton.TextButtonStyle.class));
                 return true;
             }
         });
 
-        table.row();
-    }
-
-    public void addConnectingToServerMessage() {
-        Label message1 = new Label("Connecting to", skin);
-        Label message2 = new Label(" server...", skin);
-        message1.setFontScale(0.9f);
-        message2.setFontScale(0.9f);
-        table.add(message1).padBottom(20);
-        table.row();
-        table.add(message2);
         table.row();
     }
 
@@ -129,12 +152,13 @@ public class TableComponent implements Component {
             }
         });
 
-        table.add(readyUpCheckbox).expandX().padBottom(20);
+        table.add(readyUpCheckbox).padTop(150).padBottom(50).colspan(2);
+        table.row();
     }
 
     public void addTypeCheckboxes() {
-        final CheckBox pacmantypeCheckBox = new CheckBox("PACMAN", skin);
-        final CheckBox ghostTypeCheckBox = new CheckBox("GHOST", skin);
+        final CheckBox pacmantypeCheckBox = new CheckBox(" PACMAN", skin);
+        final CheckBox ghostTypeCheckBox = new CheckBox(" GHOST", skin);
 
         pacmantypeCheckBox.getLabel().setFontScale(0.5f);
         pacmantypeCheckBox.setSize(50f, 50f);
@@ -205,7 +229,6 @@ public class TableComponent implements Component {
             PLAYERTYPE = "PACMAN";
         }
 
-        table.row();
         table.add(ghostTypeCheckBox).expandX();
         table.add(pacmantypeCheckBox).expandX();
         table.row();

@@ -28,10 +28,9 @@ public class PlayerComponent implements Component {
 
     public float invincibleTimer;
 
-    public boolean pacmanGotHit;
+    public String playerIdCollidedWith;
+    public Body playerCollidedWith;
 
-    public boolean ghostGotHit;
-    public Body ghostHit;
 
     public boolean powerMode;
 
@@ -79,32 +78,6 @@ public class PlayerComponent implements Component {
         return id;
     }
 
-    public void setCurrentState(int state) {
-        currentState = state;
-    }
-
-    public void hit(PlayerComponent playerHit) {
-
-        if (id.equals("PACMAN")) {
-
-            if (!powerMode) {
-                this.hp -= 1;
-                Hud.setLives(hp);
-                pacmanGotHit = true;
-            }
-
-            else {
-                ghostHit = playerHit.getBody();
-                Hud.addPointsToScore(500);
-            }
-
-            System.out.println(id + " have been hit by " + playerHit.getId());
-        }
-    }
-
-    public void hitBy(PlayerComponent playerHitBy) {
-        System.out.println(id + " have been hit by " + playerHitBy.getId());
-    }
 
     public Body getBody() {
         return body;
