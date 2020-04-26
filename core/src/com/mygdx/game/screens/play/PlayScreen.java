@@ -281,7 +281,7 @@ public final class PlayScreen extends AbstractScreen {
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 
-        if(hud.remainingLives < 1){
+        if(collisionEventSystem.gameover){
             if (PlayScreen.MULTIPLAYER) {
                 app.NETWORKMANAGER.updateMultiplayerScore(app.NETWORKMANAGER.getPlayerId(), TableComponent.PLAYERTYPE);
             }
