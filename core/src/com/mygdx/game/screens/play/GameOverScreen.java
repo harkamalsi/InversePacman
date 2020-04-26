@@ -71,7 +71,7 @@ public class GameOverScreen extends AbstractScreen {
 
         excitementBg = new TextureRegion(new Texture("gameover/excitement_bg.png"));
         won_bg = new TextureRegion(new Texture("gameover/won.png"));
-        lost_bg = new TextureRegion(new Texture("gameover/gameover.png"));
+        lost_bg = new TextureRegion(new Texture("gameover/lost.png"));
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
 
