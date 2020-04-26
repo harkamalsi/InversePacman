@@ -18,6 +18,8 @@ import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PillSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
+import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
+
 public class GameOverScreen extends AbstractScreen {
     private SpriteBatch batch;
 
@@ -144,9 +146,6 @@ public class GameOverScreen extends AbstractScreen {
         engine.removeEntity(lost_bgEntity);
 
         musicEntity = new Entity();
-
-
-        connection.leaveLobby();
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/won"), sound));
 
 

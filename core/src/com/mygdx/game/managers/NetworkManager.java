@@ -168,8 +168,6 @@ public class NetworkManager {
 
     public void joinLobby(Object ...args) {
         // args: lobbyName, getNickname(), getPlayerType()
-        System.out.println("JOIN LOBBY CALLED!");
-        System.out.println(fetch);
         if (fetch) {
             //System.out.println("Join Lobby is called!");
 

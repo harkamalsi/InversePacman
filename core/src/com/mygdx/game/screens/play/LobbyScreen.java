@@ -162,10 +162,7 @@ public class LobbyScreen extends AbstractScreen {
             engine.removeAllEntities();
             musicSystem.dispose();
 
-            System.out.println("MULTIPLAYER : " + MULTIPLAYER);
-
             if(MULTIPLAYER){
-                System.out.println("LEAVY LOBBY CALLED");
                 connection.leaveLobby();
                 LobbyScreen.LOBBY_JOINED = null;
                 MULTIPLAYER = false;
