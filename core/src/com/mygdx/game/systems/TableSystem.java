@@ -4,20 +4,8 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.mygdx.game.InversePacman;
-import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.TableComponent;
-import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.multiplayermessage.MultiplayerMessage;
@@ -26,8 +14,6 @@ import com.mygdx.game.screens.play.PlayScreen;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
 
 public class TableSystem extends IteratingSystem {
     private TableComponent cc;
@@ -52,7 +38,7 @@ public class TableSystem extends IteratingSystem {
     }
 
     private void handleLobbyButtonClicked(String lobbyName, String type) {
-        this.connection.joinLobby(lobbyName, "Cokey", type);
+        this.connection.joinLobby(lobbyName, LobbyScreen.NICKNAME, type);
     }
 
     public void startGame() {

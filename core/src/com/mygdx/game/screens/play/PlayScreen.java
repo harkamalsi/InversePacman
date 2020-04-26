@@ -3,37 +3,24 @@ package com.mygdx.game.screens.play;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
-import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.CollisionComponent;
 import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.PillComponent;
@@ -45,7 +32,6 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
-import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.AbstractScreen;
@@ -53,7 +39,6 @@ import com.mygdx.game.systems.AISystem;
 import com.mygdx.game.systems.AnimationSystem;
 import com.mygdx.game.systems.ButtonSystem;
 import com.mygdx.game.systems.CollisionEventSystem;
-import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PillSystem;
@@ -63,14 +48,7 @@ import com.mygdx.game.systems.RenderingSystem;
 import com.mygdx.game.systems.StateSystem;
 import com.mygdx.game.worldbuilder.WorldBuilder;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-
 import java.util.Arrays;
-import java.util.concurrent.Future;
-
-
-import java.util.concurrent.ThreadLocalRandom;
 
 
 public final class PlayScreen extends AbstractScreen {
@@ -81,11 +59,8 @@ public final class PlayScreen extends AbstractScreen {
     //camera for the buttonsystem
     private OrthographicCamera camera2;
 
-
     private Hud hud;
 
-
-    //private SpriteBatch batch;
     private EntityManager entityManager;
 
     private Texture pacmansprite;
@@ -127,8 +102,6 @@ public final class PlayScreen extends AbstractScreen {
     private Entity front_ellipseEntity;
     private Entity pauseiconEntity;
 
-
-
     public static boolean MULTIPLAYER;
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private Entity musicEntity;
@@ -148,7 +121,6 @@ public final class PlayScreen extends AbstractScreen {
 
     private Engine engine;
 
-    //public boolean pause = false;
     private boolean resume = false;
 
     private CollisionEventSystem collisionEventSystem;
@@ -181,26 +153,18 @@ public final class PlayScreen extends AbstractScreen {
         front_ellipse = new TextureRegion(new Texture("playscreen/front_ellipse.png"));
         pauseicon = new TextureRegion(new Texture("playscreen/pauseicon.png"));
 
-//        this.engine = engine;
-//         Sets the camera; width and height.
+        //Sets the camera; width and height.
         this.camera = new OrthographicCamera();
-
         this.camera2 = new OrthographicCamera();
-
-        //I/System.out: camera  (415.38464,690.0,0.0)
-
 
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
         this.camera.setToOrtho(false, Gdx.graphics.getWidth() / (scaleX *1.32f), Gdx.graphics.getHeight() / (scaleX*1.32f));
         this.camera2.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        //camera.translate(415.38464f,690.0f,0);
-
         scaleX = Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE;
         scaleY = Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE;
         this.camera.setToOrtho(false, Gdx.graphics.getWidth() / (scaleX *1.32f), Gdx.graphics.getHeight() / (scaleX*1.32f));
-
 
         hud = new Hud(app.batch);
     }
@@ -295,7 +259,6 @@ public final class PlayScreen extends AbstractScreen {
 
         hud.update(delta);
     }
-
 
     @Override
     public void show() {

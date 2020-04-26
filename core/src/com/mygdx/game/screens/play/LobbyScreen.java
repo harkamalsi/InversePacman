@@ -5,29 +5,16 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
-import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
-import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
@@ -42,6 +29,7 @@ public class LobbyScreen extends AbstractScreen {
 
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     public static String LOBBY_JOINED;
+    public static String NICKNAME;
 
     private SpriteBatch batch;
 
@@ -67,7 +55,6 @@ public class LobbyScreen extends AbstractScreen {
 
     private Entity musicEntity;
 
-
     private Sprite createLobbySprite;
     private Sprite backSprite;
     private Sprite bgSprite;
@@ -88,19 +75,25 @@ public class LobbyScreen extends AbstractScreen {
 
         scaleX = (Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE) * 0.8f;
         scaleY = (Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE) * 0.8f;
+
+        loadAndSetNickname();
+    }
+
+    private void loadAndSetNickname(){
+        String tempNickname = app.saveManager.loadDataValue("nickname", String.class);
+        if (tempNickname != null || !tempNickname.isEmpty()) {
+            NICKNAME = tempNickname;
+        }
     }
 
     @Override
     public void render(float delta){
         super.render(delta);
-        //engine.update(delta);
         batch.begin();
         batch.draw(bg, 0,0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
         batch.end();
         engine.update(delta);
     }
-
-
 
     @Override
     public void update(float delta) {
@@ -113,11 +106,9 @@ public class LobbyScreen extends AbstractScreen {
     }
 
     public void handleInput() {
-        String nickname = "PepsiCoke";
-
         if(createLobbyButton.flags == 1) {
             if (table.createLobby) {
-                connection.createLobby(nickname, TableComponent.PLAYERTYPE);
+                connection.createLobby(NICKNAME, TableComponent.PLAYERTYPE);
             } 
             createLobbyButton.flags = 0;
         }
@@ -156,21 +147,16 @@ public class LobbyScreen extends AbstractScreen {
         engine.addSystem(renderingSystem);
 
         bgSprite = new Sprite(bg);
-
         bgEntity = new Entity();
-
-        //Don't know why but the background doesn't surround the whole screen, therefore I added some +/- on the parameters
         bgEntity.add(new TextureComponent(bgSprite, 0, -2, Gdx.graphics.getWidth() + 2,
                 Gdx.graphics.getHeight() + 2,false,false,false))
                 .add(new TransformComponent(0,0));
-        //engine.addEntity(bgEntity);
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 14f, 50 * 32 * scaleX/ 1.37f,
+        app.addSpriteEntity(backSprite, backButton, engine, 20f, 50 * 32 * scaleX/ 0.67f,
                 backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX,
                 true,false, false, false);
-
 
         tbEntity = new Entity();
         table = new TableComponent(app.saveManager);
@@ -196,17 +182,14 @@ public class LobbyScreen extends AbstractScreen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
