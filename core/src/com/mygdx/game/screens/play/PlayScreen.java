@@ -325,7 +325,7 @@ public final class PlayScreen extends AbstractScreen {
 
         // To add a new songs, place the file under the folder assets/music/play
         //batch = new SpriteBatch();
-        playerInputSystem = new PlayerInputSystem(MULTIPLAYER);
+        playerInputSystem = new PlayerInputSystem();
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionEventSystem = new CollisionEventSystem();
