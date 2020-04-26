@@ -50,6 +50,7 @@ import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.AISystem;
 import com.mygdx.game.systems.AnimationSystem;
 import com.mygdx.game.systems.ButtonSystem;
+import com.mygdx.game.systems.CollisionEventSystem;
 import com.mygdx.game.systems.CollisionSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
@@ -137,7 +138,7 @@ public final class PlayScreen extends AbstractScreen {
     //public boolean pause = false;
     private boolean resume = false;
 
-    private CollisionSystem collisionSystem;
+    private CollisionEventSystem collisionEventSystem;
     private MovementSystem movementSystem;
     private PlayerInputSystem playerInputSystem;
     private AISystem aiSystem;
@@ -247,7 +248,7 @@ public final class PlayScreen extends AbstractScreen {
 
             musicSystem.dispose();
             engine.removeSystem(musicSystem);
-            engine.removeSystem(collisionSystem);
+            engine.removeSystem(collisionEventSystem);
             //engine.removeSystem(renderingSystem);
             //engine.removeSystem(pillSystem);
             engine.removeSystem(animationSystem);
@@ -264,7 +265,7 @@ public final class PlayScreen extends AbstractScreen {
 
             musicSystem.dispose();
             //engine.removeSystem(musicSystem);
-            engine.removeSystem(collisionSystem);
+            engine.removeSystem(collisionEventSystem);
             //engine.removeSystem(renderingSystem);
             //engine.removeSystem(pillSystem);
             //engine.removeSystem(animationSystem);
@@ -317,7 +318,7 @@ public final class PlayScreen extends AbstractScreen {
         playerInputSystem = new PlayerInputSystem(MULTIPLAYER);
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
-        collisionSystem = new CollisionSystem();
+        collisionEventSystem = new CollisionEventSystem();
 
         renderingSystem = new RenderingSystem(app.batch);
         buttonSystem = new ButtonSystem(camera2);
@@ -331,7 +332,7 @@ public final class PlayScreen extends AbstractScreen {
             engine.addSystem(aiSystem);
         }
         engine.addSystem(movementSystem);
-        engine.addSystem(collisionSystem);
+        engine.addSystem(collisionEventSystem);
         engine.addSystem(renderingSystem);
         engine.addSystem(stateSystem);
         engine.addSystem(animationSystem);
@@ -507,19 +508,6 @@ public final class PlayScreen extends AbstractScreen {
                 world.dispose();
                 destroyAllBodies = false;
             }
-            PlayerComponent pacmanComponent = WorldBuilder.getPlayerList().get(4);
-
-
-            if(pacmanComponent.pacmanGotHit){
-                WorldBuilder.resetBodyPositions();
-                pacmanComponent.pacmanGotHit = false;
-            }
-
-            if(pacmanComponent.ghostHit != null){
-                WorldBuilder.resetBodyPosition(pacmanComponent.ghostHit);
-                pacmanComponent.ghostHit = null;
-            }
-
 
 
 
