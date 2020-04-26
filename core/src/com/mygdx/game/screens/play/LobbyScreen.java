@@ -35,22 +35,17 @@ import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.RenderingSystem;
 import com.mygdx.game.systems.TableSystem;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-
 import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
 
 public class LobbyScreen extends AbstractScreen {
     private OrthographicCamera camera;
-    private FitViewport viewport;
 
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     public static String LOBBY_JOINED;
 
     private SpriteBatch batch;
-    private SpriteBatch bgBatch;
 
     private Engine engine;
-    private Vector3 clickPosition;
 
     private ButtonSystem buttonSystem;
     private TableSystem tableSystem;
@@ -60,22 +55,12 @@ public class LobbyScreen extends AbstractScreen {
     private TableComponent table;
 
     private TextureRegion createLobby;
-    private TextureRegion multiplay;
-    private TextureRegion highscore;
-    private TextureRegion option;
     private TextureRegion bg;
 
     private TextureRegion ellipse;
-    private TextureRegion front_ellipse;
     private TextureRegion back;
 
-    private Entity joinLobbyButton;
     private Entity createLobbyButton;
-    private Entity multiplayerButton;
-    private Entity highscoreButton;
-    private Entity optionButton;
-    private Entity ellipseEntity;
-    private Entity front_ellipseEntity;
     private Entity bgEntity;
     private Entity tbEntity;
     private Entity backButton;
@@ -85,42 +70,21 @@ public class LobbyScreen extends AbstractScreen {
 
     private Sprite createLobbySprite;
     private Sprite backSprite;
-    private Sprite multisprite;
-    private Sprite highscoresprite;
-    private Sprite optionsprite;
-    private Sprite ellipseSprite;
-    private Sprite front_ellipseSprite;
     private Sprite bgSprite;
-
-
 
     private float scaleX;
     private float scaleY;
 
-    private BitmapFont font;
-    private GlyphLayout layout;
-
     public LobbyScreen(final InversePacman app, Engine engine) {
         super(app, engine);
         this.engine = engine;
-
-        /*this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
-        //networkManager = new NetworkManager();
         table = new TableComponent(app.saveManager);
 
         bg = new TextureRegion(new Texture("lobbyscreen/lobbyScreen.png"));
         createLobby = new TextureRegion(new Texture("lobbyscreen/createLobbyButton.png"));
-        multiplay = new TextureRegion(new Texture("menuscreen/multi.png"));
-        highscore = new TextureRegion(new Texture("menuscreen/high.png"));
-        option = new TextureRegion(new Texture("menuscreen/options.png"));
 
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
-        front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
         back = new TextureRegion(new Texture("playscreen/back2x.png"));
-
-        font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
-        layout = new GlyphLayout(); //dont do this every frame! Store it as member
 
         scaleX = (Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE) * 0.8f;
         scaleY = (Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE) * 0.8f;
@@ -176,13 +140,9 @@ public class LobbyScreen extends AbstractScreen {
     @Override
     public void show() {
         this.camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         batch = new SpriteBatch();
-        bgBatch = new SpriteBatch();
-
-        ellipseSprite = new Sprite(ellipse);
 
         buttonSystem = new ButtonSystem(camera);
         tableSystem = new TableSystem(app);
@@ -213,6 +173,7 @@ public class LobbyScreen extends AbstractScreen {
 
 
         tbEntity = new Entity();
+        table = new TableComponent(app.saveManager);
         tbEntity.add(table);
         engine.addEntity(tbEntity);
 
