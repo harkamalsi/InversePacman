@@ -204,6 +204,7 @@ public final class PlayScreen extends AbstractScreen {
             }
             musicSystem.dispose();
             engine.removeAllEntities();
+            hud.reset();
             destroyAllBodies = true;
 
             if(MULTIPLAYER){
@@ -211,7 +212,6 @@ public final class PlayScreen extends AbstractScreen {
                 LobbyScreen.LOBBY_JOINED = null;
                 MULTIPLAYER = false;
             }
-
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
 
@@ -243,6 +243,7 @@ public final class PlayScreen extends AbstractScreen {
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
             destroyAllBodies = true;
+            hud.reset();
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 
@@ -251,11 +252,11 @@ public final class PlayScreen extends AbstractScreen {
                 app.NETWORKMANAGER.updateMultiplayerScore(app.NETWORKMANAGER.getPlayerId(), TableComponent.PLAYERTYPE);
             }
             engine.removeAllEntities();
-
             musicSystem.dispose();
             engine.removeSystem(collisionEventSystem);
             ghostsheet.dispose();
             destroyAllBodies = true;
+            hud.reset();
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 

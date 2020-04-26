@@ -154,7 +154,7 @@ public class LobbyScreen extends AbstractScreen {
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 20f, 50 * 32 * scaleX/ 0.67f,
+        app.addSpriteEntity(backSprite, backButton, engine, 0, Gdx.graphics.getHeight() - backSprite.getRegionHeight() * scaleX,
                 backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX,
                 true,false, false, false);
 
