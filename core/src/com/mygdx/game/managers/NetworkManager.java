@@ -1,5 +1,9 @@
 package com.mygdx.game.managers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.mygdx.game.InversePacman;
+import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.shared.Constants;
 
 import org.json.JSONArray;
@@ -8,6 +12,7 @@ import org.json.JSONObject;
 import org.json.JSONString;
 
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 import io.socket.client.Ack;
 import io.socket.client.IO;
@@ -36,9 +41,24 @@ public class NetworkManager {
     private JSONArray players = new JSONArray();
     private JSONObject response;
     public Boolean connected = false;
+    String playerId;
+
+    FileHandle file;
 
     public NetworkManager() {
         setSocket();
+
+        while (!fetch) {
+        }
+        file = Gdx.files.local("bin/id.txt");
+        if (file.exists()) {
+            playerId = file.readString();
+            if (playerId == null || playerId.isEmpty()) {
+                fetchPlayer();
+            }
+        } else {
+            fetchPlayer();
+        }
     }
 
     public void setSocket() {
@@ -247,24 +267,6 @@ public class NetworkManager {
     }
 
     // Player sockets
-    public void addPlayer(final String nickname) {
-        if (fetch) {
-            //System.out.println("Add player is called!");
-
-            getSocket().emit(Constants.ADD_PLAYER, socketID, nickname);
-
-            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONObject response = (JSONObject)args[0];
-                    System.out.println(response);
-                }
-            });
-
-            fetch = false;
-        }
-    }
-
     private void setPlayer(JSONObject player) {
         this.player = player;
     }
@@ -352,7 +354,11 @@ public class NetworkManager {
 
             final JSONObject inputs = new JSONObject();
             inputs.put("id", args[0]);
-            inputs.put("spScore", args[1]);
+
+            JSONArray scores = new JSONArray();
+            scores.put(args[1]);
+            scores.put(0);
+            inputs.put("spScore", scores);
             inputs.put("mpScore", -1);
 
             getSocket().emit(Constants.UPDATE_HIGHSCORE, socketID, inputs);
@@ -365,19 +371,36 @@ public class NetworkManager {
                 }
             });
 
-            fetch = false;
         }
     }
 
-    public void updateMultiplayerScore(Object ...args) {
+    public void updateMultiplayerScore(String id, String playerType) {
         // args: id, mpScore
         if (fetch) {
             //System.out.println("Update single player score is called!");
 
             final JSONObject inputs = new JSONObject();
-            inputs.put("id", args[0]);
+            inputs.put("id", id);
             inputs.put("spScore", -1);
-            inputs.put("mpScore", args[1]);
+
+            int pacmanScore = 0, ghostsScore = 0;
+            for (int i = 0; i < players.length(); i++) {
+                JSONObject playerObject = (JSONObject)players.get(i);
+                if (playerObject.getString("_id").equals(playerId)) {
+                    pacmanScore = playerObject.getJSONArray("mpScore").getInt(0);
+                    ghostsScore = playerObject.getJSONArray("mpScore").getInt(1);
+                }
+            }
+
+            JSONArray scores = new JSONArray();
+            if (playerType == "PACMAN") {
+                pacmanScore++;
+            } else {
+                ghostsScore++;
+            }
+            scores.put(pacmanScore);
+            scores.put(ghostsScore);
+            inputs.put("mpScore", scores);
 
             getSocket().emit(Constants.UPDATE_HIGHSCORE, socketID, inputs);
 
@@ -388,8 +411,6 @@ public class NetworkManager {
                     System.out.println(response);
                 }
             });
-
-            fetch = false;
         }
     }
 
@@ -432,6 +453,31 @@ public class NetworkManager {
             });
 
             //fetch = false;
+        }
+    }
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    private void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
+
+    public void fetchPlayer() {
+        if (fetch) {
+            String newId = "Kyle " +  UUID.randomUUID().toString().substring(0, 4);
+            getSocket().emit(Constants.ADD_PLAYER, socketID, newId);
+
+            getSocket().on(Constants.DATABASE_UPDATE, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject response = (JSONObject)args[0];
+                    System.out.println("MY RESPONSE: " + response);
+                    setPlayerId(response.getString("_id"));
+                    file.writeString(playerId, false);
+                }
+            });
         }
     }
 

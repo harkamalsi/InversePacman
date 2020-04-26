@@ -37,11 +37,13 @@ import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.StateComponent;
+import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.AbstractScreen;
@@ -224,6 +226,11 @@ public final class PlayScreen extends AbstractScreen {
 
 
         if (pillSystem.allPillsCollected()) {
+            if (PlayScreen.MULTIPLAYER) {
+                app.NETWORKMANAGER.updateMultiplayerScore(app.NETWORKMANAGER.getPlayerId(), TableComponent.PLAYERTYPE);
+            } else {
+                app.NETWORKMANAGER.updateSingleplayerScore(app.NETWORKMANAGER.getPlayerId(), hud.getScore());
+            }
             engine.removeAllEntities();
 
             musicSystem.dispose();

@@ -101,6 +101,10 @@ public class Hud implements Disposable {
         remainingLivesText.setText(String.format("%d", remainingLives));
     }
 
+    public int getScore() {
+        return score;
+    }
+
 
     @Override
     public void dispose() {
