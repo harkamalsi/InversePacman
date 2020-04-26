@@ -94,6 +94,7 @@ public class TableComponent implements Component {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("CLICKED!!!!!!!!!!!!!!!!!!");
                 lobbyButtonClicked = true;
                 joinLobbyName = nameLabel;
                 return true;
