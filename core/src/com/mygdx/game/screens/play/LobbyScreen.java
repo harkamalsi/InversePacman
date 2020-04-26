@@ -107,7 +107,7 @@ public class LobbyScreen extends AbstractScreen {
         /*this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);*/
         //networkManager = new NetworkManager();
-        table = new TableComponent();
+        table = new TableComponent(app.saveManager);
 
         bg = new TextureRegion(new Texture("lobbyscreen/lobbyScreen.png"));
         createLobby = new TextureRegion(new Texture("lobbyscreen/createLobbyButton.png"));

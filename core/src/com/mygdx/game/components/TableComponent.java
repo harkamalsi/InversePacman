@@ -31,6 +31,8 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.InversePacman;
+import com.mygdx.game.managers.SaveManager;
 
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.swing.event.ChangeEvent;
@@ -48,10 +50,10 @@ public class TableComponent implements Component {
     public static String PLAYERTYPE = "GHOST";
     public boolean pacmanType = false;
     public boolean ghostType = true;
-    FileHandle file;
     private Container<Table> tableContainer;
+    private SaveManager saveManager;
 
-    public TableComponent() {
+    public TableComponent(SaveManager saveManager) {
         stage = new Stage(new ScreenViewport());
         tableContainer = new Container<Table>();
         float sw = Gdx.graphics.getWidth();
@@ -72,6 +74,8 @@ public class TableComponent implements Component {
         tableContainer.setActor(table);
         stage.addActor(tableContainer);
         Gdx.input.setInputProcessor(stage);
+
+        this.saveManager = saveManager;
     }
 
     public void addConnectingToServerMessage() {
@@ -86,11 +90,10 @@ public class TableComponent implements Component {
     }
 
     public void addPlayerNickname() {
-        file = Gdx.files.local("bin/id.txt");
-        if (file.exists()) {
-            String playerNickname = file.readString();
+        String nickname = saveManager.loadDataValue("nickname", String.class);
+        if (nickname != null || !nickname.isEmpty()) {
             Label nickNameMessage = new Label("Nickname: ", skin);
-            Label nickName = new Label(playerNickname, skin);
+            Label nickName = new Label(nickname, skin);
             nickNameMessage.setFontScale(0.5f);
             nickName.setFontScale(0.5f);
             table.add(nickNameMessage).expandX().padBottom(150);
