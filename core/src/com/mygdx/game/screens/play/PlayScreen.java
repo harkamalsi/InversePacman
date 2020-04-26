@@ -3,6 +3,7 @@ package com.mygdx.game.screens.play;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
@@ -32,6 +33,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
+import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.CollisionComponent;
 import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.PillComponent;
@@ -96,6 +98,10 @@ public final class PlayScreen extends AbstractScreen {
     private TextureRegion back;
     private TextureRegion ellipse;
 
+    private TextureRegion pause_ellipse;
+    private TextureRegion front_ellipse;
+    private TextureRegion pauseicon;
+
 
     private Sprite pauseSprite;
     private Sprite ellipseSprite;
@@ -105,6 +111,9 @@ public final class PlayScreen extends AbstractScreen {
     private Sprite pacmanSpritus;
     private Sprite backSprite;
 
+    private Sprite pause_ellipseSprite;
+    private Sprite front_ellipseSprite;
+    private Sprite pauseiconSprite;
 
     private Entity pacman;
     private Entity pauseEntity;
@@ -113,6 +122,10 @@ public final class PlayScreen extends AbstractScreen {
     private Entity ghost;
     private Entity pill;
     private Entity ellipseEntity;
+
+    private Entity pause_ellipseEntity;
+    private Entity front_ellipseEntity;
+    private Entity pauseiconEntity;
 
 
 
@@ -163,6 +176,10 @@ public final class PlayScreen extends AbstractScreen {
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
         pausetexture = new TextureRegion(new Texture("playscreen/pause2x.png"));
         back = new TextureRegion(new Texture("playscreen/back2x.png"));
+
+        pause_ellipse = new TextureRegion(new Texture("playscreen/ellipse.png"));
+        front_ellipse = new TextureRegion(new Texture("playscreen/front_ellipse.png"));
+        pauseicon = new TextureRegion(new Texture("playscreen/pauseicon.png"));
 
 //        this.engine = engine;
 //         Sets the camera; width and height.
@@ -218,6 +235,10 @@ public final class PlayScreen extends AbstractScreen {
         }
 
         if(backButton.flags == 1) {
+            if(MULTIPLAYER){
+                //System.out.println("lobby left");
+                connection.leaveLobby();
+            }
             //engine.removeSystem(musicSystem);
             engine.removeAllEntities();
             musicSystem.dispose();
@@ -228,6 +249,11 @@ public final class PlayScreen extends AbstractScreen {
             }
 
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
+        }
+
+        if(pause_ellipseEntity.flags == 1) {
+            pause_ellipseEntity.flags = 0;
+            pause = false;
         }
 
     }
@@ -461,7 +487,7 @@ public final class PlayScreen extends AbstractScreen {
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 0, 50 * 32 * scaleX/ 1.5f, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
+        app.addSpriteEntity(backSprite, backButton, engine, 0,  50 * 32 * scaleX/ 1.5f, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
 
         musicEntity = new Entity();
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
@@ -472,6 +498,25 @@ public final class PlayScreen extends AbstractScreen {
         //engine.addEntity(musicPauseEntity);
 
         aiSystem.setDifficulty(app.ai_difficulty);
+
+
+        // PauseEntities
+
+        pause_ellipseSprite = new Sprite(pause_ellipse);
+        pause_ellipseEntity = new Entity();
+        app.addSpriteEntity(pause_ellipseSprite, pause_ellipseEntity, engine, (Gdx.graphics.getWidth() / 2 - (pause_ellipseSprite.getRegionWidth() / 2 * (scaleX))),  Gdx.graphics.getHeight() / 3, pause_ellipseSprite.getRegionWidth() * scaleX, pause_ellipseSprite.getRegionHeight() * scaleY, true,true, true, false);
+        engine.removeEntity(pause_ellipseEntity);
+
+        front_ellipseSprite = new Sprite(front_ellipse);
+        front_ellipseEntity = new Entity();
+        app.addSpriteEntity(front_ellipseSprite, front_ellipseEntity, engine, (Gdx.graphics.getWidth() / 2 - (front_ellipseSprite.getRegionWidth() / 2 * (scaleX))), (Gdx.graphics.getHeight() / 3) + (pause_ellipseSprite.getRegionHeight() * scaleY - front_ellipseSprite.getRegionHeight() * scaleY) / 2, front_ellipseSprite.getRegionWidth() * scaleX, front_ellipseSprite.getRegionHeight() * scaleY, false,false, false, false);
+        engine.removeEntity(front_ellipseEntity);
+
+        pauseiconSprite = new Sprite(pauseicon);
+        pauseiconEntity = new Entity();
+        app.addSpriteEntity(pauseiconSprite, pauseiconEntity, engine, (Gdx.graphics.getWidth() / 2 - (pauseiconSprite.getRegionWidth() / 2 * (scaleX))),  (Gdx.graphics.getHeight() / 3) + (pause_ellipseSprite.getRegionHeight() * scaleY - pauseiconSprite.getRegionHeight() * scaleY) / 2, pauseiconSprite.getRegionWidth() * scaleX, pauseiconSprite.getRegionHeight() * scaleY, false,true, true, false);
+        engine.removeEntity(pauseiconEntity);
+
 
     }
 
@@ -500,6 +545,11 @@ public final class PlayScreen extends AbstractScreen {
                 //engine.addEntity(pacman);
                 musicSystem.resume();
                 engine.removeEntity(pauseEntity);
+                engine.removeEntity(pause_ellipseEntity);
+                engine.removeEntity(front_ellipseEntity);
+                engine.removeEntity(pauseiconEntity);
+                engine.addEntity(pauseButton);
+                engine.addEntity(backButton);
                 resume = false;
             }
             engine.update(delta);
@@ -525,14 +575,22 @@ public final class PlayScreen extends AbstractScreen {
             //engine.removeEntity(pacman);
             musicSystem.pause();
             engine.getSystem(RenderingSystem.class).update(delta);
+            engine.removeEntity(pauseButton);
+            engine.removeEntity(backButton);
+            engine.getSystem(ButtonSystem.class).update(delta);
+            //engine.getEntitiesFor(Family.one())
             //engine.getSystem(ButtonSystem.class).update(delta);
             if(!resume) {
                 engine.addEntity(pauseEntity);
+                engine.addEntity(pause_ellipseEntity);
+                engine.addEntity(front_ellipseEntity);
+                engine.addEntity(pauseiconEntity);
+
             }
             resume = true;
-            if(Gdx.input.justTouched()) {
+            /*if(Gdx.input.justTouched()) {
                 pause = false;
-            }
+            }*/
         }
         //engine.update(delta);
 
