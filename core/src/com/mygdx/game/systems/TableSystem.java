@@ -30,10 +30,8 @@ import org.json.JSONObject;
 import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
 
 public class TableSystem extends IteratingSystem {
-    private SpriteBatch batch;
     private TableComponent cc;
     private ComponentMapper<TableComponent> tableM;
-    private ComponentMapper<TransformComponent> tc;
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private InversePacman app;
     public boolean prevIsReadyUpChecked = false;
@@ -46,8 +44,6 @@ public class TableSystem extends IteratingSystem {
         this.startsignal = 0;
         this.app = app;
         tableM = ComponentMapper.getFor(TableComponent.class);
-        //tc = ComponentMapper.getFor(TransformComponent.class);
-        this.app = app;
     }
 
     @Override
@@ -81,7 +77,7 @@ public class TableSystem extends IteratingSystem {
 
         if(cc.draw) {
             cc.addPlayerNickname();
-            for (int i = 0; i < lobbies.length(); i++) { //lobbies.length
+            for (int i = 0; i < lobbies.length(); i++) {
                 JSONObject lobbyObject = lobbies.getJSONObject(i);
 
                 String lobbyName = lobbyObject.getString("lobbyName");
@@ -89,7 +85,7 @@ public class TableSystem extends IteratingSystem {
 
                 cc.addRow(lobbyName, lobbyPlayers);
             }
-            cc.addCheckbox();
+            cc.addReadyUpCheckbox();
             cc.addTypeCheckboxes();
             cc.draw = false;
         }
