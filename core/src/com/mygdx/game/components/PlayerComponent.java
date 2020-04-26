@@ -9,7 +9,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.screens.play.PlayScreen;
-import com.mygdx.game.worldbuilder.WorldBuilder;
 
 public class PlayerComponent implements Component {
 
@@ -56,7 +55,7 @@ public class PlayerComponent implements Component {
         bdef.fixedRotation = true;
         PolygonShape shape = new PolygonShape();
 
-        shape.setAsBox((PlayScreen.scaleX *1.32f)*16/2,(PlayScreen.scaleX *1.32f)*16/2);
+        shape.setAsBox((PlayScreen.scaleX *1.32f)*16,(PlayScreen.scaleX *1.32f)*16);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

@@ -45,10 +45,11 @@ public class NetworkManager {
     String playerId;
     String playerNickname;
 
-    FileHandle file;
+    SaveManager saveManager;
 
-    public NetworkManager() {
+    public NetworkManager(SaveManager saveManager) {
         setSocket();
+        this.saveManager = saveManager;
     }
 
     public void setSocket() {
@@ -72,13 +73,8 @@ public class NetworkManager {
                 fetch = true;
                 CONNECTED = true;
 
-                file = Gdx.files.local("bin/id.txt");
-                if (file.exists()) {
-                    playerId = file.readString();
-                    if (playerId == null || playerId.isEmpty()) {
-                        fetchPlayer();
-                    }
-                } else {
+                playerId = saveManager.loadDataValue("_id", String.class);
+                if (playerId == null || playerId.isEmpty()) {
                     fetchPlayer();
                 }
             }
@@ -168,8 +164,6 @@ public class NetworkManager {
 
     public void joinLobby(Object ...args) {
         // args: lobbyName, getNickname(), getPlayerType()
-        System.out.println("JOIN LOBBY CALLED!");
-        System.out.println(fetch);
         if (fetch) {
             //System.out.println("Join Lobby is called!");
 
@@ -483,8 +477,9 @@ public class NetworkManager {
                     JSONObject response = (JSONObject)args[0];
                     setPlayerId(response.getString("_id"));
                     setPlayerNickname(response.getString("nickname"));
-                    file.writeString(playerId, false);
-                    file.writeString(playerNickname, false);
+
+                    saveManager.saveDataValue("_id", playerId);
+                    saveManager.saveDataValue("nickname", playerNickname);
                 }
             });
         }
