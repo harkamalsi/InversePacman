@@ -103,7 +103,7 @@ public class Hud implements Disposable {
         table.add(remainingLivesText).expandX();
 
         table.row();
-        table.add(hintText).colspan(3).center().padTop(50);
+        table.add(hintText).colspan(3).center().padTop(90);
 
         stage.addActor(table);
     }
