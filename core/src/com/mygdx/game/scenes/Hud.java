@@ -44,7 +44,7 @@ public class Hud implements Disposable {
     private Label hintText;
     private BitmapFont font;
 
-    private float hintTimer = 15;
+    private float hintTimer = 10;
 
     private static final int DEFAULT_LIVES = 3;
 
