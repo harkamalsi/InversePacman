@@ -118,10 +118,8 @@ public class TableComponent implements Component {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                joinLobbyName = nameLabel;
                 lobbyButtonClicked = true;
-                System.out.println("CLIECKEDDDDDDDDDD");
-                lobbyButton.setStyle(skin.get("toggle", TextButton.TextButtonStyle.class));
+                joinLobbyName = nameLabel;
                 return true;
             }
         });
@@ -236,6 +234,10 @@ public class TableComponent implements Component {
 
     public String getJoinLobbyName() {
         return joinLobbyName;
+    }
+
+    public void resetJoinLobbyName() {
+        joinLobbyName = "";
     }
 
     public void draw() {

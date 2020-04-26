@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.TableComponent;
+import com.mygdx.game.screens.play.LobbyScreen;
 import com.mygdx.game.shared.Constants;
 
 import org.json.JSONArray;
@@ -139,6 +140,7 @@ public class NetworkManager {
             @Override
             public void call(Object... args) {
                 JSONObject response = (JSONObject) args[0];
+                //System.out.println("RESPONSE: " + response);
                 setLobby(response.getString("lobby"));
             }
         });
@@ -146,7 +148,9 @@ public class NetworkManager {
     }
     public String getLobby() {
         this.fetchLobby();
-        return this.lobby;
+        String tempLobby = this.lobby;
+        this.lobby = null;
+        return tempLobby;
     }
 
     // Creating, joining and leaving a lobby
@@ -164,6 +168,8 @@ public class NetworkManager {
 
     public void joinLobby(Object ...args) {
         // args: lobbyName, getNickname(), getPlayerType()
+        System.out.println("JOIN LOBBY CALLED!");
+        System.out.println(fetch);
         if (fetch) {
             //System.out.println("Join Lobby is called!");
 
@@ -174,7 +180,6 @@ public class NetworkManager {
 
             getSocket().emit(Constants.JOIN_LOBBY, socketID, inputs);
 
-            fetch = false;
         }
 
     }
