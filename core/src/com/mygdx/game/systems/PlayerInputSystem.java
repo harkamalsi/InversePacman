@@ -71,7 +71,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         PlayerComponent pc = playerM.get(entity);
-//        PacmanComponent pacmanc = pacmanM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
@@ -131,39 +130,9 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
             JSONArray response = getServerInput();
 
-
             if (response != null) {
 
-                String meType = response.getJSONObject(0).getString("me");
-                System.out.println("ME TYPE: " + meType);
-
-                JSONArray othersResponse = new JSONArray();
-                for (int i = 1; i < response.length(); i++) {
-                    othersResponse.put(response.get(i));
-                }
-
-                System.out.println(othersResponse);
-
-                for (int i = 0; i < othersResponse.length(); i++) {
-                    String otherType = othersResponse.getJSONObject(i).getString("type");
-
-                    //System.out.println(response.getJSONObject(i));
-                    //JSONArray xy = response.getJSONObject(i).getJSONArray("directions");
-
-                    try {
-                        x = Float.parseFloat(othersResponse.getJSONObject(i).getString("x"));
-                        y = Float.parseFloat(othersResponse.getJSONObject(i).getString("y"));
-                    } catch (JSONException e) {
-                        return;
-                    }
-
-                    if (pc.id.equals(otherType) && x != 0 && y != 0) {
-                        pc.body.setTransform(x,y,0);
-                    }
-                }
-
-                System.out.println(meType + " FROM SECOND");
-                if (pc.id.equals(meType)) {
+                if (pc.id.equals(MultiplayerMessage.METYPE)) {
 
                     Vector2 playerVelocity = vc.ghostVelocity;
                     if (pc.getType().equals("PACMAN")){
@@ -219,6 +188,22 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                     prevY = pc.body.getPosition().y;
 
                 }
+
+                for (int i = 0; i < response.length(); i++) {
+                    String otherType = response.getJSONObject(i).getString("type");
+
+                    try {
+                        x = Float.parseFloat(response.getJSONObject(i).getString("x"));
+                        y = Float.parseFloat(response.getJSONObject(i).getString("y"));
+                    } catch (JSONException e) {
+                        return;
+                    }
+
+                    if (pc.id.equals(otherType) && x != 0 && y != 0) {
+                        pc.body.setTransform(x,y,0);
+                    }
+                }
+
             }
 
         }
@@ -233,9 +218,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (shouldSendUpdate) {
             connection.X = String.valueOf(x);
             connection.Y = String.valueOf(y);
-
-            System.out.println(connection.X);
-            System.out.println(connection.Y);
 
             connection.sendInput();
 
