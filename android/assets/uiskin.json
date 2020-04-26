@@ -1,7 +1,5 @@
 {
   BitmapFont: { default-font: { "file": default.fnt },
-    "default-color": {r: 253, g: 181, b: 97, a: 1}
-  },
   Color: {
     green: { a: 1, b: 0, g: 1, r: 0 },
     white: { a: 1, b: 1, g: 1, r: 1 },
@@ -18,7 +16,10 @@
   TextButtonStyle: {
     default: { parent: default, font: default-font, fontColor: white },
     chosen : { parent: default, font: default-font, fontColor: { r: 253, g: 181, b: 97, a: 1 } },
-    toggle: { parent: default, checked: default-round-down, downFontColor: red }
+    toggle: {
+      down: default-round-down, up: default-round, checked: default-round-down,
+      font: default-font, fontColor: white, downFontColor: red
+    }
   },
   ScrollPaneStyle: {
     default: { vScroll: default-scroll, hScrollKnob: default-round-large, background: default-rect, hScroll: default-scroll, vScrollKnob: default-round-large }
@@ -72,9 +73,18 @@
   },
 
   com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-    default: { parent: default, font: default-font, fontColor: white },
-    chosen : { parent: default, font: default-font, fontColor: { r: 253, g: 181, b: 97, a: 1 } },
-    toggle: { parent: default, checked: default-round-down, downFontColor: red }
+    default: {
+      down: round-down, up: round,
+      font: medium, fontColor: white
+    },
+    toggle: {
+      down: round-down, up: round, checked: round-down,
+      font: medium, fontColor: white, checkedFontColor: red
+    },
+    green: {
+      down: round-down, up: round,
+      font: medium, fontColor: { r: 0, g: 1, b: 0, a: 1 }
+    }
   }
 }
 

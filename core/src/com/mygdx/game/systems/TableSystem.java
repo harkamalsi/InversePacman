@@ -63,10 +63,9 @@ public class TableSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        //ButtonComponent click = cc.get(entity);
         cc = tableM.get(entity);
-
         cc.reset();
+
         JSONArray lobbies = connection.getLobbies();
 
         if (NetworkManager.CONNECTED) {
@@ -92,26 +91,27 @@ public class TableSystem extends IteratingSystem {
             cc.addTypeCheckboxes();
             cc.draw = false;
         }
+
         cc.draw();
 
-        if (cc.lobbyButtonClicked && LobbyScreen.LOBBY_JOINED == null) {
+        if (cc.lobbyButtonClicked) {
             handleLobbyButtonClicked(cc.getJoinLobbyName(), cc.PLAYERTYPE);
         }
 
         String lobbyJoined = connection.getLobby();
+        System.out.println(lobbyJoined);
         if (lobbyJoined != null) {
             PlayScreen.MULTIPLAYER = true;
             LobbyScreen.LOBBY_JOINED = lobbyJoined;
-        }
-
-        if (LobbyScreen.LOBBY_JOINED != null) {
             cc.lobbyButtonClicked = false;
+            cc.resetJoinLobbyName();
 
             if (prevIsReadyUpChecked != cc.isReadyUpChecked) {
                 connection.readyUp(LobbyScreen.LOBBY_JOINED, cc.isReadyUpChecked);
             }
             prevIsReadyUpChecked = cc.isReadyUpChecked;
-            if (cc.isReadyUpChecked) {
+            if (cc.isReadyUpChecked && LobbyScreen.LOBBY_JOINED != null) {
+                cc.isReadyUpChecked = false;
                 startGame();
             }
         }

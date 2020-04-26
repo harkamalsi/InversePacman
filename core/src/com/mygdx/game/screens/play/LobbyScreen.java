@@ -43,8 +43,6 @@ public class LobbyScreen extends AbstractScreen {
     private OrthographicCamera camera;
     private FitViewport viewport;
 
-    private EntityManager entityManager;
-    private NetworkManager networkManager = InversePacman.NETWORKMANAGER;
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     public static String LOBBY_JOINED;
 
@@ -69,6 +67,7 @@ public class LobbyScreen extends AbstractScreen {
 
     private TextureRegion ellipse;
     private TextureRegion front_ellipse;
+    private TextureRegion back;
 
     private Entity joinLobbyButton;
     private Entity createLobbyButton;
@@ -79,11 +78,13 @@ public class LobbyScreen extends AbstractScreen {
     private Entity front_ellipseEntity;
     private Entity bgEntity;
     private Entity tbEntity;
+    private Entity backButton;
 
     private Entity musicEntity;
 
 
     private Sprite createLobbySprite;
+    private Sprite backSprite;
     private Sprite multisprite;
     private Sprite highscoresprite;
     private Sprite optionsprite;
@@ -116,6 +117,7 @@ public class LobbyScreen extends AbstractScreen {
 
         ellipse = new TextureRegion(new Texture("menuscreen/ellipse_color_change_correct.png"));
         front_ellipse = new TextureRegion(new Texture("optionscreen/option_front_ellipse.png"));
+        back = new TextureRegion(new Texture("playscreen/back2x.png"));
 
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
         layout = new GlyphLayout(); //dont do this every frame! Store it as member
@@ -147,18 +149,24 @@ public class LobbyScreen extends AbstractScreen {
         if(createLobbyButton.flags == 1) {
             if (table.createLobby) {
                 connection.createLobby(nickname, TableComponent.PLAYERTYPE);
-                /*MULTIPLAYER = true;
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {}
-                String lobby = connection.getLobby();
-                while (lobby == null) {
-                    lobby = connection.getLobby();
-                }
-                LobbyScreen.LOBBY_JOINED = lobby;*/
-                //app.gsm.setScreen(GameScreenManager.STATE.PLAY);
             } 
             createLobbyButton.flags = 0;
+        }
+
+        if(backButton.flags == 1) {
+            engine.removeAllEntities();
+            musicSystem.dispose();
+
+            System.out.println("MULTIPLAYER : " + MULTIPLAYER);
+
+            if(MULTIPLAYER){
+                System.out.println("LEAVY LOBBY CALLED");
+                connection.leaveLobby();
+                LobbyScreen.LOBBY_JOINED = null;
+                MULTIPLAYER = false;
+            }
+
+            app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
 
     }
@@ -194,6 +202,13 @@ public class LobbyScreen extends AbstractScreen {
                 Gdx.graphics.getHeight() + 2,false,false,false))
                 .add(new TransformComponent(0,0));
         //engine.addEntity(bgEntity);
+
+        backSprite = new Sprite(back);
+        backButton = new Entity();
+        app.addSpriteEntity(backSprite, backButton, engine, 14f, 50 * 32 * scaleX/ 1.37f,
+                backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX,
+                true,false, false, false);
+
 
         tbEntity = new Entity();
         tbEntity.add(table);
