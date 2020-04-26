@@ -286,11 +286,11 @@ public final class PlayScreen extends AbstractScreen {
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
             destroyAllBodies = true;
-            if(MULTIPLAYER){
+           /* if(MULTIPLAYER){
                 connection.leaveLobby();
                 LobbyScreen.LOBBY_JOINED = null;
                 MULTIPLAYER = false;
-            }
+            }*/
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 
@@ -309,11 +309,11 @@ public final class PlayScreen extends AbstractScreen {
             //engine.removeAllEntities();
             ghostsheet.dispose();
             destroyAllBodies = true;
-            if(MULTIPLAYER){
+            /*if(MULTIPLAYER){
                 connection.leaveLobby();
                 LobbyScreen.LOBBY_JOINED = null;
                 MULTIPLAYER = false;
-            }
+            }*/
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
             //destroyAllBodies = true;
         }

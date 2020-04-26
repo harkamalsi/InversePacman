@@ -85,7 +85,6 @@ public class GameOverScreen extends AbstractScreen {
 
     @Override
     public void update(float delta) {
-        System.out.println("time elapsed " + elapsed);
         elapsed += delta;
         if(Gdx.input.justTouched() && elapsed > 7){
             musicSystem.dispose();
@@ -98,6 +97,12 @@ public class GameOverScreen extends AbstractScreen {
         if(start) {
             musicSystem.resume();
             start = false;
+        }
+
+        if(PlayScreen.MULTIPLAYER && LobbyScreen.LOBBY_JOINED != null){
+            connection.leaveLobby();
+            LobbyScreen.LOBBY_JOINED = null;
+            PlayScreen.MULTIPLAYER = false;
         }
 
     }
