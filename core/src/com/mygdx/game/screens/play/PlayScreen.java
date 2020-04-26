@@ -209,9 +209,12 @@ public final class PlayScreen extends AbstractScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             pause = false;
         }
-        if(pauseButton.flags == 1) {
-            pause = true;
-            pauseButton.flags = 0;
+        if(!MULTIPLAYER){
+            if(pauseButton.flags == 1) {
+                pause = true;
+                pauseButton.flags = 0;
+            }
+
         }
 
         if(backButton.flags == 1) {
@@ -450,9 +453,11 @@ public final class PlayScreen extends AbstractScreen {
             .add(new TransformComponent(0,0));
         //engine.addEntity(pauseEntity);
 
-        pauseButtonSprite = new Sprite(pausetexture);
-        pauseButton = new Entity();
-        app.addSpriteEntity(pauseButtonSprite, pauseButton, engine,  Gdx.graphics.getWidth() - (pauseButtonSprite.getRegionWidth() * scaleX), 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
+        if(!MULTIPLAYER){
+            pauseButtonSprite = new Sprite(pausetexture);
+            pauseButton = new Entity();
+            app.addSpriteEntity(pauseButtonSprite, pauseButton, engine,  Gdx.graphics.getWidth() - (pauseButtonSprite.getRegionWidth() * scaleX), 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
+        }
 
         backSprite = new Sprite(back);
         backButton = new Entity();
