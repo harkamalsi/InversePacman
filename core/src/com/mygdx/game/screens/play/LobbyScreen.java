@@ -141,6 +141,11 @@ public class LobbyScreen extends AbstractScreen {
     @Override
     public void update(float delta) {
         handleInput();
+        if(tableSystem.startsignal == 1) {
+            engine.removeAllEntities();
+            musicSystem.dispose();
+            tableSystem.startGame();
+        }
     }
 
     public void handleInput() {

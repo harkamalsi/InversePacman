@@ -40,6 +40,6 @@ public class PillSystem extends IteratingSystem {
     }
 
     public boolean allPillsCollected() {
-        return pillCount == 195;
+        return pillCount == 0;
     }
 }

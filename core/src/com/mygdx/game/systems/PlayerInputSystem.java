@@ -84,20 +84,20 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             if (!multiplayer) {
                 if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
                     x = 0f;
-                    y = vc.velocity.y;
+                    y = vc.pacmanVelocity.y;
 
                     sc.setState(1);
                 }
 
                 if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)) {
                     x = 0f;
-                    y = -vc.velocity.y;
+                    y = -vc.pacmanVelocity.y;
 
                     sc.setState(2);
                 }
 
                 if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)) {
-                    x = -vc.velocity.x;
+                    x = -vc.pacmanVelocity.x;
                     y = 0f;
 
                     sc.setState(3);
@@ -109,7 +109,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                 }
 
                 if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)) {
-                    x = vc.velocity.x;
+                    x = vc.pacmanVelocity.x;
                     y = 0f;
 
                     sc.setState(4);
@@ -154,22 +154,26 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
         if (pc.id.equals(connection.METYPE)) {
 
+            Vector2 playerVelocity = vc.ghostVelocity;
+            if (pc.getType().equals("PACMAN")){
+                playerVelocity = vc.pacmanVelocity;
+            }
+
             if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
                 x = 0f;
-                y = vc.velocity.y;
-
+                y = playerVelocity.y;
                 sc.setState(1);
             }
 
             if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)) {
                 x = 0f;
-                y = -vc.velocity.y;
+                y = -playerVelocity.y;
 
                 sc.setState(2);
             }
 
             if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)) {
-                x = -vc.velocity.x;
+                x = -playerVelocity.x;
                 y = 0f;
 
                 sc.setState(3);
@@ -181,7 +185,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             }
 
             if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)) {
-                x = vc.velocity.x;
+                x = playerVelocity.x;
                 y = 0f;
 
                 sc.setState(4);

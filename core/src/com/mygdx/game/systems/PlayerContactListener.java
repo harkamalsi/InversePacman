@@ -24,7 +24,13 @@ public class PlayerContactListener implements ContactListener {
         if (isPlayerContact(fixtureA, fixtureB)) {
             PlayerComponent playerA = (PlayerComponent) fixtureA.getUserData();
             PlayerComponent playerB = (PlayerComponent) fixtureB.getUserData();
-            playerB.hit(playerA);
+
+            //Adding ids and bodies to the playercomponent involved in the collision.
+            playerA.playerIdCollidedWith = playerB.id;
+            playerA.playerCollidedWith = playerB.body;
+            playerB.playerIdCollidedWith = playerA.id;
+            playerB.playerCollidedWith = playerA.body;
+
         }
         else if (isPlayerAndCoinContact(fixtureA, fixtureB)) {
             if ((fixtureB.getUserData() instanceof PillComponent)) {

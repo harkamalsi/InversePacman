@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -40,8 +41,10 @@ public class Hud implements Disposable {
     private Label remainingLivesLabel;
     private Label filler1;
     private Label filler2;
+    private Label hintText;
     private BitmapFont font;
 
+    private float hintTimer = 15;
 
     private static final int DEFAULT_LIVES = 3;
 
@@ -51,6 +54,9 @@ public class Hud implements Disposable {
         
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
         font.getData().setScale(PlayScreen.scaleX * 0.75f);
+
+        BitmapFont hintFont = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
+        hintFont.getData().setScale(PlayScreen.scaleX * .5f);
 
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         stage = new Stage(viewport, sb);
@@ -70,6 +76,9 @@ public class Hud implements Disposable {
         filler1 = new Label("filler", new Label.LabelStyle(font, Color.WHITE));
         filler2 = new Label("filler", new Label.LabelStyle(font, Color.WHITE));
 
+        //
+        hintText = new Label("Move Namcap to collect all\npills without colliding\nwith the ghosts!", new Label.LabelStyle(hintFont, Color.WHITE));
+        //hintText = new Label("Move Namcap", new Label.LabelStyle(font, Color.WHITE));
         filler1.setVisible(false);
         filler2.setVisible(false);
         table.add(filler1).expandX().padTop(10);
@@ -93,6 +102,8 @@ public class Hud implements Disposable {
         table.add(filler1);
         table.add(remainingLivesText).expandX();
 
+        table.row();
+        table.add(hintText).colspan(3).center().padTop(50);
 
         stage.addActor(table);
     }
@@ -104,6 +115,12 @@ public class Hud implements Disposable {
         if(!PlayScreen.pause) {
             table.setVisible(true);
             timer += dt;
+        }
+
+        if (hintTimer > 0) {
+            hintTimer -= dt;
+        } else {
+            hintText.setVisible(false);
         }
         timerText.setText(String.format("%03d", (int)timer));
     }
