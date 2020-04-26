@@ -52,8 +52,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private ComponentMapper<PlayerComponent> playerM;
 
     private float prevX, prevY = -1;
-    private boolean shouldGetUpdate = false;
-    private boolean shouldSendUpdate = false;
+    private long shouldSendCounter = 1;
+    private int maxShouldSendUpdateCounter = 5;
 
 
     public PlayerInputSystem(){
@@ -215,16 +215,28 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     }
 
     private void sendServerInput(float x, float y){
-        if (shouldSendUpdate) {
+        /*if (shouldSendUpdate1 && shouldSendUpdate2) {
             connection.X = String.valueOf(x);
             connection.Y = String.valueOf(y);
 
             connection.sendInput();
 
-            shouldSendUpdate = false;
+            shouldSendUpdate1 = false;
+            shouldSendUpdate2 = false;
         } else {
-            shouldSendUpdate = true;
+            if (shouldSendUpdate1) {
+                shouldSendUpdate2 = true;
+            }
+            shouldSendUpdate1 = true;
+        }*/
+
+        if (shouldSendCounter % maxShouldSendUpdateCounter == 0) {
+            connection.X = String.valueOf(x);
+            connection.Y = String.valueOf(y);
+
+            connection.sendInput();
         }
+        shouldSendCounter++;
     }
 
     //function for deciding drag direction
