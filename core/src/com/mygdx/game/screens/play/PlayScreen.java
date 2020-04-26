@@ -201,6 +201,7 @@ public final class PlayScreen extends AbstractScreen {
             for (EntitySystem system : engine.getSystems()){
                 engine.removeSystem(system);
             }
+            musicSystem.dispose();
             engine.removeAllEntities();
             destroyAllBodies = true;
 
@@ -430,7 +431,8 @@ public final class PlayScreen extends AbstractScreen {
         app.addSpriteEntity(backSprite, backButton, engine, 0,  50 * 32 * scaleX/ 1.5f, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
 
         musicEntity = new Entity();
-        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play")));
+        Sound powerPillSound = Gdx.audio.newSound(Gdx.files.internal("sound/power.ogg"));
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play"), powerPillSound));
         engine.addEntity(musicEntity);
 
         musicPauseEntity = new Entity();
