@@ -43,7 +43,7 @@ import com.mygdx.game.systems.CollisionEventSystem;
 import com.mygdx.game.systems.MovementSystem;
 import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PillSystem;
-import com.mygdx.game.systems.PlayerContactListener;
+import com.mygdx.game.worldbuilder.PlayerContactListener;
 import com.mygdx.game.systems.PlayerInputSystem;
 import com.mygdx.game.systems.RenderingSystem;
 import com.mygdx.game.systems.StateSystem;
