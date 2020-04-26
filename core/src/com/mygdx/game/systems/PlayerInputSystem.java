@@ -16,12 +16,15 @@ import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
 import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.play.LobbyScreen;
+import com.mygdx.game.screens.play.PlayScreen;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.Math;
+
+import javax.annotation.processing.SupportedSourceVersion;
 
 public class PlayerInputSystem extends IteratingSystem implements InputProcessor {
 
@@ -31,7 +34,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private boolean isUpDragged = false;
     private boolean isDownDragged = false;
 
-    private boolean multiplayer = false;
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
 
     private static final float X_VELOCITY = 2.5f;
@@ -54,7 +56,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     private boolean shouldSendUpdate = false;
 
 
-    public PlayerInputSystem(boolean multiplayer){
+    public PlayerInputSystem(){
         super(Family.all(PlayerComponent.class,VelocityComponent.class,TransformComponent.class,StateComponent.class,TextureComponent.class).get());
         velocityM = ComponentMapper.getFor(VelocityComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
@@ -62,8 +64,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         texM = ComponentMapper.getFor(TextureComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
         pacmanM = ComponentMapper.getFor(PacmanComponent.class);
-
-        this.multiplayer = multiplayer;
 
         Gdx.input.setInputProcessor(this);
     }
@@ -81,7 +81,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         float x = 0f;
         float y = 0f;
         if(pc.id.equals("PACMAN")) {
-            if (!multiplayer) {
+            if (!PlayScreen.MULTIPLAYER) {
                 if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
                     x = 0f;
                     y = vc.pacmanVelocity.y;
@@ -126,21 +126,33 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
             }
         }
 
-        if (multiplayer && LobbyScreen.LOBBY_JOINED != null) {
 
-            JSONArray response = getServerInput();;
+        if (PlayScreen.MULTIPLAYER && LobbyScreen.LOBBY_JOINED != null) {
+
+            JSONArray response = getServerInput();
 
 
             if (response != null) {
-                for (int i = 0; i < response.length(); i++) {
-                    String otherType = response.getJSONObject(i).getString("type");
+
+                String meType = response.getJSONObject(0).getString("me");
+                System.out.println("ME TYPE: " + meType);
+
+                JSONArray othersResponse = new JSONArray();
+                for (int i = 1; i < response.length(); i++) {
+                    othersResponse.put(response.get(i));
+                }
+
+                System.out.println(othersResponse);
+
+                for (int i = 0; i < othersResponse.length(); i++) {
+                    String otherType = othersResponse.getJSONObject(i).getString("type");
 
                     //System.out.println(response.getJSONObject(i));
                     //JSONArray xy = response.getJSONObject(i).getJSONArray("directions");
 
                     try {
-                        x = Float.parseFloat(response.getJSONObject(i).getString("x"));
-                        y = Float.parseFloat(response.getJSONObject(i).getString("y"));
+                        x = Float.parseFloat(othersResponse.getJSONObject(i).getString("x"));
+                        y = Float.parseFloat(othersResponse.getJSONObject(i).getString("y"));
                     } catch (JSONException e) {
                         return;
                     }
@@ -149,67 +161,68 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                         pc.body.setTransform(x,y,0);
                     }
                 }
-            }
-        }
 
-        if (pc.id.equals(connection.METYPE)) {
+                System.out.println(meType + " FROM SECOND");
+                if (pc.id.equals(meType)) {
 
-            Vector2 playerVelocity = vc.ghostVelocity;
-            if (pc.getType().equals("PACMAN")){
-                playerVelocity = vc.pacmanVelocity;
-            }
+                    Vector2 playerVelocity = vc.ghostVelocity;
+                    if (pc.getType().equals("PACMAN")){
+                        playerVelocity = vc.pacmanVelocity;
+                    }
 
-            if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
-                x = 0f;
-                y = playerVelocity.y;
-                sc.setState(1);
-            }
+                    if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
+                        x = 0f;
+                        y = playerVelocity.y;
+                        sc.setState(1);
+                    }
 
-            if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)) {
-                x = 0f;
-                y = -playerVelocity.y;
+                    if (isDownDragged || Gdx.input.isKeyPressed(Input.Keys.K)) {
+                        x = 0f;
+                        y = -playerVelocity.y;
 
-                sc.setState(2);
-            }
+                        sc.setState(2);
+                    }
 
-            if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)) {
-                x = -playerVelocity.x;
-                y = 0f;
+                    if (isLeftDragged || Gdx.input.isKeyPressed(Input.Keys.J)) {
+                        x = -playerVelocity.x;
+                        y = 0f;
 
-                sc.setState(3);
+                        sc.setState(3);
 
-                //flips texture
-                if (texc.region != null && texc.region.isFlipX()) {
-                    texc.region.flip(true, false);
+                        //flips texture
+                        if (texc.region != null && texc.region.isFlipX()) {
+                            texc.region.flip(true, false);
+                        }
+                    }
+
+                    if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)) {
+                        x = playerVelocity.x;
+                        y = 0f;
+
+                        sc.setState(4);
+
+                        //flips texture
+                        if (texc.region != null && !texc.region.isFlipX()){
+                            texc.region.flip(true,false);
+                        }
+
+                    }
+
+                    pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
+                    pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
+
+                    if (prevX != pc.body.getPosition().x || prevY != pc.body.getPosition().y){
+                        sendServerInput(pc.body.getPosition().x,pc.body.getPosition().y);
+                    }
+
+                    prevX = pc.body.getPosition().x;
+                    prevY = pc.body.getPosition().y;
+
                 }
             }
 
-            if (isRightDragged || Gdx.input.isKeyPressed(Input.Keys.L)) {
-                x = playerVelocity.x;
-                y = 0f;
-
-                sc.setState(4);
-
-                //flips texture
-                if (texc.region != null && !texc.region.isFlipX()){
-                    texc.region.flip(true,false);
-                }
-
-            }
-
-            pc.body.setLinearVelocity(x*50, pc.body.getLinearVelocity().y);
-            pc.body.setLinearVelocity(pc.body.getLinearVelocity().x, y*50);
-
-
-
-            if (prevX != pc.body.getPosition().x || prevY != pc.body.getPosition().y){
-                sendServerInput(pc.body.getPosition().x,pc.body.getPosition().y);
-            }
-
-            prevX = pc.body.getPosition().x;
-            prevY = pc.body.getPosition().y;
-
         }
+
     }
 
     private JSONArray getServerInput() {
@@ -220,6 +233,9 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         if (shouldSendUpdate) {
             connection.X = String.valueOf(x);
             connection.Y = String.valueOf(y);
+
+            System.out.println(connection.X);
+            System.out.println(connection.Y);
 
             connection.sendInput();
 

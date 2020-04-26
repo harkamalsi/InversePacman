@@ -191,14 +191,16 @@ public final class PlayScreen extends AbstractScreen {
     public void handleInput(){
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
             //Important to call both if you want to remove the music from the previous screen
-            musicSystem.dispose();
-            engine.removeSystem(musicSystem);
+            for (EntitySystem system : engine.getSystems()){
+                engine.removeSystem(system);
+            }
             engine.removeAllEntities();
-
 
             destroyAllBodies = true;
             if(MULTIPLAYER){
                 connection.leaveLobby();
+                LobbyScreen.LOBBY_JOINED = null;
+                MULTIPLAYER = false;
             }
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
 
@@ -209,22 +211,23 @@ public final class PlayScreen extends AbstractScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             pause = false;
         }
-        if(!MULTIPLAYER){
-            if(pauseButton.flags == 1) {
-                pause = true;
-                pauseButton.flags = 0;
-            }
-
+        if(pauseButton.flags == 1) {
+            pause = true;
+            pauseButton.flags = 0;
         }
 
         if(backButton.flags == 1) {
             //engine.removeSystem(musicSystem);
+            for (EntitySystem system : engine.getSystems()){
+                engine.removeSystem(system);
+            }
             engine.removeAllEntities();
-            musicSystem.dispose();
             destroyAllBodies = true;
 
             if(MULTIPLAYER){
                 connection.leaveLobby();
+                LobbyScreen.LOBBY_JOINED = null;
+                MULTIPLAYER = false;
             }
 
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
@@ -259,6 +262,8 @@ public final class PlayScreen extends AbstractScreen {
             destroyAllBodies = true;
             if(MULTIPLAYER){
                 connection.leaveLobby();
+                LobbyScreen.LOBBY_JOINED = null;
+                MULTIPLAYER = false;
             }
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
@@ -280,6 +285,8 @@ public final class PlayScreen extends AbstractScreen {
             destroyAllBodies = true;
             if(MULTIPLAYER){
                 connection.leaveLobby();
+                LobbyScreen.LOBBY_JOINED = null;
+                MULTIPLAYER = false;
             }
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
             //destroyAllBodies = true;
@@ -321,7 +328,7 @@ public final class PlayScreen extends AbstractScreen {
 
         // To add a new songs, place the file under the folder assets/music/play
         //batch = new SpriteBatch();
-        playerInputSystem = new PlayerInputSystem(MULTIPLAYER);
+        playerInputSystem = new PlayerInputSystem();
         aiSystem = new AISystem();
         movementSystem = new MovementSystem();
         collisionEventSystem = new CollisionEventSystem();
@@ -456,11 +463,10 @@ public final class PlayScreen extends AbstractScreen {
             .add(new TransformComponent(0,0));
         //engine.addEntity(pauseEntity);
 
-        if(!MULTIPLAYER){
-            pauseButtonSprite = new Sprite(pausetexture);
-            pauseButton = new Entity();
-            app.addSpriteEntity(pauseButtonSprite, pauseButton, engine,  Gdx.graphics.getWidth() - (pauseButtonSprite.getRegionWidth() * scaleX), 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
-        }
+        pauseButtonSprite = new Sprite(pausetexture);
+        pauseButton = new Entity();
+        app.addSpriteEntity(pauseButtonSprite, pauseButton, engine,  Gdx.graphics.getWidth() - (pauseButtonSprite.getRegionWidth() * scaleX), 50 * 32 * scaleX/ 1.5f, pauseButtonSprite.getRegionWidth() * scaleX, pauseButtonSprite.getRegionHeight() * scaleX, true,false, false, false);
+
 
         backSprite = new Sprite(back);
         backButton = new Entity();

@@ -49,12 +49,13 @@ public class MultiplayerMessage {
     public JSONArray getInput() {
         tempResponse = networkManager.getUpdate(LobbyScreen.LOBBY_JOINED);
         if (tempResponse != null) {
-            METYPE = tempResponse.getJSONObject(0).getString("me");
+            /*METYPE = tempResponse.getJSONObject(0).getString("me");
+            System.out.println(METYPE + " FROM FIRST");
             response = new JSONArray();
             for (int i = 1; i < tempResponse.length(); i++) {
                 response.put(tempResponse.get(i));
-            }
-            return response;
+            }*/
+            return tempResponse;
         }
         return tempResponse;
     }

@@ -96,12 +96,12 @@ public class TableSystem extends IteratingSystem {
 
         cc.draw();
 
+        String lobbyJoined = connection.getLobby();
+
         if (cc.lobbyButtonClicked) {
             handleLobbyButtonClicked(cc.getJoinLobbyName(), cc.PLAYERTYPE);
         }
 
-        String lobbyJoined = connection.getLobby();
-        System.out.println(lobbyJoined);
         if (lobbyJoined != null) {
             PlayScreen.MULTIPLAYER = true;
             LobbyScreen.LOBBY_JOINED = lobbyJoined;
