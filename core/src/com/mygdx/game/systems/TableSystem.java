@@ -79,6 +79,7 @@ public class TableSystem extends IteratingSystem {
         }
 
         if(cc.draw) {
+            cc.addPlayerNickname();
             for (int i = 0; i < lobbies.length(); i++) { //lobbies.length
                 JSONObject lobbyObject = lobbies.getJSONObject(i);
 

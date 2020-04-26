@@ -42,6 +42,7 @@ public class NetworkManager {
     private JSONObject response;
     public Boolean connected = false;
     String playerId;
+    String playerNickname;
 
     FileHandle file;
 
@@ -462,6 +463,10 @@ public class NetworkManager {
         this.playerId = playerId;
     }
 
+    private void setPlayerNickname(String playerNickname) {
+        this.playerNickname = playerNickname;
+    }
+
     public void fetchPlayer() {
         if (fetch) {
             String newId = "Kyle " +  UUID.randomUUID().toString().substring(0, 4);
@@ -472,7 +477,9 @@ public class NetworkManager {
                 public void call(Object... args) {
                     JSONObject response = (JSONObject)args[0];
                     setPlayerId(response.getString("_id"));
+                    setPlayerNickname(response.getString("nickname"));
                     file.writeString(playerId, false);
+                    file.writeString(playerNickname, false);
                 }
             });
         }

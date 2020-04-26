@@ -3,6 +3,7 @@ package com.mygdx.game.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -47,6 +48,7 @@ public class TableComponent implements Component {
     public static String PLAYERTYPE = "GHOST";
     public boolean pacmanType = false;
     public boolean ghostType = true;
+    FileHandle file;
     private Container<Table> tableContainer;
 
     public TableComponent() {
@@ -93,8 +95,8 @@ public class TableComponent implements Component {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 joinLobbyName = nameLabel;
                 lobbyButtonClicked = true;
-                //System.out.println("CLIECKEDDDDDDDDDD");
-                //lobbyButton.setStyle(skin.get("chosen", TextButton.TextButtonStyle.class));
+                System.out.println("CLIECKEDDDDDDDDDD");
+                lobbyButton.setStyle(skin.get("toggle", TextButton.TextButtonStyle.class));
                 return true;
             }
         });
@@ -136,7 +138,9 @@ public class TableComponent implements Component {
             }
         });
 
-        table.add(readyUpCheckbox).expandX().padBottom(20);
+        table.add(readyUpCheckbox).minWidth(1).right().padBottom(20);
+        table.setDebug(true);
+        table.row();
     }
 
     public void addTypeCheckboxes() {
@@ -212,10 +216,23 @@ public class TableComponent implements Component {
             PLAYERTYPE = "PACMAN";
         }
 
-        table.row();
         table.add(ghostTypeCheckBox).expandX();
         table.add(pacmantypeCheckBox).expandX();
         table.row();
+    }
+
+    public void addPlayerNickname() {
+        file = Gdx.files.local("bin/id.txt");
+        if (file.exists()) {
+            String playerNickname = file.readString();
+            Label nickNameMessage = new Label("Nickname: ", skin);
+            Label nickName = new Label(playerNickname, skin);
+            nickNameMessage.setFontScale(0.3f);
+            nickName.setFontScale(0.3f);
+            table.add(nickNameMessage).expandX().padBottom(30);
+            table.add(nickName).expandX().padBottom(30);
+            table.row();
+        }
     }
 
     public String getJoinLobbyName() {
