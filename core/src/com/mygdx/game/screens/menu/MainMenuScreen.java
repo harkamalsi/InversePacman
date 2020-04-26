@@ -2,6 +2,7 @@ package com.mygdx.game.screens.menu;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -105,7 +106,14 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
     }
 
 
-    public void handleInput(){
+    private void handleInput(){
+        for(Entity i :engine.getEntitiesFor(Family.all(ButtonComponent.class).get())) {
+            if (i.flags == 1) {
+                engine.removeAllEntities();
+                musicSystem.dispose();
+            }
+        }
+
         if(Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
             //Important to call both if you want to remove the music from the previous screen, order doesn't matter
             engine.removeSystem(musicSystem);
@@ -115,29 +123,22 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
         }
         if(singleplayerButton.flags == 1 || Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
             //engine.removeSystem(musicSystem);
-            engine.removeAllEntities();
-            musicSystem.dispose();
-            app.gsm.setScreen(GameScreenManager.STATE.PLAY);
+            app.gsm.setScreen(GameScreenManager.STATE.SELECT_AI_DIFFICULTY);
+
         }
         if(multiplayerButton.flags == 1) {
             //engine.removeSystem(musicSystem);
-            engine.removeAllEntities();
-            musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.LOBBY_SCREEN);
         }
 
         if(highscoreButton.flags == 1) {
             //engine.removeSystem(musicSystem);
-            engine.removeAllEntities();
-            musicSystem.dispose();
             // I think it's okay if we keep ths music going here?
             //music.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN);
         }
         if(optionButton.flags == 1) {
             //engine.removeSystem(musicSystem);
-            engine.removeAllEntities();
-            musicSystem.dispose();
             app.gsm.setScreen(GameScreenManager.STATE.OPTION_SCREEN);
 
 
