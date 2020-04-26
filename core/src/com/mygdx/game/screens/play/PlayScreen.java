@@ -242,6 +242,7 @@ public final class PlayScreen extends AbstractScreen {
             for (EntitySystem system : engine.getSystems()){
                 engine.removeSystem(system);
             }
+            musicSystem.dispose();
             engine.removeAllEntities();
             destroyAllBodies = true;
 
