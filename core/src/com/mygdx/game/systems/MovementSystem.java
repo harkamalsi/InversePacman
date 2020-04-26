@@ -34,21 +34,6 @@ public class MovementSystem extends IteratingSystem {
         VelocityComponent vel = vm.get(entity);
         PlayerComponent pc = playerM.get(entity);
 
-        if (pc.id.equals("PACMAN") && pc.powerMode ){
-            if(pc.invincibleTimer > 0){
-                Vector2 scalepacman = new Vector2(0.30f,0.30f);
-                tc.scale = scalepacman;
-                pc.invincibleTimer -= deltaTime;
-            }
-
-            else{
-                Vector2 scalepacman = new Vector2(0.15f,0.15f);
-                tc.scale = scalepacman;
-                pc.powerMode = false;
-            }
-
-        }
-
 
 
 

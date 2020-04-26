@@ -20,8 +20,8 @@ import java.util.HashMap;
 public class AISystem extends IteratingSystem{
 
 
-    private static final float X_VELOCITY = 5f;
-    private static final float Y_VELOCITY = 5f;
+    private static final float X_VELOCITY = 2f;
+    private static final float Y_VELOCITY = 2f;
 
 
     private ComponentMapper<PlayerComponent> playerM;
