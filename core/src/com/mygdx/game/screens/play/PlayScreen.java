@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -365,7 +366,6 @@ public final class PlayScreen extends AbstractScreen {
         animcomponent.animations.put(4,walkAnimation);
 
 
-        //Vector2 scale = new Vector2(1f, 1f);
 
         for (int i = 0; i<4; i++){
 
@@ -395,9 +395,6 @@ public final class PlayScreen extends AbstractScreen {
 
 
         pacmansprite = new Texture(app.skin);
-
-
-
 
         pacmanSpritus = new Sprite(pacmansprite);
         Vector2 position = new Vector2(20,20);
