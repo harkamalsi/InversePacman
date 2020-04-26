@@ -33,7 +33,6 @@ public class CollisionEventSystem extends IteratingSystem {
         PlayerComponent pc = playerM.get(entity);
 
         collisionTimer -= deltaTime;
-        System.out.println(collisionTimer);
 
 
         //scaling pacman on powerpill pickup
