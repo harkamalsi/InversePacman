@@ -55,7 +55,7 @@ public class PlayerComponent implements Component {
         bdef.fixedRotation = true;
         PolygonShape shape = new PolygonShape();
 
-        shape.setAsBox((PlayScreen.scaleX)*10,(PlayScreen.scaleX)*10);
+        shape.setAsBox((PlayScreen.scaleX)*11,(PlayScreen.scaleX)*11);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
