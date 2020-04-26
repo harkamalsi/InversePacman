@@ -37,11 +37,13 @@ public class TableSystem extends IteratingSystem {
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
     private InversePacman app;
     public boolean prevIsReadyUpChecked = false;
+    public int startsignal;
 
 
     @SuppressWarnings("unchecked")
     public TableSystem(final InversePacman app) {
         super(Family.all(TableComponent.class).get());
+        this.startsignal = 0;
         this.app = app;
         tableM = ComponentMapper.getFor(TableComponent.class);
         //tc = ComponentMapper.getFor(TransformComponent.class);
@@ -57,7 +59,7 @@ public class TableSystem extends IteratingSystem {
         this.connection.joinLobby(lobbyName, "Cokey", type);
     }
 
-    private void startGame() {
+    public void startGame() {
         app.gsm.setScreen(GameScreenManager.STATE.PLAY);
     }
 
@@ -112,7 +114,8 @@ public class TableSystem extends IteratingSystem {
             }
             prevIsReadyUpChecked = cc.isReadyUpChecked;
             if (cc.isReadyUpChecked) {
-                startGame();
+                startsignal = 1;
+                //startGame();
             }
         }
     }
