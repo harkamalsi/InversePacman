@@ -12,6 +12,7 @@ import com.mygdx.game.screens.menu.InGameMenuScreen;
 import com.mygdx.game.screens.menu.LeaderboardMenuScreen;
 import com.mygdx.game.screens.menu.MainMenuScreen;
 import com.mygdx.game.screens.menu.OptionScreen;
+import com.mygdx.game.screens.menu.SelectAIDifficultyScreen;
 import com.mygdx.game.screens.menu.SplashScreen;
 import com.mygdx.game.screens.play.GameOverScreen;
 import com.mygdx.game.screens.play.LobbyScreen;
@@ -40,6 +41,7 @@ public class GameScreenManager {
         OPTION_SCREEN,
         LEADERBOARD_MENU_SCREEN,
         SPLASH_SCREEN,
+        SELECT_AI_DIFFICULTY,
     }
     public STATE currentState;
 
@@ -73,6 +75,7 @@ public class GameScreenManager {
         this.gameScreens.put(STATE.MULTIPLAYER_GHOSTS_BOARD_SCREEN, new MultiplayerGhostsBoardScreen(app, engine));
         this.gameScreens.put(STATE.MULTIPLAYER_NAMCAP_BOARD_SCREEN, new MultiplayerNamcapBoardScreen(app, engine));
         this.gameScreens.put(STATE.SPLASH_SCREEN, new SplashScreen(app, engine));
+        this.gameScreens.put(STATE.SELECT_AI_DIFFICULTY, new SelectAIDifficultyScreen(app, engine));
     }
 
     public void setScreen(STATE nextScreen, boolean multiplayer) {

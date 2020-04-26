@@ -78,6 +78,8 @@ public class InversePacman extends Game {
 	public float b = (float)(Math.PI / 2);
 	private boolean bright = false;
 
+	public String ai_difficulty = "MEDIUM";
+
 	public static boolean isNumeric(String str) {
 		try {
 			Double.parseDouble(str);

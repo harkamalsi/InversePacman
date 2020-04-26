@@ -447,7 +447,7 @@ public final class PlayScreen extends AbstractScreen {
         musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
         //engine.addEntity(musicPauseEntity);
 
-        //aiSystem.setDifficulty("MURDEROUS");
+        aiSystem.setDifficulty(app.ai_difficulty);
 
     }
 
