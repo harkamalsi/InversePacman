@@ -234,11 +234,6 @@ public final class PlayScreen extends AbstractScreen {
         }
 
         if(backButton.flags == 1) {
-            if(MULTIPLAYER){
-                //System.out.println("lobby left");
-                connection.leaveLobby();
-            }
-            //engine.removeSystem(musicSystem);
             for (EntitySystem system : engine.getSystems()){
                 engine.removeSystem(system);
             }
@@ -269,8 +264,6 @@ public final class PlayScreen extends AbstractScreen {
         // Chooses the next song to play if the song has finished
         // Had to add the second condition since it chose to play a new song as I switched screens
 
-
-
         if (pillSystem.allPillsCollected()) {
             if (PlayScreen.MULTIPLAYER) {
                 app.NETWORKMANAGER.updateMultiplayerScore(app.NETWORKMANAGER.getPlayerId(), TableComponent.PLAYERTYPE);
@@ -282,16 +275,9 @@ public final class PlayScreen extends AbstractScreen {
             musicSystem.dispose();
             engine.removeSystem(musicSystem);
             engine.removeSystem(collisionEventSystem);
-            //engine.removeSystem(renderingSystem);
-            //engine.removeSystem(pillSystem);
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
             destroyAllBodies = true;
-            if(MULTIPLAYER){
-                connection.leaveLobby();
-                LobbyScreen.LOBBY_JOINED = null;
-                MULTIPLAYER = false;
-            }
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 
@@ -302,21 +288,10 @@ public final class PlayScreen extends AbstractScreen {
             engine.removeAllEntities();
 
             musicSystem.dispose();
-            //engine.removeSystem(musicSystem);
             engine.removeSystem(collisionEventSystem);
-            //engine.removeSystem(renderingSystem);
-            //engine.removeSystem(pillSystem);
-            //engine.removeSystem(animationSystem);
-            //engine.removeAllEntities();
             ghostsheet.dispose();
             destroyAllBodies = true;
-            if(MULTIPLAYER){
-                connection.leaveLobby();
-                LobbyScreen.LOBBY_JOINED = null;
-                MULTIPLAYER = false;
-            }
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
-            //destroyAllBodies = true;
         }
 
         hud.update(delta);
@@ -325,13 +300,6 @@ public final class PlayScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        //this.camera = new OrthographicCamera();
-        //this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        //this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // We should probably change the above to below
-        //this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
-
         //world
         world = new World(new Vector2(0f, 0), false);
         world.setContactListener(new PlayerContactListener());

@@ -121,7 +121,6 @@ public class TableComponent implements Component {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("CLICKEDDDDDDDDDDDDDDDD");
                 lobbyButtonClicked = true;
                 joinLobbyName = nameLabel;
                 return true;
@@ -131,7 +130,7 @@ public class TableComponent implements Component {
         table.row();
     }
 
-    public void addCheckbox() {
+    public void addReadyUpCheckbox() {
         final CheckBox readyUpCheckbox = new CheckBox(" Ready?", skin);
 
         readyUpCheckbox.getLabel().setFontScale(0.5f);
@@ -209,21 +208,6 @@ public class TableComponent implements Component {
                 return true;
             }
         });
-
-        /*final SelectBox<String> selectBox = new SelectBox<String>(skin);
-        Array<String> options = new Array<String>();
-        options.add("GHOST");
-        options.add("PACMAN");
-        selectBox.setItems(options);
-        selectBox.setSelected(playerType);
-
-        selectBox.addCaptureListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                playerType = selectBox.getSelected();
-                selectBox.setSelected(playerType);
-                return false;
-            }
-        });*/
 
         if (ghostType) {
             PLAYERTYPE = "GHOST";
