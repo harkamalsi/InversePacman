@@ -81,7 +81,7 @@ public class LobbyScreen extends AbstractScreen {
 
     private void loadAndSetNickname(){
         String tempNickname = app.saveManager.loadDataValue("nickname", String.class);
-        if (tempNickname != null || !tempNickname.isEmpty()) {
+        if (tempNickname != null || tempNickname.length() !=0) {
             NICKNAME = tempNickname;
         }
     }

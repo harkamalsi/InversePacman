@@ -42,6 +42,7 @@ public class AISystem extends IteratingSystem{
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
         velM = ComponentMapper.getFor(VelocityComponent.class);
+
         difficultyMap.put("ALWAYS_RANDOM", 0);
         difficultyMap.put("SUPEREASY", 30);
         difficultyMap.put("EASY", 50);
@@ -57,6 +58,7 @@ public class AISystem extends IteratingSystem{
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
+        //This is called for each iteration of the game
         PlayerComponent pc = playerM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
@@ -76,6 +78,7 @@ public class AISystem extends IteratingSystem{
         float x = 0f;
         float y = 0f;
 
+        //this is where the calculated direction is given to the player component
             if (move.equals(new Vector2(0, 1))){
                 x = 0f;
                 y = velocityC.ghostVelocity.y;
@@ -142,20 +145,19 @@ public class AISystem extends IteratingSystem{
             }
             currentNode = openNodeList.get(0);
 
-            //Legger til og generer(maks 4) nye noder til "open" listen
+            //Adding and generatin up to four nodes to the "open" list
             for (int i = 0; i < 4; i++) {
                 Vector2 adjacentNodePos = new Vector2();
                 int new_x = (int) currentNode.getPosition().x + nav_x[i];
                 int new_y = (int) currentNode.getPosition().y + nav_y[i];
                 adjacentNodePos.set(new_x, new_y);
 
-                //Sjekker om man ikke går inni en vegg og samtidig om noden ikke er i closed-list.
+                //Checks that you dont go into a wall and that the node is not in "closed list"
                 if (!WorldBuilder.getNodeCostMatrix().get(new_y).get(new_x).getType().equals("wall")
                         && notInClosedList(adjacentNodePos)) {
                     AiNode adjacentNode = generateNode(adjacentNodePos);
 
-                    //Legger her noden inn i open-list men må først sjekke hvor den skal være, ettersom den med
-                    //Lavest A* distance skal først.
+                    //Puts the node in the open list at the apropriate place, lowest A* distance goes first.
                     for (int j=0; j < openNodeList.size(); j++) {
                         if (adjacentNode.getaStarDistance() < openNodeList.get(j).getaStarDistance()) {
                             openNodeList.add(j, adjacentNode);
@@ -179,6 +181,7 @@ public class AISystem extends IteratingSystem{
 
     }
 
+    //Makes the tile Nampac is standing on visible so that the algorithm can reach him.
     private void makeVisible() {
         Node packNode = WorldBuilder.getNodeCostMatrix().get((int) pacmanPosition.y).get((int) pacmanPosition.x);
         if (packNode.getType().equals("wall")) {
@@ -187,6 +190,7 @@ public class AISystem extends IteratingSystem{
         }
     }
 
+    //Makes the tile invisible to the algorithm again if the ghosts are not supposed to go there
     private void finishVisible() {
         Node packNode = WorldBuilder.getNodeCostMatrix().get((int) pacmanPosition.y).get((int) pacmanPosition.x);
         if (this.changed) {
@@ -195,6 +199,7 @@ public class AISystem extends IteratingSystem{
         }
     }
 
+    //Decides the behaviour of the current entity
     private void behaviourManager(PlayerComponent pc) {
         if (pc.getRandomPos() != null) {
             this.pacmanPosition = pc.getRandomPos();
@@ -222,7 +227,7 @@ public class AISystem extends IteratingSystem{
     private AiNode generateNode(Vector2 nodePos) {
         AiNode aiNode = new AiNode();
         aiNode.setPosition(nodePos);
-        //skal her få posisjonen til pacman og sjekke om det er den
+        //Gets th position for Nampac and checks it.
         if (nodePos.x == (int) pacmanPosition.x && nodePos.y == (int) pacmanPosition.y) { //og endre her
             aiNode.setTypeOf("PACMAN");
         }
@@ -235,8 +240,8 @@ public class AISystem extends IteratingSystem{
     }
 
     private int calculateAStarDistance(Vector2 nodePosition, AiNode aiNode) {
-        //skal her få posisjonen til pacman og sjekke om det er den
-        Vector2 endPostion = pacmanPosition; //endre her
+        //Calculates manhattan distance from nodePosition to Nampac.
+        Vector2 endPostion = pacmanPosition;
         int h = (int )Math.abs(nodePosition.y - endPostion.y + Math.abs(nodePosition.x-endPostion.x));
         aiNode.setHeuristic(h);
         return h;
