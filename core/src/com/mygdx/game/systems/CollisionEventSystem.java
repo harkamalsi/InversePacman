@@ -17,10 +17,12 @@ public class CollisionEventSystem extends IteratingSystem {
     private ComponentMapper<PlayerComponent> playerM;
 
     private float collisionTimer = 0f;
+    public boolean gameover;
 
 
     public CollisionEventSystem() {
         super(Family.all(TransformComponent.class, PlayerComponent.class).get());
+        gameover = false;
 
         transformM = ComponentMapper.getFor(TransformComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
@@ -56,12 +58,19 @@ public class CollisionEventSystem extends IteratingSystem {
             if(pc.playerIdCollidedWith != "PACMAN" && !pc.powerMode && collisionTimer <= 0){
                 collisionTimer = 2f;
                 pc.hp -= 1;
+                MusicSystem musicSystem = this.getEngine().getSystem(MusicSystem.class);
+                musicSystem.playSound(1);
                 Hud.setLives(pc.hp);
                 WorldBuilder.resetBodyPositions();
                 pc.playerCollidedWith = null;
+                if(pc.hp < 1) {
+                    gameover = true;
+                }
 
             }
             else if (pc.powerMode){
+                MusicSystem musicSystem = this.getEngine().getSystem(MusicSystem.class);
+                musicSystem.playSound(2);
                 Hud.addPointsToScore(500);
                 WorldBuilder.resetBodyPosition(pc.playerCollidedWith);
                 pc.playerCollidedWith = null;

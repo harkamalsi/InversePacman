@@ -18,6 +18,8 @@ import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PillSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
+import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
+
 public class GameOverScreen extends AbstractScreen {
     private SpriteBatch batch;
 
@@ -67,7 +69,6 @@ public class GameOverScreen extends AbstractScreen {
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
 
-        sound = Gdx.audio.newSound(Gdx.files.internal("sound/the_winner.ogg"));
 
         excitementBg = new TextureRegion(new Texture("gameover/excitement_bg.png"));
         won_bg = new TextureRegion(new Texture("gameover/won.png"));
@@ -83,7 +84,6 @@ public class GameOverScreen extends AbstractScreen {
 
     @Override
     public void update(float delta) {
-        System.out.println("time elapsed " + elapsed);
         elapsed += delta;
         if(Gdx.input.justTouched() && elapsed > 7){
             musicSystem.dispose();
@@ -98,10 +98,17 @@ public class GameOverScreen extends AbstractScreen {
             start = false;
         }
 
+        if(PlayScreen.MULTIPLAYER && LobbyScreen.LOBBY_JOINED != null){
+            connection.leaveLobby();
+            LobbyScreen.LOBBY_JOINED = null;
+            PlayScreen.MULTIPLAYER = false;
+        }
+
     }
 
     @Override
     public void show() {
+        sound = Gdx.audio.newSound(Gdx.files.internal("sound/the_winner.ogg"));
         elapsed = 0;
         resultpageadded = false;
         start = true;
@@ -144,9 +151,6 @@ public class GameOverScreen extends AbstractScreen {
         engine.removeEntity(lost_bgEntity);
 
         musicEntity = new Entity();
-
-
-        connection.leaveLobby();
         musicEntity.add(new MusicComponent(Gdx.files.internal("music/gameover/won"), sound));
 
 

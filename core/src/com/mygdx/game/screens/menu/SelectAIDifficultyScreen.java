@@ -36,7 +36,7 @@ public class SelectAIDifficultyScreen extends AbstractScreen {
     private TextureRegion back;
     private TextureRegion bg;
     private TextureRegion sandbox;
-    private TextureRegion dragvoll;
+    private TextureRegion supereasy;
     private TextureRegion easy;
     private TextureRegion medium;
     private TextureRegion hard;
@@ -50,7 +50,7 @@ public class SelectAIDifficultyScreen extends AbstractScreen {
     private Entity front_ellipseEntity;
     private Entity bgEntity;
     private Entity sandboxButton;
-    private Entity dragvollButton;
+    private Entity supereasyButton;
     private Entity easyButton;
     private Entity mediumButton;
     private Entity hardButton;
@@ -63,7 +63,7 @@ public class SelectAIDifficultyScreen extends AbstractScreen {
     private Sprite front_ellipseSprite;
     private Sprite bgSprite;
     private Sprite sandboxSprite;
-    private Sprite dragvollSprite;
+    private Sprite supereasySprite;
     private Sprite easySprite;
     private Sprite mediumSprite;
     private Sprite hardSprite;
@@ -81,7 +81,7 @@ public class SelectAIDifficultyScreen extends AbstractScreen {
         back = new TextureRegion(new Texture("back3x.png"));
         bg = new TextureRegion(new Texture("menuscreen/menu_bg.png"));
         sandbox = new TextureRegion(new Texture("ai_difficulty_buttons/sandbox.png"));
-        dragvoll = new TextureRegion(new Texture("ai_difficulty_buttons/dragvoll.png"));
+        supereasy = new TextureRegion(new Texture("ai_difficulty_buttons/supereasy.png"));
         easy = new TextureRegion(new Texture("ai_difficulty_buttons/easy.png"));
         medium = new TextureRegion(new Texture("ai_difficulty_buttons/medium.png"));
         hard = new TextureRegion(new Texture("ai_difficulty_buttons/hard.png"));
@@ -104,8 +104,8 @@ public class SelectAIDifficultyScreen extends AbstractScreen {
             app.gsm.setScreen(GameScreenManager.STATE.PLAY);
         }
 
-        if(dragvollButton.flags == 1) {
-            app.ai_difficulty = "DRAGVOLL";
+        if(supereasyButton.flags == 1) {
+            app.ai_difficulty = "SUPEREASY";
             app.gsm.setScreen(GameScreenManager.STATE.PLAY);
         }
 
@@ -179,9 +179,9 @@ public class SelectAIDifficultyScreen extends AbstractScreen {
         sandboxButton = new Entity();
         app.addSpriteEntity(sandboxSprite, sandboxButton, engine, Gdx.graphics.getWidth() / 2 - (sandboxSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.50, sandboxSprite.getRegionWidth() * scaleX ,sandboxSprite.getRegionHeight() * scaleY, true,false, false, false);
 
-        dragvollSprite = new Sprite(dragvoll);
-        dragvollButton = new Entity();
-        app.addSpriteEntity(dragvollSprite, dragvollButton, engine, Gdx.graphics.getWidth() / 2 - (dragvollSprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.5 - (sandboxSprite.getRegionHeight() * 2 * scaleY), dragvollSprite.getRegionWidth() * scaleX ,dragvollSprite.getRegionHeight() * scaleY, true,false, false, false);
+        supereasySprite = new Sprite(supereasy);
+        supereasyButton = new Entity();
+        app.addSpriteEntity(supereasySprite, supereasyButton, engine, Gdx.graphics.getWidth() / 2 - (supereasySprite.getRegionWidth() / 2 * scaleX), Gdx.graphics.getHeight() / (float)1.5 - (sandboxSprite.getRegionHeight() * 2 * scaleY), supereasySprite.getRegionWidth() * scaleX ,supereasySprite.getRegionHeight() * scaleY, true,false, false, false);
 
         easySprite = new Sprite(easy);
         easyButton = new Entity();

@@ -87,6 +87,10 @@ public class MusicSystem extends IteratingSystem {
             song.dispose();
             pauseMusic.dispose();
         }
+        for(int i = 0; i < sounds.size(); i++) {
+                sound = sounds.get(i);
+                sound.dispose();
+        }
     }
 
     public void pause() {
