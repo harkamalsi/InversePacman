@@ -16,10 +16,12 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.managers.NetworkManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
+import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
 import org.json.JSONArray;
@@ -45,12 +47,15 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
     protected Entity front_ellipseEntity;
     protected Entity backButton;
 
+    protected Entity musicEntity;
+
     protected Sprite ellipseSprite;
     protected Sprite front_ellipseSprite;
     protected Sprite backSprite;
 
     protected RenderingSystem renderSystem;
     protected ButtonSystem buttonSystem;
+    protected MusicSystem musicSystem;
     protected Engine engine;
 
     protected TextureRegion ellipse;
@@ -120,10 +125,13 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
         renderSystem = new RenderingSystem(batch);
         buttonSystem = new ButtonSystem(camera);
+        musicSystem = new MusicSystem();
+
 
         engine = new Engine();
         engine.addSystem(renderSystem);
         engine.addSystem(buttonSystem);
+        engine.addSystem(musicSystem);
 
         ellipseSprite = new Sprite(ellipse);
         ellipseEntity = new Entity();
@@ -136,6 +144,10 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
         backSprite = new Sprite(back);
         backButton = new Entity();
         app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX, true,false, false, false);
+
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
+        engine.addEntity(musicEntity);
 
         InversePacman.NETWORKMANAGER.fetchAllPlayers();
     }
@@ -240,7 +252,10 @@ public abstract class AbstractBoardScreen extends AbstractScreen {
 
     public void handleInput() {
         if(backButton.flags == 1) {
+            musicSystem.dispose();
+            engine.removeEntity(musicEntity);
             app.gsm.setScreen((GameScreenManager.STATE.LEADERBOARD_MENU_SCREEN));
+
         }
     }
 

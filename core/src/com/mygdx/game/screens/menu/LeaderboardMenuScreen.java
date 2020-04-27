@@ -13,11 +13,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
+import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
+import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.RenderingSystem;
 
 
@@ -41,6 +43,7 @@ public class LeaderboardMenuScreen extends AbstractScreen {
     private Entity ellipseEntity;
     private Entity front_ellipseEntity;
     private Entity backButton;
+    private Entity musicEntity;
 
     private SpriteBatch batch;
 
@@ -55,6 +58,8 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
     private ButtonSystem buttonSystem;
     private RenderingSystem renderSystem;
+    private MusicSystem musicSystem;
+
 
     private Engine engine;
     private float scaleX;
@@ -89,18 +94,26 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 //        }
 
         if (singlePlayerNamcapButton.flags == 1) {
+            musicSystem.dispose();
+            engine.removeEntity(musicEntity);
             app.gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_NAMCAP_BOARD_SCREEN);
         }
 
         if (multiplayerGhostsButton.flags == 1) {
+            musicSystem.dispose();
+            engine.removeEntity(musicEntity);
             app.gsm.setScreen(GameScreenManager.STATE.MULTIPLAYER_GHOSTS_BOARD_SCREEN);
         }
 
         if (multiplayerNamcapButton.flags == 1) {
+            musicSystem.dispose();
+            engine.removeEntity(musicEntity);
             app.gsm.setScreen(GameScreenManager.STATE.MULTIPLAYER_NAMCAP_BOARD_SCREEN);
         }
 
         if(backButton.flags == 1) {
+            musicSystem.dispose();
+            engine.removeEntity(musicEntity);
             app.gsm.setScreen((GameScreenManager.STATE.MAIN_MENU_SCREEN));
         }
     }
@@ -154,10 +167,13 @@ public class LeaderboardMenuScreen extends AbstractScreen {
 
         buttonSystem = new ButtonSystem(this.camera);
         renderSystem = new RenderingSystem(batch);
+        musicSystem = new MusicSystem();
 
         engine = new Engine();
         engine.addSystem(buttonSystem);
         engine.addSystem(renderSystem);
+        engine.addSystem(musicSystem);
+
 
         ellipseSprite = new Sprite(ellipse);
         ellipseEntity = new Entity();
@@ -199,6 +215,10 @@ public class LeaderboardMenuScreen extends AbstractScreen {
         backSprite = new Sprite(back);
         backButton = new Entity();
         app.addSpriteEntity(backSprite, backButton, engine, 0, 0, backSprite.getRegionWidth() *scaleX, backSprite.getRegionHeight()*scaleX, true,false, false, false);
+
+        musicEntity = new Entity();
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
+        engine.addEntity(musicEntity);
     }
 
     @Override
