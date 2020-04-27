@@ -2,10 +2,13 @@ package com.mygdx.game.managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.PerformanceCounter;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.screens.play.LobbyScreen;
+import com.mygdx.game.screens.play.PlayScreen;
 import com.mygdx.game.shared.Constants;
+import com.mygdx.game.systems.PlayerInputSystem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +49,9 @@ public class NetworkManager {
     String playerNickname;
 
     SaveManager saveManager;
+
+    PerformanceCounter performanceCounter = new PerformanceCounter("heroku");
+    boolean start = true;
 
     public NetworkManager(SaveManager saveManager) {
         setSocket();
@@ -202,7 +208,35 @@ public class NetworkManager {
         inputs.put("x", args[1]);
         inputs.put("y", args[2]);
 
-        getSocket().emit(Constants.INPUT, socketID, inputs);
+        if (start){
+            performanceCounter.start();
+            start = false;
+        }
+
+        getSocket().emit(Constants.INPUT, socketID, inputs, new Ack() {
+            @Override
+            public void call(Object... args) {
+                //JSONObject response = (JSONObject)args[0];
+                //System.out.println("ACKKKKKKKKKKKKKKKKKKKKKKKk: " + args);
+
+                if (!start) {
+                    performanceCounter.stop();
+                    performanceCounter.tick();
+                    System.out.println("" + performanceCounter.time.max + " " +
+                            performanceCounter.time.average);
+
+                    start = true;
+                }
+            }
+        });
+
+        /*getSocket().on(Constants.RESPONSE, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject response = (JSONObject)args[0];
+                System.out.println("ACKKKKKKKKKKKKKKKKKKKKKKKk: " + response);
+            }
+        });*/
     }
 
     private void setUpdate(JSONObject me, JSONArray others) {

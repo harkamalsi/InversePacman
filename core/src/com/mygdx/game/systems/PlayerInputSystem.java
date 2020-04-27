@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.PerformanceCounter;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.StateComponent;
@@ -128,6 +129,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
         if (PlayScreen.MULTIPLAYER && LobbyScreen.LOBBY_JOINED != null) {
 
+
+
             JSONArray response = getServerInput();
 
             if (response != null) {
@@ -189,6 +192,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
                 }
 
+                //performanceCounter.stop();
+
                 for (int i = 0; i < response.length(); i++) {
                     String otherType = response.getJSONObject(i).getString("type");
 
@@ -204,8 +209,8 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                     }
                 }
 
-            }
 
+            }
         }
 
     }
