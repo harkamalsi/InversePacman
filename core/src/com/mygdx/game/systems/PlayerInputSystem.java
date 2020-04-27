@@ -53,7 +53,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     private float prevX, prevY = -1;
     private long shouldSendCounter = 1;
-    private int maxShouldSendUpdateCounter = 2;
+    private int maxShouldSendUpdateCounter = 5;
 
 
     public PlayerInputSystem(){
