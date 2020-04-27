@@ -27,7 +27,9 @@ import java.util.ArrayList;
         private static ArrayList<PlayerComponent> playerList = new ArrayList<>();
         private static ArrayList<PillComponent> pillList = new ArrayList<>();
 
-
+        // Main class, when called and passed the right arguments, will then start to call the
+        // different parsing methods. When finished a world is generated togehter with players
+        // and pills components.
         public static void parseTiledObjectLayer(World world
                 ,MapObjects wallObjects
                 ,MapLayer backgroundLayer
@@ -47,6 +49,8 @@ import java.util.ArrayList;
             parsePlayerObjectLayer(playerObjects);
         }
 
+        // Parsing the wallobject layer from the .tmx file and making a Box2d world of walls.
+        // Works togehter with the createPolyline method.
         private static void parseWallObjectLayer(MapObjects collisionObjects, World world){
             for (MapObject object : collisionObjects) {
 
@@ -73,7 +77,8 @@ import java.util.ArrayList;
                 shape.dispose();
             }
         }
-
+        // Parsing the playerobjects to get the amount of players, types of players and their
+        // position.
         private static void parsePlayerObjectLayer(MapObjects playerObjects) {
 
             for (MapObject object : playerObjects) {
@@ -85,6 +90,8 @@ import java.util.ArrayList;
             }
         }
 
+        // Parsing the pillobjects to get the amount of pills and their
+        // position.
         private static void parsePillObjectLayer(MapObjects pillObjects) {
             for (MapObject object : pillObjects) {
                 if (object instanceof RectangleMapObject) {
@@ -95,6 +102,8 @@ import java.util.ArrayList;
             }
         }
 
+        // Parsing the map into a node matrix consisting of Node objects, with different values
+        // on their attributes. The most important is if it is a wall/ground and walkthrough.
         private static void parseMapToNode(MapLayer backgroundLayer) {
             TiledMapTileLayer mapLayer = (TiledMapTileLayer) backgroundLayer;
             int height = mapLayer.getHeight();
@@ -113,6 +122,7 @@ import java.util.ArrayList;
             }
         }
 
+        // The helper method for parseWallToObjectLayer, making the polylines(drawing the walls in box2d.
         private static ChainShape createPolyLine(PolygonMapObject polyline) {
             float[] vertices = polyline.getPolygon().getTransformedVertices();
             Vector2[] worldVertices = new Vector2[vertices.length/2];
@@ -127,7 +137,7 @@ import java.util.ArrayList;
             return cs;
         }
 
-
+        // Creates the players and assigning IDs, position and if the body is a sensor or not.
         public static void createPlayers(World world) {
            for (Integer i=0; i < getPlayerPositionList().size(); i++) {
                PlayerComponent player = new PlayerComponent();
@@ -150,6 +160,7 @@ import java.util.ArrayList;
 
         }
 
+        // Creates the pills, also assigning the IDs and position.
         public static void createPills(World world) {
             for (int i=0; i < getPillsPostionList().size(); i++) {
 
@@ -166,6 +177,8 @@ import java.util.ArrayList;
             }
 
         }
+
+        //Resets the bodies of an entity to their start positions.
         public static void resetBodyPositions(){
             for (int i = 0; i <getPlayerList().size(); i++){
                 Vector2 vector = new Vector2();
@@ -175,6 +188,7 @@ import java.util.ArrayList;
 
         }
 
+        // Resets one body of an entity to its start position.
         public static void resetBodyPosition(Body body){
             Vector2 vector = new Vector2();
             getPlayerPositionList().get(4).getRectangle().getCenter(vector);
