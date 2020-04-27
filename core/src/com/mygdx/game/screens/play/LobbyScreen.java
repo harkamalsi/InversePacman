@@ -76,12 +76,16 @@ public class LobbyScreen extends AbstractScreen {
         scaleX = (Gdx.graphics.getWidth() / (float)app.APP_WIDTH_MOBILE) * 0.8f;
         scaleY = (Gdx.graphics.getHeight() / (float)app.APP_HEIGHT_MOBILE) * 0.8f;
 
-        loadAndSetNickname();
+
     }
 
     private void loadAndSetNickname(){
         String tempNickname = app.saveManager.loadDataValue("nickname", String.class);
-        if (tempNickname != null || tempNickname.length() !=0) {
+        if (tempNickname != null ) {
+            NICKNAME = tempNickname;
+        }
+
+        if (!tempNickname.isEmpty()) {
             NICKNAME = tempNickname;
         }
     }
@@ -130,6 +134,7 @@ public class LobbyScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        loadAndSetNickname();
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -154,7 +159,7 @@ public class LobbyScreen extends AbstractScreen {
 
         backSprite = new Sprite(back);
         backButton = new Entity();
-        app.addSpriteEntity(backSprite, backButton, engine, 20f, 50 * 32 * scaleX/ 0.67f,
+        app.addSpriteEntity(backSprite, backButton, engine, 0, Gdx.graphics.getHeight() - backSprite.getRegionHeight() * scaleX,
                 backSprite.getRegionWidth() * scaleX, backSprite.getRegionHeight() * scaleX,
                 true,false, false, false);
 

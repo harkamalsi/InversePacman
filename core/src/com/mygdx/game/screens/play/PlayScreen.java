@@ -22,7 +22,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.AnimationComponent;
-import com.mygdx.game.components.CollisionComponent;
 import com.mygdx.game.components.MusicComponent;
 import com.mygdx.game.components.PillComponent;
 import com.mygdx.game.components.PlayerComponent;
@@ -31,7 +30,6 @@ import com.mygdx.game.components.TableComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 import com.mygdx.game.components.VelocityComponent;
-import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.scenes.Hud;
@@ -62,7 +60,6 @@ public final class PlayScreen extends AbstractScreen {
 
     private Hud hud;
 
-    private EntityManager entityManager;
 
     private Texture pacmansprite;
     private Texture ghostsheet;
@@ -84,12 +81,13 @@ public final class PlayScreen extends AbstractScreen {
 
 
     private Sprite pauseButtonSprite;
-    private Sprite pacmanSpritus;
     private Sprite backSprite;
 
     private Sprite pause_ellipseSprite;
     private Sprite front_ellipseSprite;
     private Sprite pauseiconSprite;
+
+    private Sprite pacmanSpritus;
 
     private Entity pacman;
     private Entity pauseEntity;
@@ -118,7 +116,6 @@ public final class PlayScreen extends AbstractScreen {
     public TiledMap map;
 
     public boolean destroyAllBodies;
-    public boolean pacmanGotHit;
 
     private Engine engine;
 
@@ -204,6 +201,7 @@ public final class PlayScreen extends AbstractScreen {
             }
             musicSystem.dispose();
             engine.removeAllEntities();
+            hud.reset();
             destroyAllBodies = true;
 
             if(MULTIPLAYER){
@@ -211,7 +209,6 @@ public final class PlayScreen extends AbstractScreen {
                 LobbyScreen.LOBBY_JOINED = null;
                 MULTIPLAYER = false;
             }
-
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
         }
 
@@ -243,19 +240,20 @@ public final class PlayScreen extends AbstractScreen {
             engine.removeSystem(animationSystem);
             ghostsheet.dispose();
             destroyAllBodies = true;
+            hud.reset();
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 
-        if(hud.remainingLives < 1){
+        if(collisionEventSystem.gameover){
             if (PlayScreen.MULTIPLAYER) {
                 app.NETWORKMANAGER.updateMultiplayerScore(app.NETWORKMANAGER.getPlayerId(), TableComponent.PLAYERTYPE);
             }
             engine.removeAllEntities();
-
             musicSystem.dispose();
             engine.removeSystem(collisionEventSystem);
             ghostsheet.dispose();
             destroyAllBodies = true;
+            hud.reset();
             app.gsm.setScreen(GameScreenManager.STATE.GAME_OVER_SCREEN);
         }
 
@@ -271,10 +269,6 @@ public final class PlayScreen extends AbstractScreen {
 
         //Tiled map creation and WorldBuilder call
         map = new TmxMapLoader().load("World/InvPac_Maze2.tmx");
-        //map.getLayers().get("BackgroundLayer").setOffsetX(100);
-        //map.getLayers().get("Players").setOffsetX(100);
-        //map.getLayers().get("Pills").setOffsetX(100);
-       // Gdx.graphics.getWidth()/(map.getProperties().get("width",Integer.class)*32f)
         tmr = new OrthogonalTiledMapRenderer(map);
         WorldBuilder.parseTiledObjectLayer(world, map.getLayers().get("Collision").getObjects()
                 ,map.getLayers().get("BackgroundLayer")
@@ -283,7 +277,6 @@ public final class PlayScreen extends AbstractScreen {
                 , map.getLayers().get("AiRoute"));
         WorldBuilder.createPlayers(world);
         WorldBuilder.createPills(world);
-        //this.camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
         // To add a new songs, place the file under the folder assets/music/play
         //batch = new SpriteBatch();
@@ -369,45 +362,35 @@ public final class PlayScreen extends AbstractScreen {
 
         for (int i = 0; i<4; i++){
 
-            PlayerComponent playerComponent = WorldBuilder.getPlayerList().get(i);
-            Vector2 vector = playerComponent.body.getPosition();
-
 
             scale = new Vector2(0.9f*(scaleX *1.32f), 0.9f*(scaleX *1.32f));
 
             ghost = new Entity();
             ghost.add(new VelocityComponent())
                     .add(WorldBuilder.getPlayerList().get(i))
-//                    .add(new GhostComponent())
                     .add(new TextureComponent())
                     .add(animcomponent)
                     .add(new StateComponent(0))
-                    .add(new TransformComponent(20,20, scale.x, scale.y,0))
-
-                    .add(new CollisionComponent());
+                    .add(new TransformComponent(20,20, scale.x, scale.y,0));
             engine.addEntity(ghost);
         }
 
         // Pac-Man
         PlayerComponent playerComponent = WorldBuilder.getPlayerList().get(4);
         Vector2 vector = playerComponent.body.getPosition();
-        System.out.println("pacman is here: " + playerComponent.body.getPosition());
 
 
         pacmansprite = new Texture(app.skin);
 
         pacmanSpritus = new Sprite(pacmansprite);
-        Vector2 position = new Vector2(20,20);
 
         scale = new Vector2(0.15f,0.15f);
         pacman = new Entity();
         pacman.add(new VelocityComponent())
-//               .add(new PacmanComponent())
                 .add(WorldBuilder.getPlayerList().get(4))
                 .add(new TextureComponent(new TextureRegion(pacmansprite)))
                 .add(new StateComponent(0))
-                .add(new TransformComponent(2*vector.x / RenderingSystem.PPM, 2* vector.y / RenderingSystem.PPM, (scaleX *1.32f)*scale.x, (scaleX *1.32f)*scale.y, 0))
-                .add(new CollisionComponent());
+                .add(new TransformComponent(2*vector.x / RenderingSystem.PPM, 2* vector.y / RenderingSystem.PPM, (scaleX *1.32f)*scale.x, (scaleX *1.32f)*scale.y, 0));
         engine.addEntity(pacman);
 
 
@@ -416,7 +399,6 @@ public final class PlayScreen extends AbstractScreen {
         pauseEntity = new Entity();
         pauseEntity.add(new TextureComponent(pauseSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),false, false, false))
             .add(new TransformComponent(0,0));
-        //engine.addEntity(pauseEntity);
 
         pauseButtonSprite = new Sprite(pausetexture);
         pauseButton = new Entity();
@@ -429,12 +411,13 @@ public final class PlayScreen extends AbstractScreen {
 
         musicEntity = new Entity();
         Sound powerPillSound = Gdx.audio.newSound(Gdx.files.internal("sound/power.ogg"));
-        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play"), powerPillSound));
+        Sound dieSound = Gdx.audio.newSound(Gdx.files.internal("sound/pacman_die.ogg"));
+        Sound ghostSound = Gdx.audio.newSound(Gdx.files.internal("sound/ghost_die.ogg"));
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play"), powerPillSound, dieSound, ghostSound));
         engine.addEntity(musicEntity);
 
         musicPauseEntity = new Entity();
         musicPauseEntity.add(new MusicComponent(Gdx.files.internal("music/pause")));
-        //engine.addEntity(musicPauseEntity);
 
         aiSystem.setDifficulty(app.ai_difficulty);
 
@@ -468,20 +451,13 @@ public final class PlayScreen extends AbstractScreen {
         // draws the background to our style
         Gdx.gl.glClearColor(33/255f, 32/255f, 49/255f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //System.out.println("camera  " + camera.position);
         tmr.setView(camera);
         tmr.render();
 
-        //rendering the box debugger lags the game
-        //b2dr.render(world, camera.combined.scl(1f));
-
-//        engine.update(delta);
 
         // when paused engine stops updating, and textures "disappear"
         if(!pause) {
             if(resume) {
-                //engine.removeEntity(pauseEntity);
-                //engine.addEntity(pacman);
                 musicSystem.resume();
                 engine.removeEntity(pauseEntity);
                 engine.removeEntity(pause_ellipseEntity);
@@ -510,15 +486,12 @@ public final class PlayScreen extends AbstractScreen {
         }
         if(pause){
 
-            //engine.addEntity(pauseEntity);
-            //engine.removeEntity(pacman);
             musicSystem.pause();
             engine.getSystem(RenderingSystem.class).update(delta);
             engine.removeEntity(pauseButton);
             engine.removeEntity(backButton);
             engine.getSystem(ButtonSystem.class).update(delta);
-            //engine.getEntitiesFor(Family.one())
-            //engine.getSystem(ButtonSystem.class).update(delta);
+
             if(!resume) {
                 engine.addEntity(pauseEntity);
                 engine.addEntity(pause_ellipseEntity);
@@ -527,11 +500,8 @@ public final class PlayScreen extends AbstractScreen {
 
             }
             resume = true;
-            /*if(Gdx.input.justTouched()) {
-                pause = false;
-            }*/
+
         }
-        //engine.update(delta);
 
         hud.stage.getViewport().apply();
         hud.stage.draw();

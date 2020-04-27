@@ -9,7 +9,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.PlayerComponent;
-import com.mygdx.game.components.PacmanComponent;
 import com.mygdx.game.components.StateComponent;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
@@ -20,11 +19,9 @@ import com.mygdx.game.screens.play.PlayScreen;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.Math;
 
-import javax.annotation.processing.SupportedSourceVersion;
 
 public class PlayerInputSystem extends IteratingSystem implements InputProcessor {
 
@@ -36,15 +33,12 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
 
-    private static final float X_VELOCITY = 2.5f;
-    private static final float Y_VELOCITY = 2.5f;
 
     private Vector2 temp;
 
     private int locationStartTouchedX;
     private int locationStartTouchedY;
 
-    private ComponentMapper<PacmanComponent> pacmanM;
     private ComponentMapper<VelocityComponent> velocityM;
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<StateComponent> stateM;
@@ -63,7 +57,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
         stateM = ComponentMapper.getFor(StateComponent.class);
         texM = ComponentMapper.getFor(TextureComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
-        pacmanM = ComponentMapper.getFor(PacmanComponent.class);
 
         Gdx.input.setInputProcessor(this);
     }
@@ -72,6 +65,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     protected void processEntity(Entity entity, float deltaTime) {
         PlayerComponent pc = playerM.get(entity);
         VelocityComponent vc = velocityM.get(entity);
+        //not used, but could be handy
         TransformComponent tc = transformM.get(entity);
         StateComponent sc = stateM.get(entity);
         TextureComponent texc = texM.get(entity);
@@ -79,6 +73,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
         float x = 0f;
         float y = 0f;
+        //Singleplayer Pacman player movement
         if(pc.id.equals("PACMAN")) {
             if (!PlayScreen.MULTIPLAYER) {
                 if (isUpDragged || Gdx.input.isKeyPressed(Input.Keys.I)) {
@@ -132,6 +127,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
             if (response != null) {
 
+                //Multiplayer me player position sending handling and actual movement
                 if (pc.id.equals(MultiplayerMessage.METYPE)) {
 
                     Vector2 playerVelocity = vc.ghostVelocity;
@@ -188,7 +184,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                     prevY = pc.body.getPosition().y;
 
                 }
-
+                //Multiplayer other players position retrieving handling and updating local client positions
                 for (int i = 0; i < response.length(); i++) {
                     String otherType = response.getJSONObject(i).getString("type");
 
@@ -215,20 +211,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
     }
 
     private void sendServerInput(float x, float y){
-        /*if (shouldSendUpdate1 && shouldSendUpdate2) {
-            connection.X = String.valueOf(x);
-            connection.Y = String.valueOf(y);
-
-            connection.sendInput();
-
-            shouldSendUpdate1 = false;
-            shouldSendUpdate2 = false;
-        } else {
-            if (shouldSendUpdate1) {
-                shouldSendUpdate2 = true;
-            }
-            shouldSendUpdate1 = true;
-        }*/
 
         if (shouldSendCounter % maxShouldSendUpdateCounter == 0) {
             connection.X = String.valueOf(x);
@@ -241,9 +223,9 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     //function for deciding drag direction
     private void toggleDirection(int locationStartTouchedX, int locationStartTouchedY, int screenX, int screenY) {
-        // This is great code!
+        //using absolute value to decide axis
         boolean yIsGreater = ((Math.abs(locationStartTouchedY - screenY)) - (Math.abs(locationStartTouchedX - screenX)) > 0);
-
+        //if y axis, decide positive or negative
         if (yIsGreater){
             if ((locationStartTouchedY - screenY) > 0){
                 isUpDragged = true;
@@ -259,7 +241,7 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
                 isRightDragged = false;
             }
         }
-
+        //if x axis, decide positive or negative
         if(!yIsGreater) {
 
             if ((locationStartTouchedX - screenX) > 0){
@@ -299,7 +281,6 @@ public class PlayerInputSystem extends IteratingSystem implements InputProcessor
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-//        System.out.println("dragging");
         return false;
     }
 

@@ -12,14 +12,9 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.MusicComponent;
-import com.mygdx.game.components.TextureComponent;
-import com.mygdx.game.components.TransformComponent;
-import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
@@ -29,15 +24,12 @@ import com.mygdx.game.systems.RenderingSystem;
 
 public class MainMenuScreen extends AbstractScreen {
     private OrthographicCamera camera;
-    private FitViewport viewport;
 
-    private EntityManager entityManager;
 
     private SpriteBatch batch;
     private SpriteBatch bgBatch;
 
     private Engine engine;
-    private Vector3 clickPosition;
 
     private ButtonSystem buttonSystem;
     private RenderingSystem renderingSystem;
@@ -80,9 +72,6 @@ public class MainMenuScreen extends AbstractScreen {
     private GlyphLayout layout;
 
 
-/*
-I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacman.V_WIDTH/HEIGHT
- */
 
     public MainMenuScreen(final InversePacman app, Engine engine) {
         super(app, engine);
@@ -114,6 +103,7 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
             }
         }
 
+        //desktop debugging
         if(Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
             //Important to call both if you want to remove the music from the previous screen, order doesn't matter
             engine.removeSystem(musicSystem);
@@ -146,61 +136,17 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
         }
 
-        /*else if (Gdx.input.isKeyPressed(Input.Keys.P) && app.gsm.currentState == GameScreenManager.STATE.MAIN_MENU_SCREEN) {
-			System.out.println("PAUSING!");
-			app.gsm.pushScreen(GameScreenManager.STATE.PAUSE);
-            musicSystem.pause();
-		}
-		else if (Gdx.input.isKeyJustPressed(Input.Keys.R) && app.gsm.currentState == GameScreenManager.STATE.PAUSE) {
-			System.out.println("UNPAUSING!");
-			//app.gsm.popScreen();
-			app.gsm.setScreen(GameScreenManager.STATE.PLAY);
-		}*/
 
     }
 
     @Override
     public void render(float delta){
         super.render(delta);
-        //bgBatch.begin();
-        //bgBatch.draw(bg, 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //bgBatch.end();
-        /*batch.setProjectionMatrix(camera.combined);
-
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.1f, 1.0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        batch.begin();
-        //font.getData().setScale(scaleX * (float)Math.abs(Math.sin(app.b)),scaleY * (float)Math.abs(Math.sin(app.b)));
-        font.getData().setScale(scaleX,scaleY);
-
-
-        batch.draw(bg, 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        ellipseSprite.setColor(0,78, 59,app.a);
-        ellipseSprite.draw(batch);
-        batch.draw(front_ellipse, Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY));
-        layout.setText(font,"Menu");
-        //font.setColor(0,78, 59,a);
-        font.draw(batch,layout,Gdx.graphics.getWidth() / 2 - layout.width / 2, (Gdx.graphics.getHeight() - ((layout.height / 2) / (float)1.5)) / (float)1.06);
-        //playsprite.setSize(350,75);
-        //playsprite.setScale(scaleX, scaleY);
-
-        //playsprite.setColor(100,20,150, app.a);
-        //playsprite.setScale(scaleX * (float)Math.abs(Math.sin(app.a)),scaleY * (float)Math.abs(Math.sin(app.a)));
-        //playsprite.draw(batch);
-        //multisprite.draw(batch);
-        //highscoresprite.draw(batch);
-        //optionsprite.draw(batch);
-
-        batch.end();*/
         engine.update(delta);
         batch.begin();
         font.setUseIntegerPositions(false);
         font.getData().setScale(scaleX / 32f, scaleY / 32f);
         layout.setText(font,"MENU");
-        //System.out.println("font x: " + (Gdx.graphics.getWidth() / 2 - layout.width / 2));
-        //System.out.println("font y: " + (Gdx.graphics.getHeight() / 1.05f - (layout.height / 2)));
-        //System.out.println("scalex: " + scaleX + " scaled X: " + (scaleX*(float)1/32));
 
         font.draw(batch,"menu", (Gdx.graphics.getWidth() / 64f - layout.width / 2f),
                 (Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
@@ -211,16 +157,11 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
     @Override
     public void update(float delta) {
         handleInput();
-        //app.step_scale();
-        //System.out.println("music level: " + music.getVolume());
-        //System.out.println("Sound level" + app.sound_volume);
-        //System.out.println("Width: " + optionsprite.getWidth() + "Region Width: " + optionsprite.getRegionWidth());
     }
 
     @Override
     public void show() {
         this.camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         batch = new SpriteBatch();
@@ -285,7 +226,6 @@ I am not sure if we are going to use Gdx.graphics.getWidth/Height or InversePacm
 
         // ***** Option button END *****
 
-        //entityManager = new EntityManager(engine, app.batch);
     }
 
     @Override

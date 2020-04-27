@@ -140,6 +140,15 @@ public class Hud implements Disposable {
     }
 
 
+    public void reset() {
+        score = 0;
+        timer = 0;
+        timerText.setText(String.format("%03d", (int)timer));
+        scoreText.setText(String.format("%06d", score));
+
+
+
+    }
     @Override
     public void dispose() {
         stage.dispose();

@@ -20,7 +20,6 @@ public class PillSystem extends IteratingSystem {
         super(Family.all(TextureComponent.class, PillComponent.class).get());
         pillM = ComponentMapper.getFor(PillComponent.class);
         pillCount = WorldBuilder.getPillList().size();
-        System.out.println("Pills remaining: " + pillCount);
     }
 
     @Override
@@ -42,7 +41,6 @@ public class PillSystem extends IteratingSystem {
             getEngine().removeEntity(entity);
             pillComponent.destroyPillBody();
             pillCount--;
-            System.out.println("Pills remaining: " + pillCount);
         }
     }
 

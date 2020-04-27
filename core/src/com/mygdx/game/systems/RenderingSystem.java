@@ -5,17 +5,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.TransformComponent;
 
-import java.util.Comparator;
-import java.util.concurrent.TimeUnit;
 
 public class RenderingSystem extends IteratingSystem {
     //pixels per meter
@@ -33,9 +28,7 @@ public class RenderingSystem extends IteratingSystem {
     private SpriteBatch batch;
 
     private Array<Entity> renderQueue;
-    private Comparator<Entity> comparator;
     public OrthographicCamera cam;
-    private boolean set = false;
     private TextureComponent tex;
     private TransformComponent t;
 
@@ -61,18 +54,12 @@ public class RenderingSystem extends IteratingSystem {
     }
 
 
-    //maybe will deal with the priorityqueue of incoming renderables
-//    public RenderingSystem(Family family, Comparator<Entity> comparator, int priority) {
-//        super(family, comparator, priority);
-//    }
+
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
         step();
-        //System.out.println(a);
-        //System.out.println(renderQueue);
-        //renderQueue.sort(comparator);
       
         cam.update();
         batch.setProjectionMatrix(cam.combined);
@@ -85,7 +72,6 @@ public class RenderingSystem extends IteratingSystem {
             t = transformM.get(entity);
 
             if (tex.region == null && tex.sprite == null) {
-                System.out.println("nothing");
                 continue;
             }
 
@@ -104,11 +90,7 @@ public class RenderingSystem extends IteratingSystem {
                         t.rotation);
             }
             if(!(tex.sprite == null)) {
-                float width = tex.sprite.getRegionWidth();
-                float height = tex.sprite.getRegionHeight();
-                //System.out.println("widht " + tex.sprite.getRegionWidth());
-                float originX = width/2f;
-                float originY = height/2f;
+
                 if(tex.bounds) {
                     tex.sprite.setBounds(tex.sprite.getX() / PPM, tex.sprite.getY() / PPM, tex.sprite.getWidth() / PPM, tex.sprite.getHeight() / PPM);
                     tex.bounds = false;
@@ -128,28 +110,6 @@ public class RenderingSystem extends IteratingSystem {
                 if(!tex.changeOpacity) {
                     batch.draw(tex.sprite, tex.sprite.getX() / PPM, tex.sprite.getY() / PPM, tex.sprite.getWidth() / PPM, tex.sprite.getHeight() / PPM);
                 }
-                //tex.sprite.setBounds(0,0, tex.sprite.getRegionWidth() / 5, tex.sprite.getRegionHeight() / 5);
-                //tex.sprite.setScale(PixelsToMeters(t.scale.x), PixelsToMeters(t.scale.y));
-                //tex.sprite.setScale(tex.sprite.getScaleX()/PPM, tex.sprite.getScaleY()/PPM);
-
-                //tex.sprite.setBounds(tex.sprite.getX() / PPM, tex.sprite.getY() / PPM, tex.sprite.getWidth() / PPM, tex.sprite.getHeight() / PPM);
-                //tex.sprite.draw(batch);
-
-                /*int timeToWait = 10; //second
-                System.out.print("Scanning");
-                try {
-                    for (int i=0; i<timeToWait ; i++) {
-                        Thread.sleep(1000);
-                        System.out.print(".");
-                    }
-                } catch (InterruptedException ie)
-                {
-                    Thread.currentThread().interrupt();
-                }*/
-                //System.out.println("screen width: " + Gdx.graphics.getWidth() + " position x: " + tex.sprite.getX() + " widht " + tex.sprite.getRegionWidth());
-                //System.out.println("screen height: " + Gdx.graphics.getHeight() + " position y : " + tex.sprite.getY() + " Height  " + tex.sprite.getRegionHeight());
-
-                //System.out.println(tex.sprite.toString() + "X: " + tex.sprite.getX() + "Y: " + tex.sprite.getY() + " width " + tex.sprite.getWidth() + " height " + tex.sprite.getHeight());
 
             }
 

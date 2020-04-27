@@ -1,7 +1,6 @@
 package com.mygdx.game.components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -15,11 +14,6 @@ public class ButtonComponent implements Component {
 
     }
 
-    /*public ButtonComponent(Sprite sprite) {
-
-        sprite.setBounds(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-
-    }*/
 
 }
 
