@@ -54,6 +54,7 @@ public class CollisionEventSystem extends IteratingSystem {
         }
 
         //resetting position on all players when pacman hit & resetting ghost position in powermode
+        //updating hp and score as well
         if (pc.id.equals("PACMAN") && pc.playerCollidedWith != null) {
             if(pc.playerIdCollidedWith != "PACMAN" && !pc.powerMode && collisionTimer <= 0){
                 collisionTimer = 2f;
@@ -63,7 +64,9 @@ public class CollisionEventSystem extends IteratingSystem {
                 Hud.setLives(pc.hp);
                 WorldBuilder.resetBodyPositions();
                 pc.playerCollidedWith = null;
+
                 if(pc.hp < 1) {
+                    //sets game over flag
                     gameover = true;
                 }
 

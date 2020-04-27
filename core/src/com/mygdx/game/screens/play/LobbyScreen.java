@@ -84,9 +84,6 @@ public class LobbyScreen extends AbstractScreen {
         if (tempNickname != null ) {
             NICKNAME = tempNickname;
         }
-        System.out.println("temp " + tempNickname);
-
-        System.out.println("nick " + NICKNAME);
 
         if (!tempNickname.isEmpty()) {
             NICKNAME = tempNickname;

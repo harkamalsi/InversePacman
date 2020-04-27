@@ -27,6 +27,9 @@ public class GameScreenManager {
     private HashMap<STATE, AbstractScreen> gameScreens;
     private Array<STATE> prevScreens;
     private Engine engine;
+
+
+    //different screens
     public enum STATE {
         PLAY,
         PAUSE,
@@ -48,7 +51,6 @@ public class GameScreenManager {
     public GameScreenManager(final InversePacman app) {
         this.app = app;
         prevScreens = new Array<>();
-        this.engine = engine;
 
         //engine to be passed to all ecs screens
         engine = new Engine();
@@ -56,8 +58,6 @@ public class GameScreenManager {
         initGameScreens();
         setScreen(STATE.SPLASH_SCREEN);
 
-
-        //System.out.println(prevScreens);
     }
 
     private void initGameScreens() {
@@ -78,43 +78,13 @@ public class GameScreenManager {
         this.gameScreens.put(STATE.SELECT_AI_DIFFICULTY, new SelectAIDifficultyScreen(app, engine));
     }
 
-    public void setScreen(STATE nextScreen, boolean multiplayer) {
-        //System.out.println("prevscreens" + prevScreens);
-        this.prevScreens.add(nextScreen);
-        app.setScreen(gameScreens.get(nextScreen));
-        //System.out.println("prevscreens" + prevScreens);
-        currentState = nextScreen;
-        System.out.println(nextScreen);
-    }
-
     public void setScreen(STATE nextScreen) {
-        //System.out.println("prevscreens" + prevScreens);
         this.prevScreens.add(nextScreen);
         app.setScreen(gameScreens.get(nextScreen));
-        //System.out.println("prevscreens" + prevScreens);
         currentState = nextScreen;
-        System.out.println(nextScreen);
-    }
-
-   /* public void pushScreen(STATE pushedScreen) {
-        this.prevScreens.add(pushedScreen);
-        gameScreens.get(currentState).pause();
-        app.setScreen(gameScreens.get(pushedScreen));
-        currentState = pushedScreen;
     }
 
 
-    public void popScreen() {
-        STATE prevScreen = getprevScreen();
-        gameScreens.get(prevScreen).resume();
-        app.setScreen(gameScreens.get(prevScreen));
-        currentState = prevScreen;
-    }
-
-    private STATE getprevScreen() {
-        prevScreens.pop();
-        return prevScreens.peek();
-    }*/
     public void dispose() {
         for (AbstractScreen screen : gameScreens.values()) {
             if (screen != null) {

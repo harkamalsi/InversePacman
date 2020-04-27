@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class PillComponent implements Component {
 
-    public Body body, triggerBody;
+    public Body body;
     private String id;
     private boolean collected = false;
     private boolean powerPill = false;
@@ -19,31 +19,7 @@ public class PillComponent implements Component {
 
 
 
-    public void createTriggerBody(World world, float x, float y) {
-       /* BodyDef bdef = new BodyDef();
-        bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set(x,y);
-        bdef.fixedRotation = true;
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(30/4,30/4);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f;
-
-
-        this.triggerBody = world.createBody(bdef);
-        triggerBody.createFixture(fixtureDef);
-        shape.dispose();
-
-        triggerBody.setLinearDamping(20f);
-        triggerBody.setAngularDamping(5f);
-
-        */
-    }
     public void createPillBody(World world, String id, float x, float y){
-        createTriggerBody(world, x, y);
 
         this.id = id;
 
@@ -66,7 +42,6 @@ public class PillComponent implements Component {
     }
 
     public void PillCollected() {
-        System.out.println(id + " is collected!");
         collected = true;
     }
 

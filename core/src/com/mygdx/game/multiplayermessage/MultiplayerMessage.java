@@ -8,7 +8,7 @@ import com.mygdx.game.shared.Constants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
+//helper class used in Player Input System for the multiplayer
 public class MultiplayerMessage {
 
     private static final MultiplayerMessage instance = new MultiplayerMessage();

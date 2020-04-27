@@ -39,11 +39,8 @@ public class ButtonSystem extends IteratingSystem {
         if(Gdx.input.justTouched()){
             // touching
             Vector3 clickPosition = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            System.out.println(clickPosition+":"+click.bounds.toString());
             if(click.bounds.contains(clickPosition.x, clickPosition.y)){
                 //object clicked
-                //do your thing
-                System.out.println("Touched"+entity.toString());
 
                 entity.flags = 1;
 

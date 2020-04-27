@@ -158,8 +158,6 @@ public class InversePacman extends Game {
 		gsm = new GameScreenManager(this);
 
 
-		//Picture
-		img = new Texture("Test1.png");
 	}
 
 	@Override

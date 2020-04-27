@@ -3,7 +3,6 @@ package com.mygdx.game.systems;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
@@ -13,11 +12,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.MusicComponent;
-import com.mygdx.game.managers.GameScreenManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class MusicSystem extends IteratingSystem {
@@ -118,29 +114,21 @@ public class MusicSystem extends IteratingSystem {
 
     private void playMusic(ArrayList<FileHandle> tracks, int lasttrack) {
         Random track = new Random();
-        System.out.println("Start " + tracknr);
-        System.out.println("Last track " + lasttrack);
-        //System.out.println(tracks);
-        /* The if statements make sure that the same song never plays twice in a row, unless there
-           is only one song
-         */
+
         if(lasttrack > -1 && tracks.size() > 1) {
             store = tracks.remove(lasttrack);
         }
+
         ArrayList<String> tracklist = new ArrayList<String>();
         for(FileHandle tracktostring : tracks) {
             String name = tracktostring.name();
             tracklist.add(name);
         }
-        System.out.println("tracklist: " + tracklist);
+
         tracknr = track.nextInt(tracks.size());
-        System.out.println("tracknr: " + tracknr);
         if(lasttrack > -1 && !(store == null)) {
             tracks.add(store);
         }
-        //tracknr = track.nextInt(tracks.size());
-        System.out.println("tracknr: " + tracknr);
-        System.out.println("now playing: " + tracks.get(tracknr).name());
 
         // Plays a random song from the available songs in the music/play directory
         song = Gdx.audio.newMusic(Gdx.files.internal(tracks.get(tracknr).toString()));
@@ -174,7 +162,6 @@ public class MusicSystem extends IteratingSystem {
 
     public float setMusic(float music_volume) {
         this.music_volume = music_volume;
-        System.out.println("got music: " + music_volume);
         return this.music_volume;
     }
 
@@ -197,7 +184,6 @@ public class MusicSystem extends IteratingSystem {
                     tracks.add(track);
                 }
             }
-            //System.out.println("music volume: " + music_volume);
 
             if(!start && !tracks.isEmpty()) {
                 playMusic(tracks, -1);
@@ -208,8 +194,6 @@ public class MusicSystem extends IteratingSystem {
             if(!tracks.isEmpty()) {
                 getMusic();
                 if (!song.isPlaying() && !pause) {
-                    System.out.println("updating music");
-                    System.out.println("song changed");
                     // Song needs to be disposed before it is changed
                     song.dispose();
                     playMusic(tracks, tracknr);

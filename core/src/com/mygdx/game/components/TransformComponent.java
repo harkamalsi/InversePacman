@@ -10,7 +10,7 @@ public class TransformComponent implements Component {
     public Vector2 scale = new Vector2(1, 1);
     public float rotation = 0;
 
-
+    //different constructors depending on arguments
     public TransformComponent(float x, float y) {
         this(x, y, 1.0f, 1.0f, 0);
     }
