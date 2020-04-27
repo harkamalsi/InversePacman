@@ -58,6 +58,8 @@ public class CollisionEventSystem extends IteratingSystem {
             if(pc.playerIdCollidedWith != "PACMAN" && !pc.powerMode && collisionTimer <= 0){
                 collisionTimer = 2f;
                 pc.hp -= 1;
+                MusicSystem musicSystem = this.getEngine().getSystem(MusicSystem.class);
+                musicSystem.playSound(1);
                 Hud.setLives(pc.hp);
                 WorldBuilder.resetBodyPositions();
                 pc.playerCollidedWith = null;
@@ -67,6 +69,8 @@ public class CollisionEventSystem extends IteratingSystem {
 
             }
             else if (pc.powerMode){
+                MusicSystem musicSystem = this.getEngine().getSystem(MusicSystem.class);
+                musicSystem.playSound(2);
                 Hud.addPointsToScore(500);
                 WorldBuilder.resetBodyPosition(pc.playerCollidedWith);
                 pc.playerCollidedWith = null;

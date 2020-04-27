@@ -430,7 +430,9 @@ public final class PlayScreen extends AbstractScreen {
 
         musicEntity = new Entity();
         Sound powerPillSound = Gdx.audio.newSound(Gdx.files.internal("sound/power.ogg"));
-        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play"), powerPillSound));
+        Sound dieSound = Gdx.audio.newSound(Gdx.files.internal("sound/pacman_die.ogg"));
+        Sound ghostSound = Gdx.audio.newSound(Gdx.files.internal("sound/ghost_die.ogg"));
+        musicEntity.add(new MusicComponent(Gdx.files.internal("music/play"), powerPillSound, dieSound, ghostSound));
         engine.addEntity(musicEntity);
 
         musicPauseEntity = new Entity();
