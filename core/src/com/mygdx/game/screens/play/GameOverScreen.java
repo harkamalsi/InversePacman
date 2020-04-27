@@ -7,7 +7,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.InversePacman;
 import com.mygdx.game.components.MusicComponent;
@@ -16,12 +15,9 @@ import com.mygdx.game.multiplayermessage.MultiplayerMessage;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.MusicSystem;
 import com.mygdx.game.systems.PillSystem;
-import com.mygdx.game.systems.RenderingSystem;
 
-import static com.mygdx.game.screens.play.PlayScreen.MULTIPLAYER;
 
 public class GameOverScreen extends AbstractScreen {
-    private SpriteBatch batch;
 
     private OrthographicCamera camera;
     private Engine engine;
@@ -33,7 +29,6 @@ public class GameOverScreen extends AbstractScreen {
 
     private MultiplayerMessage connection = MultiplayerMessage.getInstance();
 
-    private RenderingSystem renderingSystem;
 
 
     private MusicSystem musicSystem;
@@ -89,7 +84,6 @@ public class GameOverScreen extends AbstractScreen {
             musicSystem.dispose();
             engine.removeAllEntities();
             app.gsm.setScreen(GameScreenManager.STATE.MAIN_MENU_SCREEN);
-            //engine.removeSystem(musicSystem);
 
         }
         // need to add start boolean or music would not stop playing when switching screens
@@ -113,9 +107,7 @@ public class GameOverScreen extends AbstractScreen {
         resultpageadded = false;
         start = true;
 
-        System.out.println("Did we win? " + engine.getSystem(PillSystem.class).allPillsCollected());
 
-        //sound.play(app.sound_volume);
         //Must check and retrieve if the player won or lost
 
         musicSystem = new MusicSystem();
@@ -194,7 +186,6 @@ public class GameOverScreen extends AbstractScreen {
             resultpageadded = true;
         }
         if(elapsed > 7.0 && !engine.getSystem(PillSystem.class).allPillsCollected() && !resultpageadded) {
-            System.out.println("hello");
             engine.removeEntity(musicEntity);
             musicSystem.dispose();
             engine.removeSystem(musicSystem);

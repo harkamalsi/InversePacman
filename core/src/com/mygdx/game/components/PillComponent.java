@@ -66,7 +66,6 @@ public class PillComponent implements Component {
     }
 
     public void PillCollected() {
-        System.out.println(id + " is collected!");
         collected = true;
     }
 

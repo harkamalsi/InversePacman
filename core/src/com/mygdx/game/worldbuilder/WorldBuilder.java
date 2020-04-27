@@ -62,7 +62,6 @@ import java.util.ArrayList;
 
                 }
                 else {
-                    System.out.println(object.getClass());
                     continue;
                 }
 

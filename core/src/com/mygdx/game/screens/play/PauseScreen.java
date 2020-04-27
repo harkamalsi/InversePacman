@@ -29,8 +29,6 @@ public final class PauseScreen extends AbstractScreen {
 
     public void handleInput() {
         	if (Gdx.input.isKeyJustPressed(Input.Keys.R) && app.gsm.currentState == GameScreenManager.STATE.PAUSE) {
-            System.out.println("UNPAUSING!");
-            //app.gsm.popScreen();
             app.gsm.setScreen(GameScreenManager.STATE.PLAY);
 
         }

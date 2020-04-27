@@ -78,31 +78,6 @@ public class NetworkManager {
 
         socket.connect();
 
-        //socket.on("ping", sendPong);
-
-        /*Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while(true) {
-                        sleep(0);
-                        socket.on("ping", sendPong);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        thread.start();*/
-
-
-        /*socket.on(Socket.EVENT_RECONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                socket.emit("joinSocket", socketID);
-            }
-        });*/
     }
 
     // Single lobby
@@ -271,7 +246,6 @@ public class NetworkManager {
                 @Override
                 public void call(Object... args) {
                     JSONObject response = (JSONObject)args[0];
-                    System.out.println(response);
                 }
             });
 
@@ -286,6 +260,7 @@ public class NetworkManager {
         return null;
     }
 
+    //implemented, but not used methods
     public void changeNickname(final String id, final String nickname) {
         if (fetch) {
             getSocket().emit(Constants.CHANGE_NICKNAME, socketID, id, nickname);
@@ -294,6 +269,7 @@ public class NetworkManager {
         }
     }
 
+    //implemented, but not used methods
     public void changeSkinType(final String id, final int skinType) {
        if (fetch) {
            getSocket().emit(Constants.CHANGE_SKINTYPE, socketID, id, skinType);
@@ -321,7 +297,6 @@ public class NetworkManager {
                 @Override
                 public void call(Object... args) {
                     JSONObject response = (JSONObject)args[0];
-                    System.out.println(response);
                 }
             });
 

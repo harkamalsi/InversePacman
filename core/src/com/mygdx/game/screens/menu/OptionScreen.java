@@ -16,11 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.InversePacman;
-import com.mygdx.game.components.ButtonComponent;
 import com.mygdx.game.components.MusicComponent;
-import com.mygdx.game.components.TextureComponent;
-import com.mygdx.game.components.TransformComponent;
-import com.mygdx.game.managers.EntityManager;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.AbstractScreen;
 import com.mygdx.game.systems.ButtonSystem;
@@ -36,7 +32,6 @@ public class OptionScreen extends AbstractScreen {
     private OrthographicCamera camera;
     private FitViewport viewport;
 
-    private EntityManager entityManager;
 
     private SpriteBatch batch;
 
@@ -260,12 +255,10 @@ public class OptionScreen extends AbstractScreen {
             for(FileHandle skintostring : skin_dir.list()) {
                 String name = skintostring.path();
                 skinList.add(name);
-                //System.out.println(name);
             }
-            //System.out.println(skinList.size());
+
             app.skin_number += 1;
             app.skin_number = app.skin_number % skinList.size();
-            System.out.println(skinList.get(app.skin_number));
             skin.writeString(skinList.get(app.skin_number), false);
             app.skin = skinList.get(app.skin_number);
             drawPreview(app.skin);
@@ -287,14 +280,8 @@ public class OptionScreen extends AbstractScreen {
 
     @Override
     public void update(float delta) {
-        //System.out.println(engine.getEntities().size());
         handleInput();
         app.step();
-        //System.out.println("Width app: " + app.APP_WIDTH + " Actual width: " + Gdx.graphics.getWidth());
-        //System.out.println("Height app " + app.APP_HEIGHT + " Actual height " + Gdx.graphics.getHeight());
-
-
-        //System.out.println(music.getVolume());
 
     }
 
@@ -408,47 +395,7 @@ public class OptionScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
         engine.update(delta);
-        /*batch.setProjectionMatrix(camera.combined);
 
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.1f, 1.0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-
-
-        batch.begin();
-        //batch.setColor(0,78, 59,a);
-        batch.draw(bg, 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        font.getData().setScale(scaleX,scaleY);
-        ellipseSprite.setColor(0,78, 59,app.a);
-        ellipseSprite.draw(batch);
-        batch.draw(front_ellipse, Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY));
-        layout.setText(font,"Options");
-        //font.setColor(0,78, 59,a);
-        font.draw(batch,layout,Gdx.graphics.getWidth() / 2 - layout.width / 2, (Gdx.graphics.getHeight() - ((layout.height / 2) / (float)1.5)) / (float)1.06);
-
-        layout.setText(font, "music");
-        font.draw(batch,layout, Gdx.graphics.getWidth() / 2 - layout.width / 2,Gdx.graphics.getHeight() / (float)1.625 + layout.height / 2);
-        layout.setText(font, df.format(app.music_volume * 100) + "%");
-        font.draw(batch,layout, Gdx.graphics.getWidth() / 6 - layout.width / 2,Gdx.graphics.getHeight() / (float)1.90);
-        //font.draw(batch, "music: " + df.format(app.music_volume * 100) + "%", 0, Gdx.graphics.getHeight() / (float)1.80 + increaseVolumSprite.getRegionHeight() / 2);
-        //batch.draw(settings, (Gdx.graphics.getWidth() / 2 - ((settings.getRegionWidth() / 2) * (float)1.5)), (Gdx.graphics.getHeight() - ((settings.getRegionHeight() / 2) / (float)1.5)) / (float)1.07, settings.getRegionWidth()*(float)1.5, settings.getRegionHeight()*(float)1.5);
-        // REMEMBER to change the textures for the 2 sprites below, since there is no intuitively way to change the hitboxes
-        increaseVolumSprite.draw(batch);
-        decreaseVolumSprite.draw(batch);
-
-        layout.setText(font, "sound");
-        font.draw(batch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2,Gdx.graphics.getHeight() / (float)2.95);
-        layout.setText(font, df.format(app.sound_volume * 100) + "%");
-        font.draw(batch, layout,Gdx.graphics.getWidth() / 6 - layout.width / 2,Gdx.graphics.getHeight() / (float)4.2);
-        //font.draw(batch, "sound: " + df.format(app.sound_volume * 100) + "%", 0,Gdx.graphics.getHeight() / (float)3 + decreaseVolumSprite.getRegionHeight() / 2);
-        increaseSoundSprite.draw(batch);
-        decreaseSoundSprite.draw(batch);
-        volume_muteSprite.draw(batch);
-        sound_muteSprite.draw(batch);
-        backSprite.draw(batch);
-
-        batch.end();*/
         batch.begin();
         //font.setColor(font.getColor().r, font.getColor().g, font.getColor().b, 0.5f);
         font.setUseIntegerPositions(false);

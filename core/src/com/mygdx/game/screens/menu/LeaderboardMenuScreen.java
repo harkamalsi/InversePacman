@@ -84,14 +84,11 @@ public class LeaderboardMenuScreen extends AbstractScreen {
         back = new TextureRegion(new Texture("back3x.png"));
 
         font = new BitmapFont(Gdx.files.internal("font/rubik_font_correct.fnt"));
-        layout = new GlyphLayout(); //dont do this every frame! Store it as member
-        //System.out.println(this.engine.getSystems());
+        layout = new GlyphLayout(); //dont do this every frame! Store it as member;
     }
 
+    //handle buttons events
     private void handleInput() {
-//        if (singlePlayerGhostsButton.flags == 1) {
-//            app.gsm.setScreen(GameScreenManager.STATE.SINGLE_PLAYER_GHOSTS_BOARD_SCREEN);
-//        }
 
         if (singlePlayerNamcapButton.flags == 1) {
             musicSystem.dispose();
@@ -123,16 +120,9 @@ public class LeaderboardMenuScreen extends AbstractScreen {
         super.render(delta);
 
 
-        //batch.setProjectionMatrix(camera.combined);
-
         batch.begin();
 //
           batch.draw(this.bg, 0, 0, Gdx.graphics.getWidth() / 32f, Gdx.graphics.getHeight() / 32f);
-//        font.setUseIntegerPositions(false);
-//        font.getData().setScale(scaleX / 32f, scaleY / 32f);
-//        layout.setText(font,"HIGHSCORES\nGHOSTS");
-//
-//        font.draw(batch,layout, (Gdx.graphics.getWidth() / 64f - layout.width / 2f),(Gdx.graphics.getHeight() / (1.05f * 32f) - (layout.height / 2f)));
 
         batch.end();
         engine.update(delta);
@@ -185,12 +175,6 @@ public class LeaderboardMenuScreen extends AbstractScreen {
         app.addSpriteEntity(front_ellipseSprite, front_ellipseEntity, engine,Gdx.graphics.getWidth() / 2 - (front_ellipse.getRegionWidth() / 2 * (scaleX)), Gdx.graphics.getHeight() / (float)1.17, front_ellipse.getRegionWidth() * (scaleX), front_ellipse.getRegionHeight() * (scaleY), false, false, false, false);
 
         float firstYPosition = Gdx.graphics.getHeight();
-        // Single Player ghosts button
-//
-//        singlePlayerGhostsSprite = new Sprite(ghosts);
-//        singlePlayerGhostsButton = new Entity();
-//        app.addSpriteEntity(singlePlayerGhostsSprite, singlePlayerGhostsButton, engine, Gdx.graphics.getWidth()/ 2  - (singlePlayerGhostsSprite.getRegionWidth() / 2 * (scaleX)) ,
-//                firstYPosition / 1.75f, singlePlayerGhostsSprite.getRegionWidth() * scaleX, singlePlayerGhostsSprite.getRegionHeight() * scaleY, true,  false, false, false);
 
 
         // Single Player Nam-Pac button
