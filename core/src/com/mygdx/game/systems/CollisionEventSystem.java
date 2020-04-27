@@ -17,10 +17,12 @@ public class CollisionEventSystem extends IteratingSystem {
     private ComponentMapper<PlayerComponent> playerM;
 
     private float collisionTimer = 0f;
+    public boolean gameover;
 
 
     public CollisionEventSystem() {
         super(Family.all(TransformComponent.class, PlayerComponent.class).get());
+        gameover = false;
 
         transformM = ComponentMapper.getFor(TransformComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
@@ -59,6 +61,9 @@ public class CollisionEventSystem extends IteratingSystem {
                 Hud.setLives(pc.hp);
                 WorldBuilder.resetBodyPositions();
                 pc.playerCollidedWith = null;
+                if(pc.hp < 1) {
+                    gameover = true;
+                }
 
             }
             else if (pc.powerMode){
