@@ -69,7 +69,6 @@ public class GameOverScreen extends AbstractScreen {
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, InversePacman.V_WIDTH, InversePacman.V_HEIGHT);
 
-        sound = Gdx.audio.newSound(Gdx.files.internal("sound/the_winner.ogg"));
 
         excitementBg = new TextureRegion(new Texture("gameover/excitement_bg.png"));
         won_bg = new TextureRegion(new Texture("gameover/won.png"));
@@ -109,6 +108,7 @@ public class GameOverScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        sound = Gdx.audio.newSound(Gdx.files.internal("sound/the_winner.ogg"));
         elapsed = 0;
         resultpageadded = false;
         start = true;
