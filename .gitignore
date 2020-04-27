@@ -30,6 +30,8 @@ www-test/
 *.iml
 /android/out/
 com_crashlytics_export_strings.xml
+/android/assets/settings.txt
+/android/assets/skin.txt
 
 ## Eclipse
 
@@ -125,3 +127,7 @@ Thumbs.db
 !/ios-moe/xcode/*.xcodeproj/xcshareddata
 !/ios-moe/xcode/*.xcodeproj/project.pbxproj
 /ios-moe/xcode/native/
+
+## files
+android/assets/settings.txt
+android/assets/bin/
