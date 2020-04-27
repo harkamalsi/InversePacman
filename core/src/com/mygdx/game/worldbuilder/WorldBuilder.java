@@ -62,7 +62,6 @@ import java.util.ArrayList;
 
                 }
                 else {
-                    System.out.println(object.getClass());
                     continue;
                 }
 
@@ -109,17 +108,6 @@ import java.util.ArrayList;
                         nodeCostMatrix.get(y).add(x, new Node(1, "ground", true));
                     } catch (Exception e) {
                         nodeCostMatrix.get(y).add(x, new Node(-1, "wall", false));
-                    }
-                }
-            }
-            for ( int y=49; y > -1; y--) {
-                System.out.println("\n");
-                for ( int x=50; x > -1; x--) {
-                    if (nodeCostMatrix.get(y).get(x).getType() == "ground") {
-                        System.out.print(" . ");
-                    }
-                    else {
-                        System.out.print(" X ");
                     }
                 }
             }
