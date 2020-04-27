@@ -12,16 +12,6 @@ import com.mygdx.game.screens.play.PlayScreen;
 
 public class PlayerComponent implements Component {
 
-    public static final int IDLE = 0;
-    public static final int MOVE_UP = 1;
-    public static final int MOVE_DOWN = 2;
-    public static final int MOVE_LEFT = 3;
-    public static final int MOVE_RIGHT = 4;
-    public static final int HURT = 5;
-    public static final int DIE = 6;
-
-
-    public int currentState;
 
     public int hp;
 
@@ -35,12 +25,10 @@ public class PlayerComponent implements Component {
 
     public Body body;
     public String id;
-    public boolean ai;
     private String type;
     private Vector2 randomPos = null;
 
     public PlayerComponent() {
-        currentState = IDLE;
         hp = 3;
         invincibleTimer = 0;
         powerMode = false;
