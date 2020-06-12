@@ -1,4 +1,7 @@
 # software-architecture-TDT4240
+Pictures of the final product can be found [here](https://drive.google.com/drive/folders/1bGijV_3LoeySmZhDmFt5MlzvfOcWQfDW?usp=sharing).
+
+[Youtube link](https://www.youtube.com/watch?v=K8vUT7NduBk).
 
 # Authors:
 * Nikolas Emil Martinsen 
