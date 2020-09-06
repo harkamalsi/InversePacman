@@ -6,6 +6,7 @@ Pictures of the final product can be found [here](https://drive.google.com/drive
 
 # Authors:
 * Nikolas Emil Martinsen 
+* Alexey Gusev
 
 # Game concept
 
